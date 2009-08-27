@@ -57,8 +57,11 @@ am_gtk_logout_helper_OBJECTS =  \
 gtk_logout_helper_OBJECTS = $(am_gtk_logout_helper_OBJECTS)
 am__DEPENDENCIES_1 =
 gtk_logout_helper_DEPENDENCIES = $(am__DEPENDENCIES_1)
-gtk_logout_helper_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+gtk_logout_helper_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(gtk_logout_helper_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -67,13 +70,26 @@ am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_$(V))
+am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
+am__v_CC_0 = @echo "  CC    " $@;
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0 = @
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_$(V))
+am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CCLD_0 = @echo "  CCLD  " $@;
+AM_V_GEN = $(am__v_GEN_$(V))
+am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
+am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(gtk_logout_helper_SOURCES)
 DIST_SOURCES = $(gtk_logout_helper_SOURCES)
 ETAGS = etags
@@ -81,6 +97,7 @@ CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 APPLET_CFLAGS = @APPLET_CFLAGS@
 APPLET_LIBS = @APPLET_LIBS@
 AR = @AR@
@@ -299,7 +316,7 @@ clean-libexecPROGRAMS:
 	rm -f $$list
 gtk-logout-helper$(EXEEXT): $(gtk_logout_helper_OBJECTS) $(gtk_logout_helper_DEPENDENCIES) 
 	@rm -f gtk-logout-helper$(EXEEXT)
-	$(gtk_logout_helper_LINK) $(gtk_logout_helper_OBJECTS) $(gtk_logout_helper_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(gtk_logout_helper_LINK) $(gtk_logout_helper_OBJECTS) $(gtk_logout_helper_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -312,64 +329,73 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-logout-dialog.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
 gtk_logout_helper-gtk-logout-helper.o: gtk-logout-helper.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gtk-logout-helper.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo -c -o gtk_logout_helper-gtk-logout-helper.o `test -f 'gtk-logout-helper.c' || echo '$(srcdir)/'`gtk-logout-helper.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gtk-logout-helper.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo -c -o gtk_logout_helper-gtk-logout-helper.o `test -f 'gtk-logout-helper.c' || echo '$(srcdir)/'`gtk-logout-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gtk-logout-helper.c' object='gtk_logout_helper-gtk-logout-helper.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-gtk-logout-helper.o `test -f 'gtk-logout-helper.c' || echo '$(srcdir)/'`gtk-logout-helper.c
 
 gtk_logout_helper-gtk-logout-helper.obj: gtk-logout-helper.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gtk-logout-helper.obj -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo -c -o gtk_logout_helper-gtk-logout-helper.obj `if test -f 'gtk-logout-helper.c'; then $(CYGPATH_W) 'gtk-logout-helper.c'; else $(CYGPATH_W) '$(srcdir)/gtk-logout-helper.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gtk-logout-helper.obj -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo -c -o gtk_logout_helper-gtk-logout-helper.obj `if test -f 'gtk-logout-helper.c'; then $(CYGPATH_W) 'gtk-logout-helper.c'; else $(CYGPATH_W) '$(srcdir)/gtk-logout-helper.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gtk-logout-helper.c' object='gtk_logout_helper-gtk-logout-helper.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-gtk-logout-helper.obj `if test -f 'gtk-logout-helper.c'; then $(CYGPATH_W) 'gtk-logout-helper.c'; else $(CYGPATH_W) '$(srcdir)/gtk-logout-helper.c'; fi`
 
 gtk_logout_helper-ck-pk-helper.o: ck-pk-helper.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-ck-pk-helper.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-ck-pk-helper.Tpo -c -o gtk_logout_helper-ck-pk-helper.o `test -f 'ck-pk-helper.c' || echo '$(srcdir)/'`ck-pk-helper.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gtk_logout_helper-ck-pk-helper.Tpo $(DEPDIR)/gtk_logout_helper-ck-pk-helper.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-ck-pk-helper.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-ck-pk-helper.Tpo -c -o gtk_logout_helper-ck-pk-helper.o `test -f 'ck-pk-helper.c' || echo '$(srcdir)/'`ck-pk-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-ck-pk-helper.Tpo $(DEPDIR)/gtk_logout_helper-ck-pk-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ck-pk-helper.c' object='gtk_logout_helper-ck-pk-helper.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-ck-pk-helper.o `test -f 'ck-pk-helper.c' || echo '$(srcdir)/'`ck-pk-helper.c
 
 gtk_logout_helper-ck-pk-helper.obj: ck-pk-helper.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-ck-pk-helper.obj -MD -MP -MF $(DEPDIR)/gtk_logout_helper-ck-pk-helper.Tpo -c -o gtk_logout_helper-ck-pk-helper.obj `if test -f 'ck-pk-helper.c'; then $(CYGPATH_W) 'ck-pk-helper.c'; else $(CYGPATH_W) '$(srcdir)/ck-pk-helper.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gtk_logout_helper-ck-pk-helper.Tpo $(DEPDIR)/gtk_logout_helper-ck-pk-helper.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-ck-pk-helper.obj -MD -MP -MF $(DEPDIR)/gtk_logout_helper-ck-pk-helper.Tpo -c -o gtk_logout_helper-ck-pk-helper.obj `if test -f 'ck-pk-helper.c'; then $(CYGPATH_W) 'ck-pk-helper.c'; else $(CYGPATH_W) '$(srcdir)/ck-pk-helper.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-ck-pk-helper.Tpo $(DEPDIR)/gtk_logout_helper-ck-pk-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ck-pk-helper.c' object='gtk_logout_helper-ck-pk-helper.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-ck-pk-helper.obj `if test -f 'ck-pk-helper.c'; then $(CYGPATH_W) 'ck-pk-helper.c'; else $(CYGPATH_W) '$(srcdir)/ck-pk-helper.c'; fi`
 
 gtk_logout_helper-logout-dialog.o: logout-dialog.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-logout-dialog.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-logout-dialog.Tpo -c -o gtk_logout_helper-logout-dialog.o `test -f 'logout-dialog.c' || echo '$(srcdir)/'`logout-dialog.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gtk_logout_helper-logout-dialog.Tpo $(DEPDIR)/gtk_logout_helper-logout-dialog.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-logout-dialog.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-logout-dialog.Tpo -c -o gtk_logout_helper-logout-dialog.o `test -f 'logout-dialog.c' || echo '$(srcdir)/'`logout-dialog.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-logout-dialog.Tpo $(DEPDIR)/gtk_logout_helper-logout-dialog.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logout-dialog.c' object='gtk_logout_helper-logout-dialog.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-logout-dialog.o `test -f 'logout-dialog.c' || echo '$(srcdir)/'`logout-dialog.c
 
 gtk_logout_helper-logout-dialog.obj: logout-dialog.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-logout-dialog.obj -MD -MP -MF $(DEPDIR)/gtk_logout_helper-logout-dialog.Tpo -c -o gtk_logout_helper-logout-dialog.obj `if test -f 'logout-dialog.c'; then $(CYGPATH_W) 'logout-dialog.c'; else $(CYGPATH_W) '$(srcdir)/logout-dialog.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gtk_logout_helper-logout-dialog.Tpo $(DEPDIR)/gtk_logout_helper-logout-dialog.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-logout-dialog.obj -MD -MP -MF $(DEPDIR)/gtk_logout_helper-logout-dialog.Tpo -c -o gtk_logout_helper-logout-dialog.obj `if test -f 'logout-dialog.c'; then $(CYGPATH_W) 'logout-dialog.c'; else $(CYGPATH_W) '$(srcdir)/logout-dialog.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-logout-dialog.Tpo $(DEPDIR)/gtk_logout_helper-logout-dialog.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logout-dialog.c' object='gtk_logout_helper-logout-dialog.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-logout-dialog.obj `if test -f 'logout-dialog.c'; then $(CYGPATH_W) 'logout-dialog.c'; else $(CYGPATH_W) '$(srcdir)/logout-dialog.c'; fi`
