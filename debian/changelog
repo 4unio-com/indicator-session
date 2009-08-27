@@ -1,6 +1,25 @@
+indicator-session (0.1-0ubuntu1) karmic; urgency=low
+
+  [ Ted Gould ]
+  * Upstream version 0.1 (LP: #420108)
+  * debian/control: Looking for libdbusmenu* >= 0.1.0
+  * debian/control: Shortening the short description and lengthening
+    the long one.  Fixes a bug (LP: #412024)
+  * debian/watch:
+    - fixed url
+
+  [ Martin Pitt ]
+  * Re-add dropped debian/compat.
+
+  Re-add fixes which got lost in branch renaming:
+  * debian/control: Fix Vcs-* links.
+  * debian/rules: debian/rules: Update *.a/*.la cleanup for -sus → -session
+    renaming.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 21:30:27 +0200
+
 indicator-session (0.1~bzr17-0ubuntu1) karmic; urgency=low
 
-  [ Ken VanDine ]
   * New snapshot (LP: #417035)
   * Package rename from 'indicator-sus' to 'indicator-session'
   * Merging in the branch that adds in the status icons to
@@ -8,14 +27,18 @@ indicator-session (0.1~bzr17-0ubuntu1) karmic; urgency=low
   * debian/control:
     - Switching to indicator-session and conflicting
     - Changed Vcs-Bzr to point to ~ubuntu-desktop
+    - Changed the project homepage
     and replacing indicator-sus
   * debian/watch: Switching to indicator-session*
 
-  [ Martin Pitt ]
-  * Fix Vcs-* links.
-  * debian/rules: Update *.a/*.la cleanup for -sus → -session renaming.
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 21 Aug 2009 12:28:13 -0400
 
- -- Ken VanDine <ken.vandine@canonical.com>  Tue, 25 Aug 2009 11:49:56 +0200
+indicator-sus (0.1-0ubuntu2) UNRELEASE; urgency=low
+
+  * Fixed Vcs-Bzr location, part of the  indicator-applet project
+  * specify Vcs-Bzr-Browser
+
+ -- Alexander Sack <asac@ubuntu.com>  Tue, 11 Aug 2009 17:26:15 +0200
 
 indicator-sus (0.1-0ubuntu1) karmic; urgency=low
 
