@@ -38,13 +38,13 @@ libexec_PROGRAMS = gtk-logout-helper$(EXEEXT)
 subdir = src/gtk-dialog
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(install_sh) -d
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
@@ -53,10 +53,12 @@ PROGRAMS = $(libexec_PROGRAMS)
 am_gtk_logout_helper_OBJECTS =  \
 	gtk_logout_helper-gtk-logout-helper.$(OBJEXT) \
 	gtk_logout_helper-ck-pk-helper.$(OBJEXT) \
+	gtk_logout_helper-gconf-helper.$(OBJEXT) \
 	gtk_logout_helper-logout-dialog.$(OBJEXT)
 gtk_logout_helper_OBJECTS = $(am_gtk_logout_helper_OBJECTS)
 am__DEPENDENCIES_1 =
-gtk_logout_helper_DEPENDENCIES = $(am__DEPENDENCIES_1)
+gtk_logout_helper_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -96,6 +98,7 @@ ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
+ALL_LINGUAS = @ALL_LINGUAS@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 APPLET_CFLAGS = @APPLET_CFLAGS@
@@ -105,12 +108,15 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIRNAME = @DATADIRNAME@
 DBUSSERVICEDIR = @DBUSSERVICEDIR@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -122,6 +128,15 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GCONFTOOL = @GCONFTOOL@
+GCONF_CFLAGS = @GCONF_CFLAGS@
+GCONF_LIBS = @GCONF_LIBS@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GNOMELOCALEDIR = @GNOMELOCALEDIR@
 GREP = @GREP@
 GTKLOGOUTHELPER_CFLAGS = @GTKLOGOUTHELPER_CFLAGS@
 GTKLOGOUTHELPER_LIBS = @GTKLOGOUTHELPER_LIBS@
@@ -132,6 +147,12 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INSTOBJEXT = @INSTOBJEXT@
+INTLLIBS = @INTLLIBS@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
@@ -143,6 +164,10 @@ LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+MSGFMT = @MSGFMT@
+MSGFMT_OPTS = @MSGFMT_OPTS@
+MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
@@ -158,6 +183,10 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 SED = @SED@
 SESSIONERVICE_CFLAGS = @SESSIONERVICE_CFLAGS@
@@ -175,7 +204,9 @@ USERSERVICE_CFLAGS = @USERSERVICE_CFLAGS@
 USERSERVICE_LIBS = @USERSERVICE_LIBS@
 USERSSERVICE_CFLAGS = @USERSSERVICE_CFLAGS@
 USERSSERVICE_LIBS = @USERSSERVICE_LIBS@
+USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+XGETTEXT = @XGETTEXT@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -232,11 +263,13 @@ gtk_logout_helper_SOURCES = \
 	gtk-logout-helper.c \
 	ck-pk-helper.c \
 	ck-pk-helper.h \
+	gconf-helper.c \
+	gconf-helper.h \
 	logout-dialog.c \
 	logout-dialog.h
 
-gtk_logout_helper_CFLAGS = $(GTKLOGOUTHELPER_CFLAGS) -Wall -Werror
-gtk_logout_helper_LDADD = $(GTKLOGOUTHELPER_LIBS)
+gtk_logout_helper_CFLAGS = $(GTKLOGOUTHELPER_CFLAGS) $(GCONF_CFLAGS) -Wall -Werror
+gtk_logout_helper_LDADD = $(GTKLOGOUTHELPER_LIBS) $(GCONF_LIBS)
 all: all-am
 
 .SUFFIXES:
@@ -325,6 +358,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-ck-pk-helper.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-gconf-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-logout-dialog.Po@am__quote@
 
@@ -383,6 +417,22 @@ gtk_logout_helper-ck-pk-helper.obj: ck-pk-helper.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ck-pk-helper.c' object='gtk_logout_helper-ck-pk-helper.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-ck-pk-helper.obj `if test -f 'ck-pk-helper.c'; then $(CYGPATH_W) 'ck-pk-helper.c'; else $(CYGPATH_W) '$(srcdir)/ck-pk-helper.c'; fi`
+
+gtk_logout_helper-gconf-helper.o: gconf-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gconf-helper.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gconf-helper.Tpo -c -o gtk_logout_helper-gconf-helper.o `test -f 'gconf-helper.c' || echo '$(srcdir)/'`gconf-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-gconf-helper.Tpo $(DEPDIR)/gtk_logout_helper-gconf-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gconf-helper.c' object='gtk_logout_helper-gconf-helper.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-gconf-helper.o `test -f 'gconf-helper.c' || echo '$(srcdir)/'`gconf-helper.c
+
+gtk_logout_helper-gconf-helper.obj: gconf-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gconf-helper.obj -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gconf-helper.Tpo -c -o gtk_logout_helper-gconf-helper.obj `if test -f 'gconf-helper.c'; then $(CYGPATH_W) 'gconf-helper.c'; else $(CYGPATH_W) '$(srcdir)/gconf-helper.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-gconf-helper.Tpo $(DEPDIR)/gtk_logout_helper-gconf-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gconf-helper.c' object='gtk_logout_helper-gconf-helper.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-gconf-helper.obj `if test -f 'gconf-helper.c'; then $(CYGPATH_W) 'gconf-helper.c'; else $(CYGPATH_W) '$(srcdir)/gconf-helper.c'; fi`
 
 gtk_logout_helper-logout-dialog.o: logout-dialog.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-logout-dialog.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-logout-dialog.Tpo -c -o gtk_logout_helper-logout-dialog.o `test -f 'logout-dialog.c' || echo '$(srcdir)/'`logout-dialog.c
