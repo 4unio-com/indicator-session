@@ -2883,7 +2883,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=indicator-session
- VERSION=0.1.4
+ VERSION=0.1.5
 
 
 cat >>confdefs.h <<_ACEOF
@@ -11963,6 +11963,7 @@ AM_BACKSLASH='\'
 GTK_REQUIRED_VERSION=2.12
 INDICATOR_REQUIRED_VERSION=0.2.0
 DBUSMENUGTK_REQUIRED_VERSION=0.1.1
+POLKIT_REQUIRED_VERSION=0.92
 
 
 
@@ -12192,6 +12193,7 @@ fi
 
 
 DBUSMENUGLIB_REQUIRED_VERSION=0.1.1
+LIBEMPATHY_REQUIRED_VERSION=2.27.0
 
 
 pkg_failed=no
@@ -12203,12 +12205,15 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_STATUSSERVICE_CFLAGS="$STATUSSERVICE_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION
+                                 libempathy >= \$LIBEMPATHY_REQUIRED_VERSION\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                 libempathy >= $LIBEMPATHY_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_STATUSSERVICE_CFLAGS=`$PKG_CONFIG --cflags "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION" 2>/dev/null`
+  pkg_cv_STATUSSERVICE_CFLAGS=`$PKG_CONFIG --cflags "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                 libempathy >= $LIBEMPATHY_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -12221,12 +12226,15 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_STATUSSERVICE_LIBS="$STATUSSERVICE_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION
+                                 libempathy >= \$LIBEMPATHY_REQUIRED_VERSION\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                 libempathy >= $LIBEMPATHY_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_STATUSSERVICE_LIBS=`$PKG_CONFIG --libs "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION" 2>/dev/null`
+  pkg_cv_STATUSSERVICE_LIBS=`$PKG_CONFIG --libs "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                 libempathy >= $LIBEMPATHY_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -12245,14 +12253,17 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        STATUSSERVICE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION"`
+	        STATUSSERVICE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                 libempathy >= $LIBEMPATHY_REQUIRED_VERSION"`
         else
-	        STATUSSERVICE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION"`
+	        STATUSSERVICE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                 libempathy >= $LIBEMPATHY_REQUIRED_VERSION"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$STATUSSERVICE_PKG_ERRORS" >&5
 
-	as_fn_error "Package requirements (dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION) were not met:
+	as_fn_error "Package requirements (dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                 libempathy >= $LIBEMPATHY_REQUIRED_VERSION) were not met:
 
 $STATUSSERVICE_PKG_ERRORS
 
@@ -12486,14 +12497,14 @@ if test -n "$PKG_CONFIG"; then
     else
         if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk+-2.0 >= \$GTK_REQUIRED_VERSION
-                                   polkit-gnome\""; } >&5
+                                   polkit-gobject-1 >= \$POLKIT_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                   polkit-gnome") 2>&5
+                                   polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKLOGOUTHELPER_CFLAGS=`$PKG_CONFIG --cflags "gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                   polkit-gnome" 2>/dev/null`
+                                   polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -12507,14 +12518,14 @@ if test -n "$PKG_CONFIG"; then
     else
         if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk+-2.0 >= \$GTK_REQUIRED_VERSION
-                                   polkit-gnome\""; } >&5
+                                   polkit-gobject-1 >= \$POLKIT_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                   polkit-gnome") 2>&5
+                                   polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKLOGOUTHELPER_LIBS=`$PKG_CONFIG --libs "gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                   polkit-gnome" 2>/dev/null`
+                                   polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -12534,16 +12545,16 @@ else
 fi
         if test $_pkg_short_errors_supported = yes; then
 	        GTKLOGOUTHELPER_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                   polkit-gnome"`
+                                   polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION"`
         else
 	        GTKLOGOUTHELPER_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                   polkit-gnome"`
+                                   polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKLOGOUTHELPER_PKG_ERRORS" >&5
 
 	as_fn_error "Package requirements (gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                   polkit-gnome) were not met:
+                                   polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION) were not met:
 
 $GTKLOGOUTHELPER_PKG_ERRORS
 
@@ -12574,6 +12585,7 @@ else
 $as_echo "yes" >&6; }
 	:
 fi
+
 
 
 

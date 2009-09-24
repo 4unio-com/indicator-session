@@ -100,7 +100,11 @@ indicator_session_service_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 am_indicator_status_service_OBJECTS =  \
 	indicator_status_service-status-service.$(OBJEXT) \
 	indicator_status_service-status-service-dbus.$(OBJEXT) \
+	indicator_status_service-users-service-dbus.$(OBJEXT) \
+	indicator_status_service-users-service-marshal.$(OBJEXT) \
 	indicator_status_service-status-provider.$(OBJEXT) \
+	indicator_status_service-status-provider-mc5.$(OBJEXT) \
+	indicator_status_service-status-provider-mc5-marshal.$(OBJEXT) \
 	indicator_status_service-status-provider-pidgin.$(OBJEXT) \
 	indicator_status_service-status-provider-pidgin-marshal.$(OBJEXT) \
 	indicator_status_service-status-provider-telepathy.$(OBJEXT) \
@@ -113,7 +117,9 @@ indicator_status_service_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(indicator_status_service_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am_indicator_users_service_OBJECTS =  \
-	indicator_users_service-users-service.$(OBJEXT)
+	indicator_users_service-users-service.$(OBJEXT) \
+	indicator_users_service-users-service-dbus.$(OBJEXT) \
+	indicator_users_service-users-service-marshal.$(OBJEXT)
 indicator_users_service_OBJECTS =  \
 	$(am_indicator_users_service_OBJECTS)
 indicator_users_service_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -368,7 +374,8 @@ sessionlib_LTLIBRARIES = libsession.la
 libsession_la_SOURCES = \
 	indicator-session.c \
 	dbus-shared-names.h \
-	status-service-client.h
+	status-service-client.h \
+	users-service-client.h
 
 libsession_la_CFLAGS = $(APPLET_CFLAGS) -Wall -Werror
 libsession_la_LIBADD = $(APPLET_LIBS)
@@ -382,8 +389,16 @@ indicator_status_service_SOURCES = \
 	status-service-dbus.h \
 	status-service-dbus.c \
 	status-service-server.h \
+	users-service-dbus.h \
+	users-service-dbus.c \
+	users-service-marshal.c \
+	users-service-marshal.h \
 	status-provider.h \
 	status-provider.c \
+	status-provider-mc5.h \
+	status-provider-mc5.c \
+	status-provider-mc5-marshal.h \
+	status-provider-mc5-marshal.c \
 	status-provider-pidgin.h \
 	status-provider-pidgin.c \
 	status-provider-pidgin-marshal.h \
@@ -399,7 +414,7 @@ indicator_status_service_LDADD = $(STATUSSERVICE_LIBS)
 ###############
 # Users Stuff
 ###############
-indicator_users_service_SOURCES = users-service.c
+indicator_users_service_SOURCES = users-service.c users-service-dbus.c users-service-marshal.c
 indicator_users_service_CFLAGS = $(USERSSERVICE_CFLAGS) -Wall -Werror
 indicator_users_service_LDADD = $(USERSSERVICE_LIBS)
 
@@ -414,8 +429,13 @@ indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS) $(GCONF_LIBS)
 # Other Stuff
 ###############
 BUILT_SOURCES = \
+	users-service-client.h \
 	status-service-client.h \
 	status-service-server.h \
+	status-provider-mc5-marshal.h \
+	status-provider-mc5-marshal.c \
+	users-service-marshal.h \
+	users-service-marshal.c \
 	status-provider-pidgin-marshal.h \
 	status-provider-pidgin-marshal.c \
 	status-provider-telepathy-marshal.h \
@@ -423,6 +443,7 @@ BUILT_SOURCES = \
 
 EXTRA_DIST = \
 	status-service.xml \
+	status-provider-mc5.list \
 	status-provider-pidgin.list \
 	status-provider-telepathy.list
 
@@ -558,6 +579,8 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-gconf-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-service.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-status-provider-mc5-marshal.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-status-provider-mc5.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-status-provider-pidgin-marshal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-status-provider-pidgin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-status-provider-telepathy-marshal.Po@am__quote@
@@ -565,6 +588,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-status-provider.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-status-service-dbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-status-service.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-users-service-dbus.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-users-service-marshal.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_users_service-users-service-dbus.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_users_service-users-service-marshal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_users_service-users-service.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsession_la-indicator-session.Plo@am__quote@
 
@@ -664,6 +691,38 @@ indicator_status_service-status-service-dbus.obj: status-service-dbus.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -c -o indicator_status_service-status-service-dbus.obj `if test -f 'status-service-dbus.c'; then $(CYGPATH_W) 'status-service-dbus.c'; else $(CYGPATH_W) '$(srcdir)/status-service-dbus.c'; fi`
 
+indicator_status_service-users-service-dbus.o: users-service-dbus.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -MT indicator_status_service-users-service-dbus.o -MD -MP -MF $(DEPDIR)/indicator_status_service-users-service-dbus.Tpo -c -o indicator_status_service-users-service-dbus.o `test -f 'users-service-dbus.c' || echo '$(srcdir)/'`users-service-dbus.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_status_service-users-service-dbus.Tpo $(DEPDIR)/indicator_status_service-users-service-dbus.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service-dbus.c' object='indicator_status_service-users-service-dbus.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -c -o indicator_status_service-users-service-dbus.o `test -f 'users-service-dbus.c' || echo '$(srcdir)/'`users-service-dbus.c
+
+indicator_status_service-users-service-dbus.obj: users-service-dbus.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -MT indicator_status_service-users-service-dbus.obj -MD -MP -MF $(DEPDIR)/indicator_status_service-users-service-dbus.Tpo -c -o indicator_status_service-users-service-dbus.obj `if test -f 'users-service-dbus.c'; then $(CYGPATH_W) 'users-service-dbus.c'; else $(CYGPATH_W) '$(srcdir)/users-service-dbus.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_status_service-users-service-dbus.Tpo $(DEPDIR)/indicator_status_service-users-service-dbus.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service-dbus.c' object='indicator_status_service-users-service-dbus.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -c -o indicator_status_service-users-service-dbus.obj `if test -f 'users-service-dbus.c'; then $(CYGPATH_W) 'users-service-dbus.c'; else $(CYGPATH_W) '$(srcdir)/users-service-dbus.c'; fi`
+
+indicator_status_service-users-service-marshal.o: users-service-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -MT indicator_status_service-users-service-marshal.o -MD -MP -MF $(DEPDIR)/indicator_status_service-users-service-marshal.Tpo -c -o indicator_status_service-users-service-marshal.o `test -f 'users-service-marshal.c' || echo '$(srcdir)/'`users-service-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_status_service-users-service-marshal.Tpo $(DEPDIR)/indicator_status_service-users-service-marshal.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service-marshal.c' object='indicator_status_service-users-service-marshal.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -c -o indicator_status_service-users-service-marshal.o `test -f 'users-service-marshal.c' || echo '$(srcdir)/'`users-service-marshal.c
+
+indicator_status_service-users-service-marshal.obj: users-service-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -MT indicator_status_service-users-service-marshal.obj -MD -MP -MF $(DEPDIR)/indicator_status_service-users-service-marshal.Tpo -c -o indicator_status_service-users-service-marshal.obj `if test -f 'users-service-marshal.c'; then $(CYGPATH_W) 'users-service-marshal.c'; else $(CYGPATH_W) '$(srcdir)/users-service-marshal.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_status_service-users-service-marshal.Tpo $(DEPDIR)/indicator_status_service-users-service-marshal.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service-marshal.c' object='indicator_status_service-users-service-marshal.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -c -o indicator_status_service-users-service-marshal.obj `if test -f 'users-service-marshal.c'; then $(CYGPATH_W) 'users-service-marshal.c'; else $(CYGPATH_W) '$(srcdir)/users-service-marshal.c'; fi`
+
 indicator_status_service-status-provider.o: status-provider.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -MT indicator_status_service-status-provider.o -MD -MP -MF $(DEPDIR)/indicator_status_service-status-provider.Tpo -c -o indicator_status_service-status-provider.o `test -f 'status-provider.c' || echo '$(srcdir)/'`status-provider.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_status_service-status-provider.Tpo $(DEPDIR)/indicator_status_service-status-provider.Po
@@ -679,6 +738,38 @@ indicator_status_service-status-provider.obj: status-provider.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status-provider.c' object='indicator_status_service-status-provider.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -c -o indicator_status_service-status-provider.obj `if test -f 'status-provider.c'; then $(CYGPATH_W) 'status-provider.c'; else $(CYGPATH_W) '$(srcdir)/status-provider.c'; fi`
+
+indicator_status_service-status-provider-mc5.o: status-provider-mc5.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -MT indicator_status_service-status-provider-mc5.o -MD -MP -MF $(DEPDIR)/indicator_status_service-status-provider-mc5.Tpo -c -o indicator_status_service-status-provider-mc5.o `test -f 'status-provider-mc5.c' || echo '$(srcdir)/'`status-provider-mc5.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_status_service-status-provider-mc5.Tpo $(DEPDIR)/indicator_status_service-status-provider-mc5.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status-provider-mc5.c' object='indicator_status_service-status-provider-mc5.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -c -o indicator_status_service-status-provider-mc5.o `test -f 'status-provider-mc5.c' || echo '$(srcdir)/'`status-provider-mc5.c
+
+indicator_status_service-status-provider-mc5.obj: status-provider-mc5.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -MT indicator_status_service-status-provider-mc5.obj -MD -MP -MF $(DEPDIR)/indicator_status_service-status-provider-mc5.Tpo -c -o indicator_status_service-status-provider-mc5.obj `if test -f 'status-provider-mc5.c'; then $(CYGPATH_W) 'status-provider-mc5.c'; else $(CYGPATH_W) '$(srcdir)/status-provider-mc5.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_status_service-status-provider-mc5.Tpo $(DEPDIR)/indicator_status_service-status-provider-mc5.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status-provider-mc5.c' object='indicator_status_service-status-provider-mc5.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -c -o indicator_status_service-status-provider-mc5.obj `if test -f 'status-provider-mc5.c'; then $(CYGPATH_W) 'status-provider-mc5.c'; else $(CYGPATH_W) '$(srcdir)/status-provider-mc5.c'; fi`
+
+indicator_status_service-status-provider-mc5-marshal.o: status-provider-mc5-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -MT indicator_status_service-status-provider-mc5-marshal.o -MD -MP -MF $(DEPDIR)/indicator_status_service-status-provider-mc5-marshal.Tpo -c -o indicator_status_service-status-provider-mc5-marshal.o `test -f 'status-provider-mc5-marshal.c' || echo '$(srcdir)/'`status-provider-mc5-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_status_service-status-provider-mc5-marshal.Tpo $(DEPDIR)/indicator_status_service-status-provider-mc5-marshal.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status-provider-mc5-marshal.c' object='indicator_status_service-status-provider-mc5-marshal.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -c -o indicator_status_service-status-provider-mc5-marshal.o `test -f 'status-provider-mc5-marshal.c' || echo '$(srcdir)/'`status-provider-mc5-marshal.c
+
+indicator_status_service-status-provider-mc5-marshal.obj: status-provider-mc5-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -MT indicator_status_service-status-provider-mc5-marshal.obj -MD -MP -MF $(DEPDIR)/indicator_status_service-status-provider-mc5-marshal.Tpo -c -o indicator_status_service-status-provider-mc5-marshal.obj `if test -f 'status-provider-mc5-marshal.c'; then $(CYGPATH_W) 'status-provider-mc5-marshal.c'; else $(CYGPATH_W) '$(srcdir)/status-provider-mc5-marshal.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_status_service-status-provider-mc5-marshal.Tpo $(DEPDIR)/indicator_status_service-status-provider-mc5-marshal.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status-provider-mc5-marshal.c' object='indicator_status_service-status-provider-mc5-marshal.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -c -o indicator_status_service-status-provider-mc5-marshal.obj `if test -f 'status-provider-mc5-marshal.c'; then $(CYGPATH_W) 'status-provider-mc5-marshal.c'; else $(CYGPATH_W) '$(srcdir)/status-provider-mc5-marshal.c'; fi`
 
 indicator_status_service-status-provider-pidgin.o: status-provider-pidgin.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -MT indicator_status_service-status-provider-pidgin.o -MD -MP -MF $(DEPDIR)/indicator_status_service-status-provider-pidgin.Tpo -c -o indicator_status_service-status-provider-pidgin.o `test -f 'status-provider-pidgin.c' || echo '$(srcdir)/'`status-provider-pidgin.c
@@ -759,6 +850,38 @@ indicator_users_service-users-service.obj: users-service.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service.c' object='indicator_users_service-users-service.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -c -o indicator_users_service-users-service.obj `if test -f 'users-service.c'; then $(CYGPATH_W) 'users-service.c'; else $(CYGPATH_W) '$(srcdir)/users-service.c'; fi`
+
+indicator_users_service-users-service-dbus.o: users-service-dbus.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -MT indicator_users_service-users-service-dbus.o -MD -MP -MF $(DEPDIR)/indicator_users_service-users-service-dbus.Tpo -c -o indicator_users_service-users-service-dbus.o `test -f 'users-service-dbus.c' || echo '$(srcdir)/'`users-service-dbus.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_users_service-users-service-dbus.Tpo $(DEPDIR)/indicator_users_service-users-service-dbus.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service-dbus.c' object='indicator_users_service-users-service-dbus.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -c -o indicator_users_service-users-service-dbus.o `test -f 'users-service-dbus.c' || echo '$(srcdir)/'`users-service-dbus.c
+
+indicator_users_service-users-service-dbus.obj: users-service-dbus.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -MT indicator_users_service-users-service-dbus.obj -MD -MP -MF $(DEPDIR)/indicator_users_service-users-service-dbus.Tpo -c -o indicator_users_service-users-service-dbus.obj `if test -f 'users-service-dbus.c'; then $(CYGPATH_W) 'users-service-dbus.c'; else $(CYGPATH_W) '$(srcdir)/users-service-dbus.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_users_service-users-service-dbus.Tpo $(DEPDIR)/indicator_users_service-users-service-dbus.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service-dbus.c' object='indicator_users_service-users-service-dbus.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -c -o indicator_users_service-users-service-dbus.obj `if test -f 'users-service-dbus.c'; then $(CYGPATH_W) 'users-service-dbus.c'; else $(CYGPATH_W) '$(srcdir)/users-service-dbus.c'; fi`
+
+indicator_users_service-users-service-marshal.o: users-service-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -MT indicator_users_service-users-service-marshal.o -MD -MP -MF $(DEPDIR)/indicator_users_service-users-service-marshal.Tpo -c -o indicator_users_service-users-service-marshal.o `test -f 'users-service-marshal.c' || echo '$(srcdir)/'`users-service-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_users_service-users-service-marshal.Tpo $(DEPDIR)/indicator_users_service-users-service-marshal.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service-marshal.c' object='indicator_users_service-users-service-marshal.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -c -o indicator_users_service-users-service-marshal.o `test -f 'users-service-marshal.c' || echo '$(srcdir)/'`users-service-marshal.c
+
+indicator_users_service-users-service-marshal.obj: users-service-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -MT indicator_users_service-users-service-marshal.obj -MD -MP -MF $(DEPDIR)/indicator_users_service-users-service-marshal.Tpo -c -o indicator_users_service-users-service-marshal.obj `if test -f 'users-service-marshal.c'; then $(CYGPATH_W) 'users-service-marshal.c'; else $(CYGPATH_W) '$(srcdir)/users-service-marshal.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_users_service-users-service-marshal.Tpo $(DEPDIR)/indicator_users_service-users-service-marshal.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service-marshal.c' object='indicator_users_service-users-service-marshal.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -c -o indicator_users_service-users-service-marshal.obj `if test -f 'users-service-marshal.c'; then $(CYGPATH_W) 'users-service-marshal.c'; else $(CYGPATH_W) '$(srcdir)/users-service-marshal.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1091,6 +1214,13 @@ uninstall-am: uninstall-libexecPROGRAMS \
 	uninstall-sessionlibLTLIBRARIES
 
 
+users-service-client.h: $(srcdir)/users-service.xml
+	dbus-binding-tool \
+		--prefix=_users_service_client \
+		--mode=glib-client \
+		--output=users-service-client.h \
+		$(srcdir)/users-service.xml
+
 status-service-client.h: $(srcdir)/status-service.xml
 	dbus-binding-tool \
 		--prefix=_status_service_client \
@@ -1104,6 +1234,16 @@ status-service-server.h: $(srcdir)/status-service.xml
 		--mode=glib-server \
 		--output=status-service-server.h \
 		$(srcdir)/status-service.xml
+
+users-service-marshal.h: $(srcdir)/users-service.list
+	glib-genmarshal --header \
+		--prefix=_users_service_marshal $(srcdir)/users-service.list \
+		> users-service-marshal.h
+
+users-service-marshal.c: $(srcdir)/users-service.list
+	glib-genmarshal --body \
+		--prefix=_users_service_marshal $(srcdir)/users-service.list \
+		> users-service-marshal.c
 
 status-provider-pidgin-marshal.h: $(srcdir)/status-provider-pidgin.list
 	glib-genmarshal --header \
@@ -1124,6 +1264,16 @@ status-provider-telepathy-marshal.c: $(srcdir)/status-provider-telepathy.list
 	glib-genmarshal --body \
 		--prefix=_status_provider_telepathy_marshal $(srcdir)/status-provider-telepathy.list \
 		> status-provider-telepathy-marshal.c
+
+status-provider-mc5-marshal.h: $(srcdir)/status-provider-mc5.list
+	glib-genmarshal --header \
+		--prefix=_status_provider_mc5_marshal $(srcdir)/status-provider-mc5.list \
+		> status-provider-mc5-marshal.h
+
+status-provider-mc5-marshal.c: $(srcdir)/status-provider-mc5.list
+	glib-genmarshal --body \
+		--prefix=_status_provider_mc5_marshal $(srcdir)/status-provider-mc5.list \
+		> status-provider-mc5-marshal.c
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
