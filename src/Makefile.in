@@ -87,6 +87,7 @@ libsession_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(CFLAGS) $(libsession_la_LDFLAGS) $(LDFLAGS) -o $@
 PROGRAMS = $(libexec_PROGRAMS)
 am_indicator_session_service_OBJECTS =  \
+	indicator_session_service-lock-helper.$(OBJEXT) \
 	indicator_session_service-session-service.$(OBJEXT) \
 	indicator_session_service-gconf-helper.$(OBJEXT)
 indicator_session_service_OBJECTS =  \
@@ -117,6 +118,7 @@ indicator_status_service_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(indicator_status_service_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am_indicator_users_service_OBJECTS =  \
+	indicator_users_service-lock-helper.$(OBJEXT) \
 	indicator_users_service-users-service.$(OBJEXT) \
 	indicator_users_service-users-service-dbus.$(OBJEXT) \
 	indicator_users_service-users-service-marshal.$(OBJEXT)
@@ -414,14 +416,25 @@ indicator_status_service_LDADD = $(STATUSSERVICE_LIBS)
 ###############
 # Users Stuff
 ###############
-indicator_users_service_SOURCES = users-service.c users-service-dbus.c users-service-marshal.c
+indicator_users_service_SOURCES = \
+	lock-helper.c \
+	lock-helper.h \
+	users-service.c \
+	users-service-dbus.c \
+	users-service-marshal.c
+
 indicator_users_service_CFLAGS = $(USERSSERVICE_CFLAGS) -Wall -Werror
 indicator_users_service_LDADD = $(USERSSERVICE_LIBS)
 
 #################
 # Session Stuff
 #################
-indicator_session_service_SOURCES = session-service.c gtk-dialog/gconf-helper.c
+indicator_session_service_SOURCES = \
+	lock-helper.c \
+	lock-helper.h \
+	session-service.c \
+	gtk-dialog/gconf-helper.c
+
 indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS) $(GCONF_CFLAGS) -DLIBEXECDIR=\"$(libexecdir)\" -Wall -Werror
 indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS) $(GCONF_LIBS)
 
@@ -578,6 +591,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-gconf-helper.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-lock-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-service.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-status-provider-mc5-marshal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-status-provider-mc5.Po@am__quote@
@@ -590,6 +604,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-status-service.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-users-service-dbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_status_service-users-service-marshal.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_users_service-lock-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_users_service-users-service-dbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_users_service-users-service-marshal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_users_service-users-service.Po@am__quote@
@@ -626,6 +641,22 @@ libsession_la-indicator-session.lo: indicator-session.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='indicator-session.c' object='libsession_la-indicator-session.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsession_la_CFLAGS) $(CFLAGS) -c -o libsession_la-indicator-session.lo `test -f 'indicator-session.c' || echo '$(srcdir)/'`indicator-session.c
+
+indicator_session_service-lock-helper.o: lock-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-lock-helper.o -MD -MP -MF $(DEPDIR)/indicator_session_service-lock-helper.Tpo -c -o indicator_session_service-lock-helper.o `test -f 'lock-helper.c' || echo '$(srcdir)/'`lock-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-lock-helper.Tpo $(DEPDIR)/indicator_session_service-lock-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lock-helper.c' object='indicator_session_service-lock-helper.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-lock-helper.o `test -f 'lock-helper.c' || echo '$(srcdir)/'`lock-helper.c
+
+indicator_session_service-lock-helper.obj: lock-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-lock-helper.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-lock-helper.Tpo -c -o indicator_session_service-lock-helper.obj `if test -f 'lock-helper.c'; then $(CYGPATH_W) 'lock-helper.c'; else $(CYGPATH_W) '$(srcdir)/lock-helper.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-lock-helper.Tpo $(DEPDIR)/indicator_session_service-lock-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lock-helper.c' object='indicator_session_service-lock-helper.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-lock-helper.obj `if test -f 'lock-helper.c'; then $(CYGPATH_W) 'lock-helper.c'; else $(CYGPATH_W) '$(srcdir)/lock-helper.c'; fi`
 
 indicator_session_service-session-service.o: session-service.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-session-service.o -MD -MP -MF $(DEPDIR)/indicator_session_service-session-service.Tpo -c -o indicator_session_service-session-service.o `test -f 'session-service.c' || echo '$(srcdir)/'`session-service.c
@@ -834,6 +865,22 @@ indicator_status_service-status-provider-telepathy-marshal.obj: status-provider-
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status-provider-telepathy-marshal.c' object='indicator_status_service-status-provider-telepathy-marshal.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_status_service_CFLAGS) $(CFLAGS) -c -o indicator_status_service-status-provider-telepathy-marshal.obj `if test -f 'status-provider-telepathy-marshal.c'; then $(CYGPATH_W) 'status-provider-telepathy-marshal.c'; else $(CYGPATH_W) '$(srcdir)/status-provider-telepathy-marshal.c'; fi`
+
+indicator_users_service-lock-helper.o: lock-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -MT indicator_users_service-lock-helper.o -MD -MP -MF $(DEPDIR)/indicator_users_service-lock-helper.Tpo -c -o indicator_users_service-lock-helper.o `test -f 'lock-helper.c' || echo '$(srcdir)/'`lock-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_users_service-lock-helper.Tpo $(DEPDIR)/indicator_users_service-lock-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lock-helper.c' object='indicator_users_service-lock-helper.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -c -o indicator_users_service-lock-helper.o `test -f 'lock-helper.c' || echo '$(srcdir)/'`lock-helper.c
+
+indicator_users_service-lock-helper.obj: lock-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -MT indicator_users_service-lock-helper.obj -MD -MP -MF $(DEPDIR)/indicator_users_service-lock-helper.Tpo -c -o indicator_users_service-lock-helper.obj `if test -f 'lock-helper.c'; then $(CYGPATH_W) 'lock-helper.c'; else $(CYGPATH_W) '$(srcdir)/lock-helper.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_users_service-lock-helper.Tpo $(DEPDIR)/indicator_users_service-lock-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lock-helper.c' object='indicator_users_service-lock-helper.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -c -o indicator_users_service-lock-helper.obj `if test -f 'lock-helper.c'; then $(CYGPATH_W) 'lock-helper.c'; else $(CYGPATH_W) '$(srcdir)/lock-helper.c'; fi`
 
 indicator_users_service-users-service.o: users-service.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_users_service_CFLAGS) $(CFLAGS) -MT indicator_users_service-users-service.o -MD -MP -MF $(DEPDIR)/indicator_users_service-users-service.Tpo -c -o indicator_users_service-users-service.o `test -f 'users-service.c' || echo '$(srcdir)/'`users-service.c
