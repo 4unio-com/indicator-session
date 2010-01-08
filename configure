@@ -770,14 +770,6 @@ SESSIONERVICE_LIBS
 SESSIONERVICE_CFLAGS
 SESSIONSERVICE_LIBS
 SESSIONSERVICE_CFLAGS
-USERSERVICE_LIBS
-USERSERVICE_CFLAGS
-USERSSERVICE_LIBS
-USERSSERVICE_CFLAGS
-STATUSERVICE_LIBS
-STATUSERVICE_CFLAGS
-STATUSSERVICE_LIBS
-STATUSSERVICE_CFLAGS
 APPLET_LIBS
 APPLET_CFLAGS
 PKG_CONFIG
@@ -951,10 +943,6 @@ CPP
 PKG_CONFIG
 APPLET_CFLAGS
 APPLET_LIBS
-STATUSSERVICE_CFLAGS
-STATUSSERVICE_LIBS
-USERSSERVICE_CFLAGS
-USERSSERVICE_LIBS
 SESSIONSERVICE_CFLAGS
 SESSIONSERVICE_LIBS
 GTKLOGOUTHELPER_CFLAGS
@@ -1619,14 +1607,6 @@ Some influential environment variables:
   APPLET_CFLAGS
               C compiler flags for APPLET, overriding pkg-config
   APPLET_LIBS linker flags for APPLET, overriding pkg-config
-  STATUSSERVICE_CFLAGS
-              C compiler flags for STATUSSERVICE, overriding pkg-config
-  STATUSSERVICE_LIBS
-              linker flags for STATUSSERVICE, overriding pkg-config
-  USERSSERVICE_CFLAGS
-              C compiler flags for USERSSERVICE, overriding pkg-config
-  USERSSERVICE_LIBS
-              linker flags for USERSSERVICE, overriding pkg-config
   SESSIONSERVICE_CFLAGS
               C compiler flags for SESSIONSERVICE, overriding pkg-config
   SESSIONSERVICE_LIBS
@@ -2883,7 +2863,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=indicator-session
- VERSION=0.1.7+r58
+ VERSION=0.2.0
 
 
 cat >>confdefs.h <<_ACEOF
@@ -6243,13 +6223,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:6246: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:6226: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6249: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:6229: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6252: output\"" >&5)
+  (eval echo "\"\$as_me:6232: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -7454,7 +7434,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7457 "configure"' > conftest.$ac_ext
+  echo '#line 7437 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8734,11 +8714,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8737: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8717: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8741: \$? = $ac_status" >&5
+   echo "$as_me:8721: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9073,11 +9053,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9076: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9056: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9080: \$? = $ac_status" >&5
+   echo "$as_me:9060: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9178,11 +9158,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9181: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9161: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9185: \$? = $ac_status" >&5
+   echo "$as_me:9165: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9233,11 +9213,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9236: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9216: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9240: \$? = $ac_status" >&5
+   echo "$as_me:9220: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11616,7 +11596,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11619 "configure"
+#line 11599 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11712,7 +11692,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11715 "configure"
+#line 11695 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11962,7 +11942,7 @@ AM_BACKSLASH='\'
 
 GTK_REQUIRED_VERSION=2.12
 INDICATOR_REQUIRED_VERSION=0.3.0
-DBUSMENUGTK_REQUIRED_VERSION=0.1.1
+DBUSMENUGTK_REQUIRED_VERSION=0.2.0
 POLKIT_REQUIRED_VERSION=0.92
 
 
@@ -12193,204 +12173,6 @@ fi
 
 
 DBUSMENUGLIB_REQUIRED_VERSION=0.1.1
-TELEPATHYGLIB_REQUIRED_VERSION=0.9.0
-
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for STATUSSERVICE" >&5
-$as_echo_n "checking for STATUSSERVICE... " >&6; }
-
-if test -n "$PKG_CONFIG"; then
-    if test -n "$STATUSSERVICE_CFLAGS"; then
-        pkg_cv_STATUSSERVICE_CFLAGS="$STATUSSERVICE_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION
-                                 telepathy-glib >= \$TELEPATHYGLIB_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
-                                 telepathy-glib >= $TELEPATHYGLIB_REQUIRED_VERSION") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_STATUSSERVICE_CFLAGS=`$PKG_CONFIG --cflags "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
-                                 telepathy-glib >= $TELEPATHYGLIB_REQUIRED_VERSION" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
-    fi
-else
-	pkg_failed=untried
-fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$STATUSSERVICE_LIBS"; then
-        pkg_cv_STATUSSERVICE_LIBS="$STATUSSERVICE_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION
-                                 telepathy-glib >= \$TELEPATHYGLIB_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
-                                 telepathy-glib >= $TELEPATHYGLIB_REQUIRED_VERSION") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_STATUSSERVICE_LIBS=`$PKG_CONFIG --libs "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
-                                 telepathy-glib >= $TELEPATHYGLIB_REQUIRED_VERSION" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
-    fi
-else
-	pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        STATUSSERVICE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
-                                 telepathy-glib >= $TELEPATHYGLIB_REQUIRED_VERSION"`
-        else
-	        STATUSSERVICE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
-                                 telepathy-glib >= $TELEPATHYGLIB_REQUIRED_VERSION"`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$STATUSSERVICE_PKG_ERRORS" >&5
-
-	as_fn_error "Package requirements (dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
-                                 telepathy-glib >= $TELEPATHYGLIB_REQUIRED_VERSION) were not met:
-
-$STATUSSERVICE_PKG_ERRORS
-
-Consider adjusting the PKG_CONFIG_PATH environment variable if you
-installed software in a non-standard prefix.
-
-Alternatively, you may set the environment variables STATUSSERVICE_CFLAGS
-and STATUSSERVICE_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details.
-" "$LINENO" 5
-elif test $pkg_failed = untried; then
-	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error "The pkg-config script could not be found or is too old.  Make sure it
-is in your PATH or set the PKG_CONFIG environment variable to the full
-path to pkg-config.
-
-Alternatively, you may set the environment variables STATUSSERVICE_CFLAGS
-and STATUSSERVICE_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details.
-
-To get pkg-config, see <http://pkg-config.freedesktop.org/>.
-See \`config.log' for more details." "$LINENO" 5; }
-else
-	STATUSSERVICE_CFLAGS=$pkg_cv_STATUSSERVICE_CFLAGS
-	STATUSSERVICE_LIBS=$pkg_cv_STATUSSERVICE_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	:
-fi
-
-
-
-
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for USERSSERVICE" >&5
-$as_echo_n "checking for USERSSERVICE... " >&6; }
-
-if test -n "$PKG_CONFIG"; then
-    if test -n "$USERSSERVICE_CFLAGS"; then
-        pkg_cv_USERSSERVICE_CFLAGS="$USERSSERVICE_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_USERSSERVICE_CFLAGS=`$PKG_CONFIG --cflags "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
-    fi
-else
-	pkg_failed=untried
-fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$USERSSERVICE_LIBS"; then
-        pkg_cv_USERSSERVICE_LIBS="$USERSSERVICE_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_USERSSERVICE_LIBS=`$PKG_CONFIG --libs "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
-    fi
-else
-	pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        USERSSERVICE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION"`
-        else
-	        USERSSERVICE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION"`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$USERSSERVICE_PKG_ERRORS" >&5
-
-	as_fn_error "Package requirements (dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION) were not met:
-
-$USERSSERVICE_PKG_ERRORS
-
-Consider adjusting the PKG_CONFIG_PATH environment variable if you
-installed software in a non-standard prefix.
-
-Alternatively, you may set the environment variables USERSSERVICE_CFLAGS
-and USERSSERVICE_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details.
-" "$LINENO" 5
-elif test $pkg_failed = untried; then
-	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error "The pkg-config script could not be found or is too old.  Make sure it
-is in your PATH or set the PKG_CONFIG environment variable to the full
-path to pkg-config.
-
-Alternatively, you may set the environment variables USERSSERVICE_CFLAGS
-and USERSSERVICE_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details.
-
-To get pkg-config, see <http://pkg-config.freedesktop.org/>.
-See \`config.log' for more details." "$LINENO" 5; }
-else
-	USERSSERVICE_CFLAGS=$pkg_cv_USERSSERVICE_CFLAGS
-	USERSSERVICE_LIBS=$pkg_cv_USERSSERVICE_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	:
-fi
-
-
-
 
 
 pkg_failed=no
@@ -12402,12 +12184,15 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_SESSIONSERVICE_CFLAGS="$SESSIONSERVICE_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION
+                                  indicator >= \$INDICATOR_REQUIRED_VERSION\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  indicator >= $INDICATOR_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_SESSIONSERVICE_CFLAGS=`$PKG_CONFIG --cflags "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION" 2>/dev/null`
+  pkg_cv_SESSIONSERVICE_CFLAGS=`$PKG_CONFIG --cflags "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  indicator >= $INDICATOR_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -12420,12 +12205,15 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_SESSIONSERVICE_LIBS="$SESSIONSERVICE_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION
+                                  indicator >= \$INDICATOR_REQUIRED_VERSION\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  indicator >= $INDICATOR_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_SESSIONSERVICE_LIBS=`$PKG_CONFIG --libs "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION" 2>/dev/null`
+  pkg_cv_SESSIONSERVICE_LIBS=`$PKG_CONFIG --libs "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  indicator >= $INDICATOR_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -12444,14 +12232,17 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION"`
+	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  indicator >= $INDICATOR_REQUIRED_VERSION"`
         else
-	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION"`
+	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  indicator >= $INDICATOR_REQUIRED_VERSION"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$SESSIONSERVICE_PKG_ERRORS" >&5
 
-	as_fn_error "Package requirements (dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION) were not met:
+	as_fn_error "Package requirements (dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  indicator >= $INDICATOR_REQUIRED_VERSION) were not met:
 
 $SESSIONSERVICE_PKG_ERRORS
 
@@ -13553,7 +13344,7 @@ $as_echo "$LINGUAS" >&6; }
 # Files
 ###########################
 
-ac_config_files="$ac_config_files Makefile src/Makefile src/gtk-dialog/Makefile data/Makefile data/icons/Makefile data/icons/16x16/Makefile data/icons/16x16/status/Makefile data/icons/16x16/actions/Makefile data/icons/22x22/Makefile data/icons/22x22/status/Makefile data/icons/22x22/actions/Makefile data/icons/24x24/Makefile data/icons/24x24/status/Makefile data/icons/24x24/actions/Makefile data/icons/32x32/Makefile data/icons/32x32/status/Makefile data/icons/32x32/actions/Makefile data/icons/48x48/Makefile data/icons/48x48/status/Makefile data/icons/scalable/Makefile data/icons/scalable/status/Makefile data/icons/scalable/actions/Makefile po/Makefile.in"
+ac_config_files="$ac_config_files Makefile src/Makefile src/gtk-dialog/Makefile data/Makefile data/icons/Makefile data/icons/16x16/Makefile data/icons/16x16/actions/Makefile data/icons/22x22/Makefile data/icons/22x22/actions/Makefile data/icons/24x24/Makefile data/icons/24x24/actions/Makefile data/icons/32x32/Makefile data/icons/32x32/actions/Makefile data/icons/scalable/Makefile data/icons/scalable/actions/Makefile po/Makefile.in"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -14543,21 +14334,14 @@ do
     "data/Makefile") CONFIG_FILES="$CONFIG_FILES data/Makefile" ;;
     "data/icons/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/Makefile" ;;
     "data/icons/16x16/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/16x16/Makefile" ;;
-    "data/icons/16x16/status/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/16x16/status/Makefile" ;;
     "data/icons/16x16/actions/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/16x16/actions/Makefile" ;;
     "data/icons/22x22/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/22x22/Makefile" ;;
-    "data/icons/22x22/status/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/22x22/status/Makefile" ;;
     "data/icons/22x22/actions/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/22x22/actions/Makefile" ;;
     "data/icons/24x24/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/24x24/Makefile" ;;
-    "data/icons/24x24/status/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/24x24/status/Makefile" ;;
     "data/icons/24x24/actions/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/24x24/actions/Makefile" ;;
     "data/icons/32x32/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/32x32/Makefile" ;;
-    "data/icons/32x32/status/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/32x32/status/Makefile" ;;
     "data/icons/32x32/actions/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/32x32/actions/Makefile" ;;
-    "data/icons/48x48/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/48x48/Makefile" ;;
-    "data/icons/48x48/status/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/48x48/status/Makefile" ;;
     "data/icons/scalable/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/scalable/Makefile" ;;
-    "data/icons/scalable/status/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/scalable/status/Makefile" ;;
     "data/icons/scalable/actions/Makefile") CONFIG_FILES="$CONFIG_FILES data/icons/scalable/actions/Makefile" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
     "po/stamp-it") CONFIG_COMMANDS="$CONFIG_COMMANDS po/stamp-it" ;;
