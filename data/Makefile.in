@@ -218,15 +218,7 @@ SESSIONSERVICE_CFLAGS = @SESSIONSERVICE_CFLAGS@
 SESSIONSERVICE_LIBS = @SESSIONSERVICE_LIBS@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
-STATUSERVICE_CFLAGS = @STATUSERVICE_CFLAGS@
-STATUSERVICE_LIBS = @STATUSERVICE_LIBS@
-STATUSSERVICE_CFLAGS = @STATUSSERVICE_CFLAGS@
-STATUSSERVICE_LIBS = @STATUSSERVICE_LIBS@
 STRIP = @STRIP@
-USERSERVICE_CFLAGS = @USERSERVICE_CFLAGS@
-USERSERVICE_LIBS = @USERSERVICE_LIBS@
-USERSSERVICE_CFLAGS = @USERSSERVICE_CFLAGS@
-USERSSERVICE_LIBS = @USERSSERVICE_LIBS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
@@ -284,8 +276,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = icons
 dbus_servicesdir = $(DBUSSERVICEDIR)
-service_in_files = indicator-status.service.in \
-                    indicator-users.service.in \
+service_in_files = indicator-users.service.in \
                     indicator-session.service.in
 
 dbus_services_DATA = $(service_in_files:.service.in=.service)
