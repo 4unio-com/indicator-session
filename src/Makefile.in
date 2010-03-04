@@ -35,7 +35,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-libexec_PROGRAMS = indicator-session-service$(EXEEXT)
+libexec_PROGRAMS = indicator-session-service$(EXEEXT) \
+	gtk-logout-helper$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -81,6 +82,17 @@ libsession_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libsession_la_CFLAGS) \
 	$(CFLAGS) $(libsession_la_LDFLAGS) $(LDFLAGS) -o $@
 PROGRAMS = $(libexec_PROGRAMS)
+am_gtk_logout_helper_OBJECTS =  \
+	gtk_logout_helper-gtk-logout-helper.$(OBJEXT) \
+	gtk_logout_helper-gconf-helper.$(OBJEXT) \
+	gtk_logout_helper-dialog.$(OBJEXT)
+gtk_logout_helper_OBJECTS = $(am_gtk_logout_helper_OBJECTS)
+gtk_logout_helper_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+gtk_logout_helper_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(gtk_logout_helper_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am_indicator_session_service_OBJECTS =  \
 	indicator_session_service-lock-helper.$(OBJEXT) \
 	indicator_session_service-session-service.$(OBJEXT) \
@@ -121,51 +133,13 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(libsession_la_SOURCES) \
+SOURCES = $(libsession_la_SOURCES) $(gtk_logout_helper_SOURCES) \
 	$(indicator_session_service_SOURCES)
-DIST_SOURCES = $(libsession_la_SOURCES) \
+DIST_SOURCES = $(libsession_la_SOURCES) $(gtk_logout_helper_SOURCES) \
 	$(indicator_session_service_SOURCES)
-RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
-	html-recursive info-recursive install-data-recursive \
-	install-dvi-recursive install-exec-recursive \
-	install-html-recursive install-info-recursive \
-	install-pdf-recursive install-ps-recursive install-recursive \
-	installcheck-recursive installdirs-recursive pdf-recursive \
-	ps-recursive uninstall-recursive
-RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
-  distclean-recursive maintainer-clean-recursive
-AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
-	$(RECURSIVE_CLEAN_TARGETS:-recursive=) tags TAGS ctags CTAGS \
-	distdir
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-am__relativize = \
-  dir0=`pwd`; \
-  sed_first='s,^\([^/]*\)/.*$$,\1,'; \
-  sed_rest='s,^[^/]*/*,,'; \
-  sed_last='s,^.*/\([^/]*\)$$,\1,'; \
-  sed_butlast='s,/*[^/]*$$,,'; \
-  while test -n "$$dir1"; do \
-    first=`echo "$$dir1" | sed -e "$$sed_first"`; \
-    if test "$$first" != "."; then \
-      if test "$$first" = ".."; then \
-        dir2=`echo "$$dir0" | sed -e "$$sed_last"`/"$$dir2"; \
-        dir0=`echo "$$dir0" | sed -e "$$sed_butlast"`; \
-      else \
-        first2=`echo "$$dir2" | sed -e "$$sed_first"`; \
-        if test "$$first2" = "$$first"; then \
-          dir2=`echo "$$dir2" | sed -e "$$sed_rest"`; \
-        else \
-          dir2="../$$dir2"; \
-        fi; \
-        dir0="$$dir0"/"$$first"; \
-      fi; \
-    fi; \
-    dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
-  done; \
-  reldir="$$dir2"
 ACLOCAL = @ACLOCAL@
 ALL_LINGUAS = @ALL_LINGUAS@
 AMTAR = @AMTAR@
@@ -320,7 +294,6 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = gtk-dialog
 
 ###################
 # Indicator Stuff
@@ -345,7 +318,7 @@ indicator_session_service_SOURCES = \
 	lock-helper.h \
 	session-service.c \
 	dbusmenu-shared.h \
-	gtk-dialog/gconf-helper.c \
+	gconf-helper.c \
 	users-service-dbus.h \
 	users-service-dbus.c \
 	users-service-marshal.c
@@ -353,15 +326,40 @@ indicator_session_service_SOURCES = \
 indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS) $(GCONF_CFLAGS) -DLIBEXECDIR=\"$(libexecdir)\" -Wall -Werror
 indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS) $(GCONF_LIBS)
 
+#################
+# GTK Logout Stuff
+#################
+gtk_logout_helper_SOURCES = \
+	gtk-logout-helper.c \
+	gconf-helper.c \
+	gconf-helper.h \
+	dialog.c \
+	dialog.h
+
+gtk_logout_helper_CFLAGS = \
+	$(SESSIONSERVICE_CFLAGS) \
+	$(GTKLOGOUTHELPER_CFLAGS) \
+	$(GCONF_CFLAGS) \
+	-Wall -Werror \
+	-DINDICATOR_ICONS_DIR="\"$(INDICATORICONSDIR)\""
+
+gtk_logout_helper_LDADD = \
+	$(SESSIONSERVICE_LIBS) \
+	$(GTKLOGOUTHELPER_LIBS) \
+	$(GCONF_LIBS)
+
+
 ###############
 # Other Stuff
 ###############
 BUILT_SOURCES = \
+	consolekit-manager-client.h \
 	users-service-client.h \
 	users-service-marshal.h \
 	users-service-marshal.c
 
 EXTRA_DIST = \
+	consolekit-manager.xml \
 	users-service.xml \
 	users-service.list
 
@@ -369,7 +367,7 @@ CLEANFILES = \
 	$(BUILT_SOURCES)
 
 all: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
@@ -479,6 +477,9 @@ clean-libexecPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+gtk-logout-helper$(EXEEXT): $(gtk_logout_helper_OBJECTS) $(gtk_logout_helper_DEPENDENCIES) 
+	@rm -f gtk-logout-helper$(EXEEXT)
+	$(AM_V_CCLD)$(gtk_logout_helper_LINK) $(gtk_logout_helper_OBJECTS) $(gtk_logout_helper_LDADD) $(LIBS)
 indicator-session-service$(EXEEXT): $(indicator_session_service_OBJECTS) $(indicator_session_service_DEPENDENCIES) 
 	@rm -f indicator-session-service$(EXEEXT)
 	$(AM_V_CCLD)$(indicator_session_service_LINK) $(indicator_session_service_OBJECTS) $(indicator_session_service_LDADD) $(LIBS)
@@ -489,6 +490,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-dialog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-gconf-helper.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-gconf-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-lock-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-service.Po@am__quote@
@@ -528,6 +532,54 @@ libsession_la-indicator-session.lo: indicator-session.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsession_la_CFLAGS) $(CFLAGS) -c -o libsession_la-indicator-session.lo `test -f 'indicator-session.c' || echo '$(srcdir)/'`indicator-session.c
 
+gtk_logout_helper-gtk-logout-helper.o: gtk-logout-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gtk-logout-helper.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo -c -o gtk_logout_helper-gtk-logout-helper.o `test -f 'gtk-logout-helper.c' || echo '$(srcdir)/'`gtk-logout-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gtk-logout-helper.c' object='gtk_logout_helper-gtk-logout-helper.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-gtk-logout-helper.o `test -f 'gtk-logout-helper.c' || echo '$(srcdir)/'`gtk-logout-helper.c
+
+gtk_logout_helper-gtk-logout-helper.obj: gtk-logout-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gtk-logout-helper.obj -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo -c -o gtk_logout_helper-gtk-logout-helper.obj `if test -f 'gtk-logout-helper.c'; then $(CYGPATH_W) 'gtk-logout-helper.c'; else $(CYGPATH_W) '$(srcdir)/gtk-logout-helper.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gtk-logout-helper.c' object='gtk_logout_helper-gtk-logout-helper.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-gtk-logout-helper.obj `if test -f 'gtk-logout-helper.c'; then $(CYGPATH_W) 'gtk-logout-helper.c'; else $(CYGPATH_W) '$(srcdir)/gtk-logout-helper.c'; fi`
+
+gtk_logout_helper-gconf-helper.o: gconf-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gconf-helper.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gconf-helper.Tpo -c -o gtk_logout_helper-gconf-helper.o `test -f 'gconf-helper.c' || echo '$(srcdir)/'`gconf-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-gconf-helper.Tpo $(DEPDIR)/gtk_logout_helper-gconf-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gconf-helper.c' object='gtk_logout_helper-gconf-helper.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-gconf-helper.o `test -f 'gconf-helper.c' || echo '$(srcdir)/'`gconf-helper.c
+
+gtk_logout_helper-gconf-helper.obj: gconf-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gconf-helper.obj -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gconf-helper.Tpo -c -o gtk_logout_helper-gconf-helper.obj `if test -f 'gconf-helper.c'; then $(CYGPATH_W) 'gconf-helper.c'; else $(CYGPATH_W) '$(srcdir)/gconf-helper.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-gconf-helper.Tpo $(DEPDIR)/gtk_logout_helper-gconf-helper.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gconf-helper.c' object='gtk_logout_helper-gconf-helper.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-gconf-helper.obj `if test -f 'gconf-helper.c'; then $(CYGPATH_W) 'gconf-helper.c'; else $(CYGPATH_W) '$(srcdir)/gconf-helper.c'; fi`
+
+gtk_logout_helper-dialog.o: dialog.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-dialog.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-dialog.Tpo -c -o gtk_logout_helper-dialog.o `test -f 'dialog.c' || echo '$(srcdir)/'`dialog.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-dialog.Tpo $(DEPDIR)/gtk_logout_helper-dialog.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dialog.c' object='gtk_logout_helper-dialog.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-dialog.o `test -f 'dialog.c' || echo '$(srcdir)/'`dialog.c
+
+gtk_logout_helper-dialog.obj: dialog.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-dialog.obj -MD -MP -MF $(DEPDIR)/gtk_logout_helper-dialog.Tpo -c -o gtk_logout_helper-dialog.obj `if test -f 'dialog.c'; then $(CYGPATH_W) 'dialog.c'; else $(CYGPATH_W) '$(srcdir)/dialog.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-dialog.Tpo $(DEPDIR)/gtk_logout_helper-dialog.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dialog.c' object='gtk_logout_helper-dialog.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-dialog.obj `if test -f 'dialog.c'; then $(CYGPATH_W) 'dialog.c'; else $(CYGPATH_W) '$(srcdir)/dialog.c'; fi`
+
 indicator_session_service-lock-helper.o: lock-helper.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-lock-helper.o -MD -MP -MF $(DEPDIR)/indicator_session_service-lock-helper.Tpo -c -o indicator_session_service-lock-helper.o `test -f 'lock-helper.c' || echo '$(srcdir)/'`lock-helper.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-lock-helper.Tpo $(DEPDIR)/indicator_session_service-lock-helper.Po
@@ -560,21 +612,21 @@ indicator_session_service-session-service.obj: session-service.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-session-service.obj `if test -f 'session-service.c'; then $(CYGPATH_W) 'session-service.c'; else $(CYGPATH_W) '$(srcdir)/session-service.c'; fi`
 
-indicator_session_service-gconf-helper.o: gtk-dialog/gconf-helper.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-gconf-helper.o -MD -MP -MF $(DEPDIR)/indicator_session_service-gconf-helper.Tpo -c -o indicator_session_service-gconf-helper.o `test -f 'gtk-dialog/gconf-helper.c' || echo '$(srcdir)/'`gtk-dialog/gconf-helper.c
+indicator_session_service-gconf-helper.o: gconf-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-gconf-helper.o -MD -MP -MF $(DEPDIR)/indicator_session_service-gconf-helper.Tpo -c -o indicator_session_service-gconf-helper.o `test -f 'gconf-helper.c' || echo '$(srcdir)/'`gconf-helper.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-gconf-helper.Tpo $(DEPDIR)/indicator_session_service-gconf-helper.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gtk-dialog/gconf-helper.c' object='indicator_session_service-gconf-helper.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gconf-helper.c' object='indicator_session_service-gconf-helper.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-gconf-helper.o `test -f 'gtk-dialog/gconf-helper.c' || echo '$(srcdir)/'`gtk-dialog/gconf-helper.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-gconf-helper.o `test -f 'gconf-helper.c' || echo '$(srcdir)/'`gconf-helper.c
 
-indicator_session_service-gconf-helper.obj: gtk-dialog/gconf-helper.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-gconf-helper.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-gconf-helper.Tpo -c -o indicator_session_service-gconf-helper.obj `if test -f 'gtk-dialog/gconf-helper.c'; then $(CYGPATH_W) 'gtk-dialog/gconf-helper.c'; else $(CYGPATH_W) '$(srcdir)/gtk-dialog/gconf-helper.c'; fi`
+indicator_session_service-gconf-helper.obj: gconf-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-gconf-helper.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-gconf-helper.Tpo -c -o indicator_session_service-gconf-helper.obj `if test -f 'gconf-helper.c'; then $(CYGPATH_W) 'gconf-helper.c'; else $(CYGPATH_W) '$(srcdir)/gconf-helper.c'; fi`
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-gconf-helper.Tpo $(DEPDIR)/indicator_session_service-gconf-helper.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gtk-dialog/gconf-helper.c' object='indicator_session_service-gconf-helper.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gconf-helper.c' object='indicator_session_service-gconf-helper.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-gconf-helper.obj `if test -f 'gtk-dialog/gconf-helper.c'; then $(CYGPATH_W) 'gtk-dialog/gconf-helper.c'; else $(CYGPATH_W) '$(srcdir)/gtk-dialog/gconf-helper.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-gconf-helper.obj `if test -f 'gconf-helper.c'; then $(CYGPATH_W) 'gconf-helper.c'; else $(CYGPATH_W) '$(srcdir)/gconf-helper.c'; fi`
 
 indicator_session_service-users-service-dbus.o: users-service-dbus.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-users-service-dbus.o -MD -MP -MF $(DEPDIR)/indicator_session_service-users-service-dbus.Tpo -c -o indicator_session_service-users-service-dbus.o `test -f 'users-service-dbus.c' || echo '$(srcdir)/'`users-service-dbus.c
@@ -614,76 +666,6 @@ mostlyclean-libtool:
 clean-libtool:
 	-rm -rf .libs _libs
 
-# This directory's subdirectories are mostly independent; you can cd
-# into them and run `make' without going through this Makefile.
-# To change the values of `make' variables: instead of editing Makefiles,
-# (1) if the variable is set in `config.status', edit `config.status'
-#     (which will cause the Makefiles to be regenerated when you run `make');
-# (2) otherwise, pass the desired values on the `make' command line.
-$(RECURSIVE_TARGETS):
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	dot_seen=no; \
-	target=`echo $@ | sed s/-recursive//`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    dot_seen=yes; \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	  || eval $$failcom; \
-	done; \
-	if test "$$dot_seen" = "no"; then \
-	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
-	fi; test -z "$$fail"
-
-$(RECURSIVE_CLEAN_TARGETS):
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	dot_seen=no; \
-	case "$@" in \
-	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
-	  *) list='$(SUBDIRS)' ;; \
-	esac; \
-	rev=''; for subdir in $$list; do \
-	  if test "$$subdir" = "."; then :; else \
-	    rev="$$subdir $$rev"; \
-	  fi; \
-	done; \
-	rev="$$rev ."; \
-	target=`echo $@ | sed s/-recursive//`; \
-	for subdir in $$rev; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	  || eval $$failcom; \
-	done && test -z "$$fail"
-tags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
-	done
-ctags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) ctags); \
-	done
-
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
@@ -694,23 +676,10 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	mkid -fID $$unique
 tags: TAGS
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	set x; \
 	here=`pwd`; \
-	if ($(ETAGS) --etags-include --version) >/dev/null 2>&1; then \
-	  include_option=--etags-include; \
-	  empty_fix=.; \
-	else \
-	  include_option=--include; \
-	  empty_fix=; \
-	fi; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test ! -f $$subdir/TAGS || \
-	      set "$$@" "$$include_option=$$here/$$subdir/TAGS"; \
-	  fi; \
-	done; \
 	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
@@ -729,7 +698,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	  fi; \
 	fi
 ctags: CTAGS
-CTAGS: ctags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+CTAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
@@ -779,53 +748,24 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test -d "$(distdir)/$$subdir" \
-	    || $(MKDIR_P) "$(distdir)/$$subdir" \
-	    || exit 1; \
-	  fi; \
-	done
-	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    dir1=$$subdir; dir2="$(distdir)/$$subdir"; \
-	    $(am__relativize); \
-	    new_distdir=$$reldir; \
-	    dir1=$$subdir; dir2="$(top_distdir)"; \
-	    $(am__relativize); \
-	    new_top_distdir=$$reldir; \
-	    echo " (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir="$$new_top_distdir" distdir="$$new_distdir" \\"; \
-	    echo "     am__remove_distdir=: am__skip_length_check=: am__skip_mode_fix=: distdir)"; \
-	    ($(am__cd) $$subdir && \
-	      $(MAKE) $(AM_MAKEFLAGS) \
-	        top_distdir="$$new_top_distdir" \
-	        distdir="$$new_distdir" \
-		am__remove_distdir=: \
-		am__skip_length_check=: \
-		am__skip_mode_fix=: \
-	        distdir) \
-	      || exit 1; \
-	  fi; \
-	done
 check-am: all-am
 check: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) check-recursive
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS)
-installdirs: installdirs-recursive
-installdirs-am:
+installdirs:
 	for dir in "$(DESTDIR)$(sessionlibdir)" "$(DESTDIR)$(libexecdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) install-recursive
-install-exec: install-exec-recursive
-install-data: install-data-recursive
-uninstall: uninstall-recursive
+	$(MAKE) $(AM_MAKEFLAGS) install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
-installcheck: installcheck-recursive
+installcheck: installcheck-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
 	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
@@ -844,100 +784,103 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-clean: clean-recursive
+clean: clean-am
 
 clean-am: clean-generic clean-libexecPROGRAMS clean-libtool \
 	clean-sessionlibLTLIBRARIES mostlyclean-am
 
-distclean: distclean-recursive
+distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
 
-dvi: dvi-recursive
+dvi: dvi-am
 
 dvi-am:
 
-html: html-recursive
+html: html-am
 
 html-am:
 
-info: info-recursive
+info: info-am
 
 info-am:
 
 install-data-am: install-sessionlibLTLIBRARIES
 
-install-dvi: install-dvi-recursive
+install-dvi: install-dvi-am
 
 install-dvi-am:
 
 install-exec-am: install-libexecPROGRAMS
 
-install-html: install-html-recursive
+install-html: install-html-am
 
 install-html-am:
 
-install-info: install-info-recursive
+install-info: install-info-am
 
 install-info-am:
 
 install-man:
 
-install-pdf: install-pdf-recursive
+install-pdf: install-pdf-am
 
 install-pdf-am:
 
-install-ps: install-ps-recursive
+install-ps: install-ps-am
 
 install-ps-am:
 
 installcheck-am:
 
-maintainer-clean: maintainer-clean-recursive
+maintainer-clean: maintainer-clean-am
 	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
-mostlyclean: mostlyclean-recursive
+mostlyclean: mostlyclean-am
 
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-pdf: pdf-recursive
+pdf: pdf-am
 
 pdf-am:
 
-ps: ps-recursive
+ps: ps-am
 
 ps-am:
 
 uninstall-am: uninstall-libexecPROGRAMS \
 	uninstall-sessionlibLTLIBRARIES
 
-.MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) all check \
-	ctags-recursive install install-am install-strip \
-	tags-recursive
+.MAKE: all check install install-am install-strip
 
-.PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
-	all all-am check check-am clean clean-generic \
+.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
 	clean-libexecPROGRAMS clean-libtool \
-	clean-sessionlibLTLIBRARIES ctags ctags-recursive distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am \
-	install-libexecPROGRAMS install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-sessionlibLTLIBRARIES \
-	install-strip installcheck installcheck-am installdirs \
-	installdirs-am maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-libexecPROGRAMS \
+	clean-sessionlibLTLIBRARIES ctags distclean distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-libexecPROGRAMS \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-sessionlibLTLIBRARIES install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-libexecPROGRAMS \
 	uninstall-sessionlibLTLIBRARIES
 
+
+consolekit-manager-client.h: $(srcdir)/consolekit-manager.xml
+	dbus-binding-tool \
+		--prefix=_consolekit_manager_client \
+		--mode=glib-client \
+		--output=consolekit-manager-client.h \
+		$(srcdir)/consolekit-manager.xml
 
 users-service-client.h: $(srcdir)/users-service.xml
 	dbus-binding-tool \
