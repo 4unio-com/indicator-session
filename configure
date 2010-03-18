@@ -2866,7 +2866,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=indicator-session
- VERSION=0.2.5
+ VERSION=0.2.6
 
 
 cat >>confdefs.h <<_ACEOF
@@ -11965,7 +11965,7 @@ AM_BACKSLASH='\'
 ###########################
 
 GTK_REQUIRED_VERSION=2.12
-INDICATOR_REQUIRED_VERSION=0.3.0
+INDICATOR_REQUIRED_VERSION=0.3.5
 DBUSMENUGTK_REQUIRED_VERSION=0.2.2
 POLKIT_REQUIRED_VERSION=0.92
 
@@ -12209,13 +12209,16 @@ if test -n "$PKG_CONFIG"; then
     else
         if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION
+                                  gio-unix-2.0
                                   indicator >= \$INDICATOR_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  gio-unix-2.0
                                   indicator >= $INDICATOR_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_SESSIONSERVICE_CFLAGS=`$PKG_CONFIG --cflags "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  gio-unix-2.0
                                   indicator >= $INDICATOR_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
@@ -12230,13 +12233,16 @@ if test -n "$PKG_CONFIG"; then
     else
         if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib >= \$DBUSMENUGLIB_REQUIRED_VERSION
+                                  gio-unix-2.0
                                   indicator >= \$INDICATOR_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  gio-unix-2.0
                                   indicator >= $INDICATOR_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_SESSIONSERVICE_LIBS=`$PKG_CONFIG --libs "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  gio-unix-2.0
                                   indicator >= $INDICATOR_REQUIRED_VERSION" 2>/dev/null`
 else
   pkg_failed=yes
@@ -12257,15 +12263,18 @@ else
 fi
         if test $_pkg_short_errors_supported = yes; then
 	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  gio-unix-2.0
                                   indicator >= $INDICATOR_REQUIRED_VERSION"`
         else
 	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  gio-unix-2.0
                                   indicator >= $INDICATOR_REQUIRED_VERSION"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$SESSIONSERVICE_PKG_ERRORS" >&5
 
 	as_fn_error "Package requirements (dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  gio-unix-2.0
                                   indicator >= $INDICATOR_REQUIRED_VERSION) were not met:
 
 $SESSIONSERVICE_PKG_ERRORS
