@@ -1,3 +1,19 @@
+indicator-session (0.2.7-0ubuntu1) lucid; urgency=low
+
+  * debian/control
+    - Dropped Vcs-Bzr and Vcs-Browser
+
+  [Ted Gould]
+  * Upstream release 0.2.7
+    * Adding a switch for translators if the "Switch From"
+      translation doesn't make sense (LP: #545893)
+    * Scale avatar icons to menu size (LP: #542505)
+    * Fix strings to have all be "Shut Down" (LP: #545578)
+  * Remove debian/patches/restore_lock_screen.patch added by
+    downstream.
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Mar 2010 11:23:13 -0400
+
 indicator-session (0.2.6-0ubuntu2) lucid; urgency=low
 
   * debian/control: 
