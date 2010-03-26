@@ -1,3 +1,12 @@
+indicator-session (0.2.7-0ubuntu3) lucid; urgency=low
+
+  * debian/control
+    - Changed depends on indicator-applet to recommends 
+  * debian/patches/suspend_string.patch
+    - Change the string back to "Suspend"
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 26 Mar 2010 11:39:35 -0400
+
 indicator-session (0.2.7-0ubuntu2) lucid; urgency=low
 
   * debian/patches/restore_lock_screen.patch
