@@ -30,6 +30,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gio/gio.h>
 #include <gio/gdesktopappinfo.h>
 
+#include <gdk/gdk.h>
+
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
 
@@ -769,6 +771,7 @@ restart_dir_changed (void)
 			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart to Complete Update\342\200\246"));
 		}
 		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_ICON, "system-restart-panel");
+		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_FG_COLOUR, GdkColor.red);
 		if (session_dbus != NULL) {
 			session_dbus_set_name(session_dbus, ICON_RESTART);
 		}

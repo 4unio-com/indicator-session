@@ -50,6 +50,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RESTART_ITEM_TYPE         "x-canonical-restart-item"
 #define RESTART_ITEM_LABEL        "restart-label"
 #define RESTART_ITEM_ICON         "restart-icon"
+#define RESTART_ITEM_FG_COLOUR	  "restart-fgcolour"
 
 #define ICON_DEFAULT              "system-shutdown-panel"
 #define ICON_RESTART              "system-shutdown-panel-restart"
