@@ -1,4 +1,4 @@
-indicator-session (0.2.10-0ubuntu1~ppa1) maverick; urgency=low
+indicator-session (0.2.10-0ubuntu2~ppa1) maverick; urgency=low
 
   * debian/patches/use-xfce4-session-logout.patch: Use xfce4-session-logout to
     implement the logout action.
