@@ -1,0 +1,37 @@
+## Description: add some description
+## Origin/Author: add some origin or author
+## Bug: bug URL
+diff -Nur -x '*.orig' -x '*~' ubuntu//src/gtk-logout-helper.c ubuntu.new//src/gtk-logout-helper.c
+--- ubuntu//src/gtk-logout-helper.c	2010-09-17 14:07:05.000000000 +0200
++++ ubuntu.new//src/gtk-logout-helper.c	2010-09-17 14:08:05.093456998 +0200
+@@ -76,6 +76,17 @@
+ }
+ 
+ static void
++xfce4_logout ()
++{
++	GError * error = NULL;
++	g_debug("Calling xfce4-session-logout");
++	if (!g_spawn_command_line_async("xfce4-session-logout --logout", &error)) {
++		g_warning("Unable to logout: %s", error->message);
++		g_error_free(error);
++	}
++}
++
++static void
+ session_action (LogoutDialogType action)
+ {
+ 	DBusGConnection * sbus;
+@@ -97,7 +108,11 @@
+ 		g_warning("Unable to get DBus proxy to SessionManager interface: %s", error->message);
+ 		g_error_free(error);
+ 
+-		consolekit_fallback(action);
++		if (action == LOGOUT_DIALOG_TYPE_LOG_OUT) {
++			xfce4_logout();
++		} else {
++			consolekit_fallback(action);
++		}
+ 		return;
+ 	}		
+ 	
