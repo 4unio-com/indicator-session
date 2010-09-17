@@ -1,0 +1,37 @@
+## Description: add some description
+## Origin/Author: add some origin or author
+## Bug: bug URL
+diff -Nur -x '*.orig' -x '*~' ubuntu//src/lock-helper.c ubuntu.new//src/lock-helper.c
+--- ubuntu//src/lock-helper.c	2010-09-17 15:22:28.000000000 +0200
++++ ubuntu.new//src/lock-helper.c	2010-09-17 15:23:00.872975003 +0200
+@@ -19,6 +19,7 @@
+ with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
++#if 0
+ #include <glib/gi18n.h>
+ #include <gconf/gconf-client.h>
+ #include <dbus/dbus-glib.h>
+@@ -229,4 +230,22 @@
+ 
+ 	return FALSE;
+ }
++#endif
+ 
++#include "lock-helper.h"
++
++void screensaver_throttle (gchar * reason)
++{}
++
++void screensaver_unthrottle (void)
++{}
++
++void lock_screen (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
++{
++	g_spawn_command_line_async ("xflock4", NULL);
++}
++
++gboolean lock_screen_setup (gpointer data)
++{
++	return TRUE;
++}

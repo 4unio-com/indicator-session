@@ -1,3 +1,10 @@
+indicator-session (0.2.10-0ubuntu2~ppa2) maverick; urgency=low
+
+  * debian/patches/use-xflock4-to-lock.patch: Use xflock4 to implement the
+    lock action.
+
+ -- Aurélien Gâteau <aurelien.gateau@canonical.com>  Fri, 17 Sep 2010 15:23:02 +0200
+
 indicator-session (0.2.10-0ubuntu2~ppa1) maverick; urgency=low
 
   * debian/patches/use-xfce4-session-logout.patch: Use xfce4-session-logout to
