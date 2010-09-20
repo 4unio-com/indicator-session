@@ -12,7 +12,7 @@ diff -Nur -x '*.orig' -x '*~' ubuntu//src/gtk-logout-helper.c ubuntu.new//src/gt
 +{
 +	GError * error = NULL;
 +	g_debug("Calling xfce4-session-logout");
-+	if (!g_spawn_command_line_async("xfce4-session-logout --logout", &error)) {
++	if (!g_spawn_command_line_async("xfce4-session-logout --logout --fast", &error)) {
 +		g_warning("Unable to logout: %s", error->message);
 +		g_error_free(error);
 +	}
