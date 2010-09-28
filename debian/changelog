@@ -1,3 +1,9 @@
+indicator-session (0.2.10-0ubuntu2watuppa2) maverick; urgency=low
+
+  * Merged with 0.2.10-0ubuntu2.
+
+ -- Aurélien Gâteau <aurelien.gateau@canonical.com>  Tue, 28 Sep 2010 09:45:23 +0200
+
 indicator-session (0.2.10-0ubuntu2watuppa1) maverick; urgency=low
 
   * debian/control:
