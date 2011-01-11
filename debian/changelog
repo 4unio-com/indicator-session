@@ -1,3 +1,9 @@
+indicator-session (0.2.10-0ubuntu5~ppa2) natty; urgency=low
+
+  * rebuild
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 11 Jan 2011 14:26:18 -0600
+
 indicator-session (0.2.10-0ubuntu5~ppa1) natty; urgency=low
 
   * Merged gdbus and dbusmenu-glib-0.4 port
