@@ -12,7 +12,8 @@ Build-Depends: debhelper (>= 5.0),
                libdbusmenu-glib-dev (>= 0.3.90),
                libdbusmenu-gtk-dev (>= 0.3.90),
                libpolkit-gobject-1-dev,
-               intltool
+               intltool,
+               dh-autoreconf
 Standards-Version: 3.8.2
 Homepage: https://launchpad.net/indicator-session
 Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-session/ubuntu

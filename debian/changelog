@@ -1,3 +1,13 @@
+indicator-session (0.2.10-0ubuntu5~ppa1) natty; urgency=low
+
+  * Merged gdbus and dbusmenu-glib-0.4 port
+  * debian/control
+    - Added build depends for dh-autoreconf
+  * debian/rules
+    - Added autoreconf.mk
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 11 Jan 2011 12:39:35 -0600
+
 indicator-session (0.2.10-0ubuntu4) natty; urgency=low
 
   * debian/control
