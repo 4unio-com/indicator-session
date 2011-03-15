@@ -415,18 +415,25 @@ activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_da
 {
 	GError * error = NULL;
 
-	lock_if_possible();
-
 	if (dbusmenu_menuitem_property_get_bool(mi, USER_ITEM_PROP_LOGGED_IN)) {
+		lock_if_possible();
 		if (users_service_dbus_activate_guest_session(USERS_SERVICE_DBUS(user_data))) {
 			return;
 		}
 		g_warning("Unable to activate guest session, falling back to command line activation.");
 	}
 
-	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER " --no-lock", &error)) {
-		g_warning("Unable to start guest session: %s", error->message);
-		g_error_free(error);
+	ensure_gconf_client ();
+	if (!gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL)) {
+		if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER, &error)) {
+			g_warning("Unable to start guest session: %s", error->message);
+			g_error_free(error);
+		}
+	} else {
+		if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER " --no-lock", &error)) {
+			g_warning("Unable to start guest session: %s", error->message);
+			g_error_free(error);
+		}
 	}
 
 	return;
