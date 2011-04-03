@@ -1,0 +1,210 @@
+# Hebrew translations for PACKAGE package.
+# Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Canonical OEM, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: indicator-session\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-17 10:48-0500\n"
+"PO-Revision-Date: 2010-03-12 03:27+0000\n"
+"Last-Translator: Sebastien Bacher <seb128@ubuntu.com>\n"
+"Language-Team: Hebrew\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-03-17 19:48+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../data/indicator-session.schemas.in.h:1
+msgid "Makes it so that the logout button doesn't show in the session menu."
+msgstr ""
+
+#: ../data/indicator-session.schemas.in.h:2
+msgid "Remove the Log Out item from the session menu"
+msgstr ""
+
+#: ../data/indicator-session.schemas.in.h:3
+msgid "Suppress the dialog to confirm logout, restart and shutdown action"
+msgstr "העלם את תיבת הדו-שיח כדי לצאת, להפעיל מחדש או לכבות את הפעולה"
+
+#: ../data/indicator-session.schemas.in.h:4
+msgid ""
+"Whether or not to show confirmation dialogs for logout, restart and shutdown "
+"actions."
+msgstr ""
+"האם להציג או לא להציג תיבות דו-שיח לאישור יציאה, הפעלה מחדש או כיבוי פעולות."
+
+#: ../src/gconf-helper.c:63 ../src/session-service.c:613
+msgid "Log Out"
+msgstr "ניתוק"
+
+#: ../src/gconf-helper.c:64 ../src/session-service.c:638
+#: ../src/session-service.c:722
+msgid "Restart"
+msgstr "הפעלה מחדש"
+
+#: ../src/gconf-helper.c:65 ../src/session-service.c:647
+msgid "Switch Off"
+msgstr "כיבוי"
+
+#: ../src/gconf-helper.c:67 ../src/session-service.c:615
+msgid "Log Out..."
+msgstr "ניתוק..."
+
+#: ../src/gconf-helper.c:68 ../src/session-service.c:640
+#: ../src/session-service.c:724
+msgid "Restart..."
+msgstr "הפעלה מחדש..."
+
+#: ../src/gconf-helper.c:69 ../src/session-service.c:649
+msgid "Switch Off..."
+msgstr "כיבוי..."
+
+#. LOGOUT_DIALOG_LOGOUT,
+#: ../src/dialog.c:35
+msgctxt "title"
+msgid "Log Out"
+msgstr "יציאה"
+
+#. LOGOUT_DIALOG_RESTART,
+#: ../src/dialog.c:36
+msgctxt "title"
+msgid "Restart"
+msgstr "הפעלה מחדש"
+
+#. LOGOUT_DIALOG_SHUTDOWN,
+#: ../src/dialog.c:37
+msgctxt "title"
+msgid "Switch Off"
+msgstr "כיבוי"
+
+#. LOGOUT_DIALOG_LOGOUT,
+#: ../src/dialog.c:41
+msgid ""
+"Are you sure you want to close all programs and log out of the computer?"
+msgstr "האם ברצונך לסגור את כל התכניות ולהתנתק מהמחשב?"
+
+#. LOGOUT_DIALOG_RESTART,
+#: ../src/dialog.c:42
+msgid "Are you sure you want to close all programs and restart the computer?"
+msgstr "האם ברצונך לסגור את כל התכניות ולהפעיל את המחשב מחדש?"
+
+#. LOGOUT_DIALOG_SHUTDOWN,
+#: ../src/dialog.c:43
+msgid "Are you sure you want to close all programs and shut down the computer?"
+msgstr "האם לסגור את כל התכניות ולכבות את המחשב?"
+
+#. LOGOUT_DIALOG_LOGOUT,
+#: ../src/dialog.c:47
+msgctxt "button"
+msgid "Log Out"
+msgstr "יציאה"
+
+#. LOGOUT_DIALOG_RESTART,
+#: ../src/dialog.c:48
+msgctxt "button"
+msgid "Restart"
+msgstr "הפעלה מחדש"
+
+#. LOGOUT_DIALOG_SHUTDOWN,
+#: ../src/dialog.c:49
+msgctxt "button"
+msgid "Switch Off"
+msgstr "כיבוי"
+
+#. LOGOUT_DIALOG_LOGOUT,
+#: ../src/dialog.c:55
+msgctxt "button auth"
+msgid "Log Out"
+msgstr "ניתוק"
+
+#. LOGOUT_DIALOG_RESTART,
+#: ../src/dialog.c:56
+msgctxt "button auth"
+msgid "Restart..."
+msgstr "הפעלה מחדש..."
+
+#. LOGOUT_DIALOG_SHUTDOWN,
+#: ../src/dialog.c:57
+msgctxt "button auth"
+msgid "Switch Off..."
+msgstr "כיבוי..."
+
+#. TRANSLATORS: This button appears on the logout dialog when
+#. there are updates that require restart.  It will do a restart
+#. in place of a log out.
+#: ../src/dialog.c:63
+msgid "Restart Instead"
+msgstr "הפעלה מחדש במקום"
+
+#: ../src/dialog.c:64
+msgid "Restart Instead..."
+msgstr "הפעלה מחדש במקום..."
+
+#: ../src/dialog.c:65
+msgid "Some software updates won't apply until the computer next restarts."
+msgstr "כמה מעדכוני התכנה לא יחולו עד להפעלה הבאה של המחשב מחדש."
+
+#: ../src/dialog.c:217 ../src/dialog.c:222
+msgid "Cancel"
+msgstr "ביטול"
+
+#: ../src/indicator-session.c:272
+msgid "Switch User..."
+msgstr "החלפת משתמש..."
+
+#. TODO: We need some way to remove the elipsis from appearing
+#. twice in the label.  Not sure how to do that yet.
+#: ../src/indicator-session.c:301
+#, c-format
+msgid "Switch From %s..."
+msgstr "החלפה מ%s..."
+
+#: ../src/session-service.c:512
+msgid "Lock Screen"
+msgstr "נעילת המסך"
+
+#: ../src/session-service.c:535
+msgid "Guest Session"
+msgstr "הפעלת אורח"
+
+#: ../src/session-service.c:623
+msgid "Sleep"
+msgstr "מצב שינה"
+
+#: ../src/session-service.c:630
+msgid "Hibernate"
+msgstr "תרדמת"
+
+#: ../src/session-service.c:712
+msgid "Restart Required"
+msgstr "נדרשת הפעלה מחדש"
+
+#: ../src/session-service.c:714
+msgid "Restart Required..."
+msgstr "נדרשת הפעלה מחדש..."
+
+#~ msgid ""
+#~ "You recently installed updates which will only take effect after a "
+#~ "restart.  Restart to apply software updates."
+#~ msgstr ""
+#~ "התקנת לאחרונה עדכונים אשר ייכנסו לתוקף רק לאחר הפעלה מחדש.  הפעל מחדש כדי "
+#~ "לחיל עדכוני תוכנה."
+
+#~ msgid "You will be logged out in %d second."
+#~ msgid_plural "You will be logged out in %d seconds."
+#~ msgstr[0] "תנותק בעוד %d שניות."
+#~ msgstr[1] "תנותק בעוד %d שניות"
+
+#~ msgid "The computer will restart in %d second."
+#~ msgid_plural "The computer will restart in %d seconds."
+#~ msgstr[0] "המחשב יופעל מחדש בעוד %d שניות."
+#~ msgstr[1] "המחשב יופעל מחדש בעוד %d שניות."
+
+#~ msgid "The computer will switch off in %d second."
+#~ msgid_plural "The computer will switch off in %d seconds."
+#~ msgstr[0] "המחשב ייכבה בעוד %d שניות."
+#~ msgstr[1] "המחשב ייכבה בעוד %d שניות."

@@ -22,6 +22,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <libdbusmenu-glib/menuitem.h>
 
 G_BEGIN_DECLS
 
@@ -47,6 +48,11 @@ struct _UserData
 
   GList   *sessions;
 
+  /* Whether the real name here conflicts with another in the system */
+  gboolean real_name_conflict;
+  /* The menuitem representing this user if there is one. */
+  DbusmenuMenuitem * menuitem;
+
   UsersServiceDbus *service;
 };
 
@@ -54,7 +60,7 @@ struct _UserData
  *       got some gdm issues worked out.
  */
 #define MINIMUM_USERS           1
-#define MAXIMUM_USERS           1
+#define MAXIMUM_USERS           7
 
 struct _UsersServiceDbus {
   GObject parent;
@@ -78,6 +84,9 @@ GList    *users_service_dbus_get_user_list         (UsersServiceDbus *self);
 gboolean  users_service_dbus_can_activate_session  (UsersServiceDbus *self);
 gboolean  users_service_dbus_activate_user_session (UsersServiceDbus *self,
                                                     UserData         *user);
+gboolean  users_service_dbus_activate_guest_session (UsersServiceDbus *self);
+void      users_service_dbus_set_guest_item        (UsersServiceDbus * self,
+                                                    DbusmenuMenuitem * mi);
 
 G_END_DECLS
 

@@ -20,548 +20,526 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
+#include <glib.h>
+#include <glib-object.h>
+#include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
-#include <libdbusmenu-gtk/client.h>
-
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-bindings.h>
+#include <gio/gio.h>
+#include <libdbusmenu-gtk/menu.h>
 
 #include <libindicator/indicator.h>
-INDICATOR_SET_VERSION
-INDICATOR_SET_NAME("users-status-session")
+#include <libindicator/indicator-object.h>
+#include <libindicator/indicator-service-manager.h>
+#include <libindicator/indicator-image-helper.h>
 
 #include "dbus-shared-names.h"
-#include "status-service-client.h"
+#include "dbusmenu-shared.h"
 
-static DbusmenuGtkClient * status_client = NULL;
-static DbusmenuGtkClient * users_client = NULL;
-static DbusmenuGtkClient * session_client = NULL;
+#define INDICATOR_SESSION_TYPE            (indicator_session_get_type ())
+#define INDICATOR_SESSION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_SESSION_TYPE, IndicatorSession))
+#define INDICATOR_SESSION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), INDICATOR_SESSION_TYPE, IndicatorSessionClass))
+#define IS_INDICATOR_SESSION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), INDICATOR_SESSION_TYPE))
+#define IS_INDICATOR_SESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), INDICATOR_SESSION_TYPE))
+#define INDICATOR_SESSION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), INDICATOR_SESSION_TYPE, IndicatorSessionClass))
 
-static GtkMenu * main_menu = NULL;
-static GtkImage * status_image = NULL;
+typedef struct _IndicatorSession      IndicatorSession;
+typedef struct _IndicatorSessionClass IndicatorSessionClass;
 
-static GtkWidget * status_separator = NULL;
-static GtkWidget * users_separator = NULL;
-#define SEPARATOR_SHOWN(sep) (sep != NULL && GTK_WIDGET_VISIBLE(sep))
-static GtkWidget * loading_item = NULL;
-
-static DBusGConnection * connection = NULL;
-static DBusGProxy * proxy = NULL;
-static DBusGProxy * status_proxy = NULL;
-
-typedef enum {
-	STATUS_SECTION,
-	USERS_SECTION,
-	SESSION_SECTION,
-	END_OF_SECTIONS
-} section_t;
-
-static void child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, gpointer section);
-static guint status_menu_pos_offset (void);
-static guint users_menu_pos_offset (void);
-static guint session_menu_pos_offset (void);
-static void child_realized (DbusmenuMenuitem * child, gpointer userdata);
-static gboolean start_service (gpointer userdata);
-static void start_service_phase2 (DBusGProxy * proxy, guint status, GError * error, gpointer data);
-
-GtkLabel *
-get_label (void)
-{
-	GtkLabel * returnval = GTK_LABEL(gtk_label_new(g_get_user_name()));
-	gtk_widget_show(GTK_WIDGET(returnval));
-	return returnval;
-}
-
-GtkImage *
-get_icon (void)
-{
-	g_debug("Changing status icon: '%s'", "system-shutdown-panel");
-	status_image = GTK_IMAGE(gtk_image_new_from_icon_name("system-shutdown-panel", GTK_ICON_SIZE_MENU));
-	gtk_widget_show(GTK_WIDGET(status_image));
-	return status_image;
-}
-
-typedef struct _realized_data_t realized_data_t;
-struct _realized_data_t {
-	section_t section;
+struct _IndicatorSessionClass {
+	IndicatorObjectClass parent_class;
 };
 
-static void 
-resort_menu (void)
+struct _IndicatorSession {
+	IndicatorObject parent;
+	IndicatorServiceManager * service;
+	GtkImage * status_image;
+	DbusmenuGtkMenu * menu;
+	GCancellable * service_proxy_cancel;
+	GDBusProxy * service_proxy;
+};
+
+GType indicator_session_get_type (void);
+
+/* Indicator stuff */
+INDICATOR_SET_VERSION
+INDICATOR_SET_TYPE(INDICATOR_SESSION_TYPE)
+
+/* Prototypes */
+static GtkLabel * get_label (IndicatorObject * io);
+static GtkImage * get_icon (IndicatorObject * io);
+static GtkMenu * get_menu (IndicatorObject * io);
+static const gchar * get_accessible_desc (IndicatorObject * io);
+static gboolean build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
+static gboolean new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
+static void icon_changed (IndicatorSession * session, const gchar * icon_name);
+static void service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data);
+static gboolean build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
+static void receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name, GVariant * parameters, gpointer user_data);
+static void service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data);
+
+static void indicator_session_class_init (IndicatorSessionClass *klass);
+static void indicator_session_init       (IndicatorSession *self);
+static void indicator_session_dispose    (GObject *object);
+static void indicator_session_finalize   (GObject *object);
+
+G_DEFINE_TYPE (IndicatorSession, indicator_session, INDICATOR_OBJECT_TYPE);
+
+static void
+indicator_session_class_init (IndicatorSessionClass *klass)
 {
-	guint location = 0;
-	guint clientnum;
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	for (clientnum = 0; clientnum < 3; clientnum++) {
-		DbusmenuGtkClient * client = NULL;
-		if (clientnum == 0) client = status_client;
-		if (clientnum == 1) client = users_client;
-		if (clientnum == 2) client = session_client;
+	object_class->dispose = indicator_session_dispose;
+	object_class->finalize = indicator_session_finalize;
 
-		if (client == NULL) continue;
+	IndicatorObjectClass * io_class = INDICATOR_OBJECT_CLASS(klass);
+	io_class->get_label = get_label;
+	io_class->get_image = get_icon;
+	io_class->get_menu = get_menu;
+	io_class->get_accessible_desc = get_accessible_desc;
 
-		DbusmenuMenuitem * root = dbusmenu_client_get_root(DBUSMENU_CLIENT(client));
+	return;
+}
 
-		GList * children = dbusmenu_menuitem_get_children(root);
-		if (children == NULL) {
-			continue;
+static void
+indicator_session_init (IndicatorSession *self)
+{
+	/* Set good defaults */
+	self->service = NULL;
+	self->service_proxy_cancel = NULL;
+	self->service_proxy = NULL;
+
+	/* Now let's fire these guys up. */
+	self->service = indicator_service_manager_new_version(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_VERSION);
+	g_signal_connect(G_OBJECT(self->service), INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE, G_CALLBACK(service_connection_cb), self);
+
+	self->status_image = indicator_image_helper(ICON_DEFAULT);
+	self->menu = dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT);
+
+	DbusmenuClient * client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(self->menu));
+	dbusmenu_client_add_type_handler(client, MENU_SWITCH_TYPE, build_menu_switch);
+	dbusmenu_client_add_type_handler(client, USER_ITEM_TYPE, new_user_item);
+	dbusmenu_client_add_type_handler(client, RESTART_ITEM_TYPE, build_restart_item);
+
+	GtkAccelGroup * agroup = gtk_accel_group_new();
+	dbusmenu_gtkclient_set_accel_group(DBUSMENU_GTKCLIENT(client), agroup);
+
+	self->service_proxy_cancel = g_cancellable_new();
+
+	g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+		                  G_DBUS_PROXY_FLAGS_NONE,
+		                  NULL,
+		                  INDICATOR_SESSION_DBUS_NAME,
+		                  INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
+		                  INDICATOR_SESSION_SERVICE_DBUS_IFACE,
+		                  self->service_proxy_cancel,
+		                  service_proxy_cb,
+	                          self);
+
+	return;
+}
+
+/* Callback from trying to create the proxy for the serivce, this
+   could include starting the service.  Sometime it'll fail and
+   we'll try to start that dang service again! */
+static void
+service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
+{
+	GError * error = NULL;
+
+	IndicatorSession * self = INDICATOR_SESSION(user_data);
+	g_return_if_fail(self != NULL);
+
+	GDBusProxy * proxy = g_dbus_proxy_new_for_bus_finish(res, &error);
+
+	if (self->service_proxy_cancel != NULL) {
+		g_object_unref(self->service_proxy_cancel);
+		self->service_proxy_cancel = NULL;
+	}
+
+	if (error != NULL) {
+		g_error("Could not grab DBus proxy for %s: %s", INDICATOR_SESSION_DBUS_NAME, error->message);
+		g_error_free(error);
+		return;
+	}
+
+	/* Okay, we're good to grab the proxy at this point, we're
+	sure that it's ours. */
+	self->service_proxy = proxy;
+
+	g_signal_connect(proxy, "g-signal", G_CALLBACK(receive_signal), self);
+
+	return;
+}
+
+static void
+indicator_session_dispose (GObject *object)
+{
+	IndicatorSession * self = INDICATOR_SESSION(object);
+
+	if (self->service != NULL) {
+		g_object_unref(G_OBJECT(self->service));
+		self->service = NULL;
+	}
+
+	if (self->service_proxy != NULL) {
+		g_object_unref(self->service_proxy);
+		self->service_proxy = NULL;
+	}
+
+	if (self->service_proxy_cancel != NULL) {
+		g_cancellable_cancel(self->service_proxy_cancel);
+		g_object_unref(self->service_proxy_cancel);
+		self->service_proxy_cancel = NULL;
+	}
+
+	G_OBJECT_CLASS (indicator_session_parent_class)->dispose (object);
+	return;
+}
+
+static void
+indicator_session_finalize (GObject *object)
+{
+
+	G_OBJECT_CLASS (indicator_session_parent_class)->finalize (object);
+	return;
+}
+
+static void
+icon_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
+{
+	IndicatorSession * self = INDICATOR_SESSION(user_data);
+	GError * error = NULL;
+	gchar * name;
+	GVariant * result;
+
+	result = g_dbus_proxy_call_finish(self->service_proxy, res, &error);
+
+	if (error != NULL) {
+		return;
+	}
+
+	g_variant_get(result, "(&s)", &name);
+
+	if (name == NULL || name[0] == '\0') {
+		return;
+	}
+
+	indicator_image_helper_update(self->status_image, name);
+	return;
+}
+
+static void
+service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data)
+{
+	IndicatorSession * self = INDICATOR_SESSION(user_data);
+
+	if (connected) {
+		g_dbus_proxy_call(self->service_proxy, "GetIcon", NULL,
+		                  G_DBUS_CALL_FLAGS_NONE, -1, NULL,
+		                  icon_name_get_cb, user_data);
+	} else {
+		indicator_image_helper_update(self->status_image, ICON_DEFAULT);
+	}
+
+	return;
+}
+
+static GtkLabel *
+get_label (IndicatorObject * io)
+{
+	return NULL;
+}
+
+static const gchar *
+get_accessible_desc (IndicatorObject * io)
+{
+	return _("Session");
+}
+
+static void
+icon_changed (IndicatorSession * session, const gchar * icon_name)
+{
+	indicator_image_helper_update(session->status_image, icon_name);
+	return;
+}
+
+/* Receives all signals from the service, routed to the appropriate functions */
+static void
+receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name,
+                GVariant * parameters, gpointer user_data)
+{
+	IndicatorSession * self = INDICATOR_SESSION(user_data);
+
+	if (g_strcmp0(signal_name, "IconUpdated") == 0) {
+		const gchar *name;
+		g_variant_get (parameters, "(&s)", &name);
+		icon_changed(self, name);
+	}
+
+	return;
+}
+
+static GtkImage *
+get_icon (IndicatorObject * io)
+{
+	gtk_widget_show(GTK_WIDGET(INDICATOR_SESSION(io)->status_image));
+	return INDICATOR_SESSION(io)->status_image;
+}
+
+static void
+user_property_change (DbusmenuMenuitem * item, const gchar * property, GVariant * variant, gpointer user_data)
+{
+	if (g_strcmp0(property, USER_ITEM_PROP_LOGGED_IN) == 0) {
+		if (g_variant_get_boolean(variant)) {
+			gtk_widget_show(GTK_WIDGET(user_data));
+		} else {
+			gtk_widget_hide(GTK_WIDGET(user_data));
 		}
+	}
+	return;
+}
 
-		GList * child;
-		for (child = children; child != NULL; child = g_list_next(child)) {
-			GtkMenuItem * widget = dbusmenu_gtkclient_menuitem_get(client, DBUSMENU_MENUITEM(child->data));
-			if (widget != NULL) {
-				gtk_menu_reorder_child(main_menu, GTK_WIDGET(widget), location);
-				location++;
+/* Builds an item with a hip little logged in icon. */
+static gboolean
+new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
+{
+	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
+	gint padding = 0;
+	gtk_widget_style_get(GTK_WIDGET(gmi), "horizontal-padding", &padding, NULL);
+	GtkWidget * hbox = gtk_hbox_new(FALSE, padding);
+
+	GtkWidget * usericon = NULL;
+	const gchar * icon_name = dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_ICON);
+	g_debug("Using user icon for '%s' from file: %s", dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_NAME), icon_name);
+	if (icon_name != NULL && icon_name[0] != '\0') {
+		if (g_strcmp0(icon_name, USER_ITEM_ICON_DEFAULT) != 0 && g_file_test(icon_name, G_FILE_TEST_EXISTS)) {
+			gint width, height;
+			gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
+
+			GError * error = NULL;
+			GdkPixbuf * pixbuf = gdk_pixbuf_new_from_file_at_size(icon_name, width, height, &error);
+
+			if (error == NULL) {
+				usericon = gtk_image_new_from_pixbuf(pixbuf);
+				g_object_unref(pixbuf);
+			} else {
+				g_warning("Unable to load user icon '%s': %s", icon_name, error->message);
+				g_error_free(error);
 			}
 		}
 
-		if (clientnum == 0) {
-			gtk_menu_reorder_child(main_menu, status_separator, location);
-			location++;
-		}
-		if (clientnum == 1) {
-			gtk_menu_reorder_child(main_menu, users_separator, location);
-			location++;
+		if (usericon == NULL) {
+			GIcon * gicon = g_themed_icon_new_with_default_fallbacks("stock_person-panel");
+			usericon = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
+			g_object_unref(gicon);
 		}
 	}
-
-	return;
-}
-
-static void
-child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, gpointer section)
-{
-	realized_data_t * data = g_new0(realized_data_t, 1);
-	if (data == NULL) {
-		g_warning("Unable to allocate data for realization of item");
-		return;
+	if (usericon != NULL) {
+		gtk_misc_set_alignment(GTK_MISC(usericon), 0.0, 0.5);
+		gtk_box_pack_start(GTK_BOX(hbox), usericon, FALSE, FALSE, 0);
+		gtk_widget_show(usericon);
 	}
 
-	data->section = GPOINTER_TO_UINT(section);
+	GtkWidget * label = gtk_label_new(dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_NAME));
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+	gtk_widget_show(label);
 
-	g_signal_connect(G_OBJECT(child), DBUSMENU_MENUITEM_SIGNAL_REALIZED, G_CALLBACK(child_realized), data);
-	return;
-}
-
-static void
-child_realized (DbusmenuMenuitem * child, gpointer userdata)
-{
-	g_return_if_fail(userdata != NULL);
-	g_return_if_fail(DBUSMENU_IS_MENUITEM(child));
-
-	realized_data_t * data = (realized_data_t *)userdata;	
-	section_t section = data->section;
-	g_free(data);
-
-	DbusmenuGtkClient * client = NULL;
-	gchar * errorstr = NULL;
-	guint (*posfunc) (void) = NULL;
-
-	switch (section) {
-		case STATUS_SECTION:
-			client = status_client;
-			errorstr = "Status";
-			posfunc = status_menu_pos_offset;
-			break;
-		case USERS_SECTION:
-			client = users_client;
-			errorstr = "Users";
-			posfunc = users_menu_pos_offset;
-			break;
-		case SESSION_SECTION:
-			client = session_client;
-			errorstr = "Session";
-			posfunc = session_menu_pos_offset;
-			break;
-		default:
-			g_warning("Child Added called with an unknown position function!");
-			return;
+	GtkWidget * icon = gtk_image_new_from_icon_name("account-logged-in", GTK_ICON_SIZE_MENU);
+	gtk_misc_set_alignment(GTK_MISC(icon), 1.0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 0);
+	if (dbusmenu_menuitem_property_get_bool(newitem, USER_ITEM_PROP_LOGGED_IN)) {
+		gtk_widget_show(icon);
+	} else {
+		gtk_widget_hide(icon);
 	}
 
-	if (client == NULL) {
-		g_warning("Child realized for a menu we don't have?  Section: %s", errorstr);
-		return;
-	}
+	gtk_container_add(GTK_CONTAINER(gmi), hbox);
+	gtk_widget_show(hbox);
 
-	GtkMenuItem * widget = dbusmenu_gtkclient_menuitem_get(client, child);
+	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
 
-	if (widget == NULL) {
-		g_warning("Had a menu item added to the %s menu, but yet it didn't have a GtkWidget with it.  Can't add that to a menu now can we?  You need to figure this @#$# out!", errorstr);
-		return;
-	}
+	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(user_property_change), icon);
 
-	gtk_menu_append(main_menu, GTK_WIDGET(widget));
-	gtk_widget_show(GTK_WIDGET(widget));
-
-	resort_menu();
-
-	gtk_widget_hide(loading_item);
-
-	return;
-}
-
-static void
-child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint newpos, guint oldpos, guint (*posfunc) (void))
-{
-
-
-}
-
-
-/* Status Menu */
-static guint
-status_menu_pos_offset (void)
-{
-	return 0;
-}
-
-static void
-status_menu_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint position, gpointer user_data)
-{
-	gtk_widget_show(GTK_WIDGET(status_separator));
-	return;
-}
-
-static void
-status_menu_removed (DbusmenuMenuitem * root, DbusmenuMenuitem * child, gpointer user_data)
-{
-	if (g_list_length(dbusmenu_menuitem_get_children(root)) == 0) {
-		gtk_widget_hide(GTK_WIDGET(status_separator));
-	}
-
-	return;
-}
-
-static void
-status_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, GtkMenu * main)
-{
-	if (newroot == NULL) {
-		gtk_widget_hide(GTK_WIDGET(status_separator));
-		return;
-	}
-
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(child_added),           GUINT_TO_POINTER(STATUS_SECTION));
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(status_menu_added),     NULL);
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(status_menu_removed),   NULL);
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(child_moved),           GUINT_TO_POINTER(STATUS_SECTION));
-
-	GList * child = NULL;
-	guint count = 0;
-	for (child = dbusmenu_menuitem_get_children(newroot); child != NULL; child = g_list_next(child), count++) {
-		child_added(newroot, DBUSMENU_MENUITEM(child->data), count, GUINT_TO_POINTER(STATUS_SECTION));
-	}
-
-	if (count > 0) {
-		gtk_widget_show(GTK_WIDGET(status_separator));
-	}
-
-	return;
-}
-
-void
-status_icon_cb (DBusGProxy * proxy, char * icons, GError *error, gpointer userdata)
-{
-	g_return_if_fail(status_image != NULL);
-	g_return_if_fail(icons != NULL);
-	g_return_if_fail(icons[0] != '\0');
-
-	g_debug("Changing status icon: '%s'", icons);
-	gtk_image_set_from_icon_name(status_image, icons, GTK_ICON_SIZE_MENU);
-
-	return;
-}
-
-void
-status_icon_changed (DBusGProxy * proxy, gchar * icon, gpointer userdata)
-{
-	return status_icon_cb(proxy, icon, NULL, NULL);
-}
-
-
-static gboolean
-connect_to_status (gpointer userdata)
-{
-	if (status_proxy == NULL) {
-		GError * error = NULL;
-
-		DBusGConnection * sbus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-
-		status_proxy = dbus_g_proxy_new_for_name_owner(sbus,
-		                                               INDICATOR_STATUS_DBUS_NAME,
-		                                               INDICATOR_STATUS_SERVICE_DBUS_OBJECT,
-		                                               INDICATOR_STATUS_SERVICE_DBUS_INTERFACE,
-		                                               &error);
-
-		if (error != NULL) {
-			g_warning("Unable to get status proxy: %s", error->message);
-			g_error_free(error);
-			return FALSE;
-		}
-
-		dbus_g_proxy_add_signal(status_proxy, "StatusIconsChanged", G_TYPE_STRING, G_TYPE_INVALID);
-		dbus_g_proxy_connect_signal(status_proxy, "StatusIconsChanged", G_CALLBACK(status_icon_changed), NULL, NULL);
-	}
-
-	org_ayatana_indicator_status_service_status_icons_async(status_proxy, status_icon_cb, NULL);
-
-	return FALSE;
-}
-
-/* Follow up the service being started by connecting
-   up the DBus Menu Client and creating our separator.
-   Also creates an idle func to connect to the service for
-   getting the icon that we should be using on the panel. */
-static void
-status_followup (void)
-{
-	status_client = dbusmenu_gtkclient_new(INDICATOR_STATUS_DBUS_NAME, INDICATOR_STATUS_DBUS_OBJECT);
-	g_signal_connect(G_OBJECT(status_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(status_menu_root_changed), main_menu);
-
-	status_separator = gtk_separator_menu_item_new();
-	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), status_separator);
-	gtk_widget_hide(status_separator); /* Should be default, I'm just being explicit.  $(%*#$ hide already!  */
-
-	g_idle_add(connect_to_status, NULL);
-
-	return;
-}
-
-/* Users menu */
-
-static guint
-users_menu_pos_offset (void)
-{
-	guint position = 0;
-	if (SEPARATOR_SHOWN(status_separator)) {
-		GList * location = g_list_find(GTK_MENU_SHELL(main_menu)->children, status_separator);
-		position = g_list_position(GTK_MENU_SHELL(main_menu)->children, location) + 1;
-	}
-
-	return position;
-}
-
-static void
-users_menu_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint position, gpointer user_data)
-{
-	gtk_widget_show(GTK_WIDGET(users_separator));
-	return;
-}
-
-static void
-users_menu_removed (DbusmenuMenuitem * root, DbusmenuMenuitem * child, gpointer user_data)
-{
-	if (g_list_length(dbusmenu_menuitem_get_children(root)) == 0) {
-		gtk_widget_hide(GTK_WIDGET(users_separator));
-	}
-
-	return;
-}
-
-static void
-users_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, GtkMenu * main)
-{
-	if (newroot == NULL) {
-		gtk_widget_hide(GTK_WIDGET(users_separator));
-		return;
-	}
-
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(child_added),           GUINT_TO_POINTER(USERS_SECTION));
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(users_menu_added),      NULL);
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(users_menu_removed),    NULL);
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(child_moved),           GUINT_TO_POINTER(USERS_SECTION));
-
-	GList * child = NULL;
-	guint count = 0;
-	for (child = dbusmenu_menuitem_get_children(newroot); child != NULL; child = g_list_next(child), count++) {
-		child_added(newroot, DBUSMENU_MENUITEM(child->data), count, GUINT_TO_POINTER(USERS_SECTION));
-	}
-
-	if (count > 0) {
-		gtk_widget_show(GTK_WIDGET(users_separator));
-	}
-
-	return;
-}
-
-/* Follow up the service being started by connecting
-   up the DBus Menu Client and creating our separator. */
-static void
-users_followup (void)
-{
-	users_client = dbusmenu_gtkclient_new(INDICATOR_USERS_DBUS_NAME, INDICATOR_USERS_DBUS_OBJECT);
-	g_signal_connect(G_OBJECT(users_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(users_menu_root_changed), main_menu);
-
-	users_separator = gtk_separator_menu_item_new();
-	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), users_separator);
-	gtk_widget_hide(users_separator); /* Should be default, I'm just being explicit.  $(%*#$ hide already!  */
-
-	return;
-}
-
-/* Session Menu Stuff */
-
-static guint
-session_menu_pos_offset (void)
-{
-	guint position = 0;
-	if (SEPARATOR_SHOWN(users_separator)) {
-		GList * location = g_list_find(GTK_MENU_SHELL(main_menu)->children, users_separator);
-		position = g_list_position(GTK_MENU_SHELL(main_menu)->children, location) + 1;
-	} else if (SEPARATOR_SHOWN(status_separator)) {
-		GList * location = g_list_find(GTK_MENU_SHELL(main_menu)->children, status_separator);
-		position = g_list_position(GTK_MENU_SHELL(main_menu)->children, location) + 1;
-	}
-
-	return position;
-}
-
-static void
-session_menu_removed (DbusmenuMenuitem * root, DbusmenuMenuitem * child, gpointer user_data)
-{
-	return;
-}
-
-static void
-session_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, GtkMenu * main)
-{
-	if (newroot == NULL) {
-		/* We're assuming this'll crash the least so it doesn't
-		   hide a separator.  May be a bad choice. */
-		return;
-	}
-
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(child_added),           GUINT_TO_POINTER(SESSION_SECTION));
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(session_menu_removed),  NULL);
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(child_moved),           GUINT_TO_POINTER(SESSION_SECTION));
-
-	GList * child = NULL;
-	guint count = 0;
-	for (child = dbusmenu_menuitem_get_children(newroot); child != NULL; child = g_list_next(child), count++) {
-		child_added(newroot, DBUSMENU_MENUITEM(child->data), count, GUINT_TO_POINTER(SESSION_SECTION));
-	}
-
-	return;
-}
-
-/* Follow up the service being started by connecting
-   up the DBus Menu Client. */
-static void
-session_followup (void)
-{
-	session_client = dbusmenu_gtkclient_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT);
-	g_signal_connect(G_OBJECT(session_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(session_menu_root_changed), main_menu);
-
-	return;
-}
-
-/* Base menu stuff */
-
-/* This takes the response to the service starting up.
-   It checks to see if it's started and if so, continues
-   with the follow function for the particular area that
-   it's working in. */
-static void
-start_service_phase2 (DBusGProxy * proxy, guint status, GError * error, gpointer data)
-{
-	/* If we've got an error respond to it */
-	if (error != NULL) {
-		g_critical("Starting service has resulted in error.");
-		g_error_free(error);
-		/* Try it all again, we need to get this started! */
-		g_idle_add(start_service, data);
-		return;
-	}
-
-	/* If it's not running or we started it, try again */
-	if (status != DBUS_START_REPLY_SUCCESS && status != DBUS_START_REPLY_ALREADY_RUNNING) {
-		g_critical("Return value isn't indicative of success: %d", status);
-		/* Try it all again, we need to get this started! */
-		g_idle_add(start_service, data);
-		return;
-	}
-
-	/* Check which part of the menu we're in and do the
-	   appropriate follow up from the service being started. */
-	switch (GPOINTER_TO_INT(data)) {
-	case STATUS_SECTION:
-		status_followup();
-		break;
-	case USERS_SECTION:
-		users_followup();
-		break;
-	case SESSION_SECTION:
-		session_followup();
-		break;
-	default:
-		g_critical("Oh, how can we get a value that we don't know!");
-		break;
-	}
-
-	return;
-}
-
-/* Our idle service starter.  It looks at the section that
-   we're doing and then asks async for that service to be
-   started by dbus.  Probably not really useful to be in
-   the idle loop as it's so quick, but why not. */
-static gboolean
-start_service (gpointer userdata)
-{
-	g_debug("Starting a service");
-
-	if (proxy == NULL) {
-		/* If we don't have DBus, let's stay in the idle loop */
-		return TRUE;
-	}
-
-	const gchar * service = NULL;
-	switch (GPOINTER_TO_INT(userdata)) {
-	case STATUS_SECTION:
-		service = INDICATOR_STATUS_DBUS_NAME;
-		break;
-	case USERS_SECTION:
-		service = INDICATOR_USERS_DBUS_NAME;
-		break;
-	case SESSION_SECTION:
-		service = INDICATOR_SESSION_DBUS_NAME;
-		break;
-	default:
-		g_critical("Oh, how can we get a value that we don't know!");
-		return FALSE;
-	}
-
-	org_freedesktop_DBus_start_service_by_name_async (proxy, service, 0 /* Flags */, start_service_phase2, userdata);
-
-	return FALSE;
+	return TRUE;
 }
 
 /* Indicator based function to get the menu for the whole
    applet.  This starts up asking for the parts of the menu
    from the various services. */
-GtkMenu *
-get_menu (void)
+static GtkMenu *
+get_menu (IndicatorObject * io)
 {
-	connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-	proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
-	if (proxy == NULL) {
-		g_warning("Unable to get proxy for DBus itself.  Seriously.");
+	return GTK_MENU(INDICATOR_SESSION(io)->menu);
+}
+
+static void
+switch_property_change (DbusmenuMenuitem * item, const gchar * property, GVariant * variant, gpointer user_data)
+{
+	if (g_strcmp0(property, MENU_SWITCH_USER) != 0) {
+		return;
+	}
+	
+	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(DBUSMENU_GTKCLIENT(user_data), item);
+	gchar * finalstring = NULL;
+	gboolean set_ellipsize = FALSE;
+	gboolean no_name_in_lang = FALSE;
+
+	/* TRANSLATORS: Translate the '1' below into anything other than
+	   '1' if "Switch From %s..." doesn't make sense in your language.
+	   Instead, the string "Switch User..." will be used. */
+	const gchar * translate = C_("session_menu:switchfrom", "1");
+	if (g_strcmp0(translate, "1") != 0) {
+		no_name_in_lang = TRUE;
 	}
 
-	/* Startup in the idle loop */
-	g_idle_add(start_service, GINT_TO_POINTER(STATUS_SECTION));
-	g_idle_add(start_service, GINT_TO_POINTER(USERS_SECTION));
-	g_idle_add(start_service, GINT_TO_POINTER(SESSION_SECTION));
+	/* If there's a NULL string of some type, then we want to
+	   go back to our old 'Switch User' which isn't great but
+	   eh, this error condition should never happen. */
+	if (variant == NULL || g_variant_get_string(variant, NULL) == NULL || g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang) {
+		finalstring = _("Switch User...");
+		set_ellipsize = FALSE;
+	}
 
-	/* Build a temp menu incase someone can ask for it
-	   before the services start.  Fast user! */
-	main_menu = GTK_MENU(gtk_menu_new());
-	loading_item = gtk_menu_item_new_with_label("Loading...");
-	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), loading_item);
-	gtk_widget_show(GTK_WIDGET(loading_item));
+	if (finalstring == NULL) {
+		const gchar * username = g_variant_get_string(variant, NULL);
+		GtkStyle * style = gtk_widget_get_style(GTK_WIDGET(gmi));
 
-	return main_menu;
+		PangoLayout * layout = pango_layout_new(gtk_widget_get_pango_context(GTK_WIDGET(gmi)));
+		pango_layout_set_text(layout, username, -1);
+		pango_layout_set_font_description(layout, style->font_desc);
+
+		gint width;
+		pango_layout_get_pixel_size(layout, &width, NULL);
+		g_object_unref(layout);
+		g_debug("Username width %dpx", width);
+
+		gint point = pango_font_description_get_size(style->font_desc);
+		g_debug("Font size %f pt", (gfloat)point / PANGO_SCALE);
+
+		gdouble dpi = gdk_screen_get_resolution(gdk_screen_get_default());
+		g_debug("Screen DPI %f", dpi);
+
+		gdouble pixels_per_em = ((point * dpi) / 72.0f) / PANGO_SCALE;
+		gdouble ems = width / pixels_per_em;
+		g_debug("Username width %fem", ems);
+
+		/* TODO: We need some way to remove the elipsis from appearing
+		         twice in the label.  Not sure how to do that yet. */
+		finalstring = g_strdup_printf(_("Switch From %s..."), username);
+		if (ems >= 20.0f) {
+			set_ellipsize = TRUE;
+		} else {
+			set_ellipsize = FALSE;
+		}
+	}
+
+	gtk_menu_item_set_label(gmi, finalstring);
+
+	GtkLabel * label = GTK_LABEL(gtk_bin_get_child(GTK_BIN(gmi)));
+	if (label != NULL) {
+		if (set_ellipsize) {
+			gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_END);
+		} else {
+			gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_NONE);
+		}
+	}
+
+	return;
+}
+
+static const gchar * dbusmenu_item_data = "dbusmenu-item";
+
+/* IF the label or icon changes we need to grab that and update
+   the menu item */
+static void
+restart_property_change (DbusmenuMenuitem * item, const gchar * property, GVariant * variant, gpointer user_data)
+{
+	DbusmenuGtkClient * client = DBUSMENU_GTKCLIENT(user_data);
+	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(client, item);
+
+	if (g_strcmp0(property, RESTART_ITEM_LABEL) == 0) {
+		gtk_menu_item_set_label(gmi, g_variant_get_string(variant, NULL));
+	} else if (g_strcmp0(property, RESTART_ITEM_ICON) == 0) {
+		GtkWidget * image = gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(gmi));
+
+		GIcon * gicon = g_themed_icon_new_with_default_fallbacks(g_variant_get_string(variant, NULL));
+		if (image == NULL) {
+			image = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
+			gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(gmi), image);
+		} else {
+			gtk_image_set_from_gicon(GTK_IMAGE(image), gicon, GTK_ICON_SIZE_MENU);
+		}
+		g_object_unref(G_OBJECT(gicon));
+	}
+
+	return;
+}
+
+/* Builds the restart item which is a more traditional GTK image
+   menu item that puts the graphic into the gutter. */
+static gboolean
+build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
+{
+	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_image_menu_item_new());
+	if (gmi == NULL) {
+		return FALSE;
+	}
+
+	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+
+	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(restart_property_change), client);
+
+	/* Grab the inital variants and put them into the item */
+	GVariant * variant;
+	variant = dbusmenu_menuitem_property_get_variant(newitem, RESTART_ITEM_LABEL);
+	if (variant != NULL) {
+		restart_property_change(newitem, RESTART_ITEM_LABEL, variant, client);
+	}
+
+	variant = dbusmenu_menuitem_property_get_variant(newitem, RESTART_ITEM_ICON);
+	if (variant != NULL) {
+		restart_property_change(newitem, RESTART_ITEM_ICON, variant, client);
+	}
+
+	return TRUE;
 }
 
 
+/* Callback for when the style changes so we can reevaluate the
+   size of the user name with the potentially new font. */
+static void
+switch_style_set (GtkWidget * widget, GtkStyle * prev_style, gpointer user_data)
+{
+	DbusmenuGtkClient * client = DBUSMENU_GTKCLIENT(user_data);
+	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(g_object_get_data(G_OBJECT(widget), dbusmenu_item_data));
+
+	switch_property_change(mi, MENU_SWITCH_USER, dbusmenu_menuitem_property_get_variant(mi, MENU_SWITCH_USER), client);
+	return;
+}
+
+/* This function checks to see if the user name is short enough
+   to not need ellipsing itself, or if, it will get ellipsed by
+   the standard label processor. */
+static gboolean
+build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
+{
+	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
+	if (gmi == NULL) {
+		return FALSE;
+	}
+	g_object_set_data(G_OBJECT(gmi), dbusmenu_item_data, newitem);
+
+	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+
+	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(switch_property_change), client);
+	g_signal_connect(G_OBJECT(gmi), "style-set", G_CALLBACK(switch_style_set), client);
+	switch_property_change(newitem, MENU_SWITCH_USER, dbusmenu_menuitem_property_get_variant(newitem, MENU_SWITCH_USER), client);
+
+	return TRUE;
+}

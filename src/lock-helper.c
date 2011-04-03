@@ -19,21 +19,24 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <glib/gi18n.h>
+#include <gconf/gconf-client.h>
 #include <dbus/dbus-glib.h>
 #include "lock-helper.h"
+
+#define GCONF_DIR  "/apps/gnome-screensaver"
+#define GCONF_KEY  GCONF_DIR "/lock_enabled"
 
 static DBusGProxy * gss_proxy = NULL;
 static GMainLoop * gss_mainloop = NULL;
 static guint cookie = 0;
 static DBusGProxyCall * cookie_call = NULL;
 
-static DBusGProxy * gdm_settings_proxy = NULL;
-static gboolean gdm_auto_login = FALSE;
-static const gchar * gdm_auto_login_string = "daemon/AutomaticLoginEnable";
-
 static gboolean is_guest = FALSE;
 
-static gdm_autologin_cb_t gdm_autologin_cb = NULL;
+static GConfClient * gconf_client = NULL;
+
+void build_gss_proxy (void);
 
 /* Checks to see if there is an error and reports
    it.  Not much else we can do. */
@@ -55,6 +58,9 @@ void
 screensaver_unthrottle (void)
 {
 	g_return_if_fail(cookie != 0);
+
+	build_gss_proxy();
+	g_return_if_fail(gss_proxy != NULL);
 
 	dbus_g_proxy_begin_call(gss_proxy, "UnThrottle",
 	                        unthrottle_return, NULL,
@@ -103,6 +109,9 @@ screensaver_throttle (gchar * reason)
 		screensaver_unthrottle();
 	}
 
+	build_gss_proxy();
+	g_return_if_fail(gss_proxy != NULL);
+
 	cookie_call = dbus_g_proxy_begin_call(gss_proxy, "Throttle",
 	                                      throttle_return, NULL,
 	                                      NULL,
@@ -113,120 +122,20 @@ screensaver_throttle (gchar * reason)
 	return;
 }
 
-/* Setting up a call back */
-void
-lock_screen_gdm_cb_set (gdm_autologin_cb_t cb)
-{
-	if (gdm_autologin_cb) {
-		g_warning("Already had a callback, setting up a new one...");
-	}
-
-	gdm_autologin_cb = cb;
-	return;
-}
-
 /* This is our logic on whether the screen should be locked
    or not.  It effects everything else. */
 gboolean
 will_lock_screen (void)
 {
-	if (gdm_auto_login) {
-		return FALSE;
-	}
 	if (is_guest) {
 		return FALSE;
 	}
 
-	return TRUE;
-}
-
-/* Respond to the signal of autologin changing to see if the
-   setting for timed login changes. */
-static void
-gdm_settings_change (DBusGProxy * proxy, const gchar * value, const gchar * old, const gchar * new, gpointer data)
-{
-	if (g_strcmp0(value, gdm_auto_login_string)) {
-		/* This is not a setting that we care about,
-		   there is only one. */
-		return;
-	}
-	g_debug("GDM Settings change: %s", new);
-
-	if (g_strcmp0(new, "true") == 0) {
-		gdm_auto_login = TRUE;
-	} else {
-		gdm_auto_login = FALSE;
+	if (gconf_client == NULL) {
+		gconf_client = gconf_client_get_default();
 	}
 
-	if (gdm_autologin_cb != NULL) {
-		gdm_autologin_cb();
-	}
-
-	return;
-}
-
-/* Get back the data from querying to see if there is auto
-   login enabled in GDM */
-static void
-gdm_get_autologin (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
-{
-	GError * error = NULL;
-	gchar * value = NULL;
-
-	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_STRING, &value, G_TYPE_INVALID)) {
-		g_warning("Unable to get autologin setting: %s", error != NULL ? error->message : "null");
-		g_error_free(error);
-		return;
-	}
-
-	g_return_if_fail(value != NULL);
-	gdm_settings_change(proxy, gdm_auto_login_string, NULL, value, NULL);
-
-	return;
-}
-
-/* Sets up the proxy and queries for the setting to know
-   whether we're doing an autologin. */
-static void
-build_gdm_proxy (void)
-{
-	g_return_if_fail(gdm_settings_proxy == NULL);
-
-	/* Grab the system bus */
-	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
-	g_return_if_fail(bus != NULL);
-
-	/* Get the settings proxy */
-	gdm_settings_proxy = dbus_g_proxy_new_for_name_owner(bus,
-	                                                     "org.gnome.DisplayManager",
-	                                                     "/org/gnome/DisplayManager/Settings",
-	                                                     "org.gnome.DisplayManager.Settings", NULL);
-	g_return_if_fail(gdm_settings_proxy != NULL);
-
-	/* Signal for value changed */
-	dbus_g_proxy_add_signal(gdm_settings_proxy,
-	                        "ValueChanged",
-	                        G_TYPE_STRING,
-	                        G_TYPE_STRING,
-	                        G_TYPE_STRING,
-	                        G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(gdm_settings_proxy,
-	                            "ValueChanged",
-	                            G_CALLBACK(gdm_settings_change),
-	                            NULL,
-	                            NULL);
-
-	/* Start to get the initial value */
-	dbus_g_proxy_begin_call(gdm_settings_proxy,
-	                        "GetValue",
-	                        gdm_get_autologin,
-	                        NULL,
-	                        NULL,
-	                        G_TYPE_STRING,
-	                        gdm_auto_login_string,
-	                        G_TYPE_INVALID);
-
-	return;
+	return gconf_client_get_bool (gconf_client, GCONF_KEY, NULL);
 }
 
 /* When the screensave go active, if we've got a mainloop
@@ -245,18 +154,19 @@ gss_active_changed (DBusGProxy * proxy, gboolean active, gpointer data)
 void
 build_gss_proxy (void)
 {
-	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-	g_return_if_fail(session_bus != NULL);
+	if (gss_proxy == NULL) {
+		DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+		g_return_if_fail(session_bus != NULL);
 
-	gss_proxy = dbus_g_proxy_new_for_name_owner(session_bus,
-	                                            "org.gnome.ScreenSaver",
-	                                            "/",
-	                                            "org.gnome.ScreenSaver",
-	                                            NULL);
-	g_return_if_fail(gss_proxy != NULL);
+		gss_proxy = dbus_g_proxy_new_for_name(session_bus,
+		                                      "org.gnome.ScreenSaver",
+		                                      "/",
+		                                      "org.gnome.ScreenSaver");
+		g_return_if_fail(gss_proxy != NULL);
 
-	dbus_g_proxy_add_signal(gss_proxy, "ActiveChanged", G_TYPE_BOOLEAN, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(gss_proxy, "ActiveChanged", G_CALLBACK(gss_active_changed), NULL, NULL);
+		dbus_g_proxy_add_signal(gss_proxy, "ActiveChanged", G_TYPE_BOOLEAN, G_TYPE_INVALID);
+		dbus_g_proxy_connect_signal(gss_proxy, "ActiveChanged", G_CALLBACK(gss_active_changed), NULL, NULL);
+	}
 
 	return;
 }
@@ -266,9 +176,11 @@ build_gss_proxy (void)
 static gboolean
 activate_timeout (gpointer data)
 {
+	/* Clear the ID for the timeout */
 	guint * address = (guint *)data;
 	*address = 0;
 
+	/* Quit the mainloop */
 	if (gss_mainloop != NULL) {
 		g_main_loop_quit(gss_mainloop);
 	}
@@ -279,14 +191,11 @@ activate_timeout (gpointer data)
 /* A fun little function to actually lock the screen.  If,
    that's what you want, let's do it! */
 void
-lock_screen (DbusmenuMenuitem * mi, gpointer data)
+lock_screen (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
 {
 	g_debug("Lock Screen");
-	if (!will_lock_screen()) {
-		g_debug("\tGDM set to autologin, blocking lock");
-		return;
-	}
 
+	build_gss_proxy();
 	g_return_if_fail(gss_proxy != NULL);
 
 	dbus_g_proxy_call_no_reply(gss_proxy,
@@ -317,9 +226,6 @@ lock_screen_setup (gpointer data)
 	if (!g_strcmp0(g_get_user_name(), "guest")) {
 		is_guest = TRUE;
 	}
-
-	build_gdm_proxy();
-	build_gss_proxy();
 
 	return FALSE;
 }

@@ -1,3 +1,354 @@
+indicator-session (0.2.15-1) unstable; urgency=low
+
+  * Merge from Ubuntu.
+    Closes: #620671
+  * Standards-Version: 3.9.1
+  * Improve package descriptions.
+  * Update debian/copyright to DEP5 rev173.
+
+ -- Evgeni Golov <evgeni@debian.org>  Sun, 03 Apr 2011 14:16:17 +0200
+
+indicator-session (0.2.15-0ubuntu1) natty; urgency=low
+
+  * New upstream release.
+    ∘ Support adding arbitrary items to the end of the session
+      menu. (LP: #727823)
+    ∘ Call guest session with --no-lock to ensure there is no
+      double locking (LP: #636693)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Mar 2011 16:10:19 -0600
+
+indicator-session (0.2.14-0ubuntu1) natty; urgency=low
+
+  * New upstream release.
+    * Adding in accessible description
+  * debian/control: Bumping libindicator dep to 0.3.19
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Feb 2011 13:31:40 -0600
+
+indicator-session (0.2.13-0ubuntu1) natty; urgency=low
+
+  * New upstream release.
+    * Making text in logout dialog unselectable (LP: #597317)
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 11 Feb 2011 11:14:08 -0600
+
+indicator-session (0.2.12-0ubuntu1) natty; urgency=low
+
+  * New upstream release.
+    * Fix service file names
+    * Add log domain
+    * Fix dbusmenu prototypes
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 28 Jan 2011 11:19:59 -0600
+
+indicator-session (0.2.11-0ubuntu1) natty; urgency=low
+
+  * New upstream release.
+    - Ported to gdbus and dbusmenu 0.4
+    - indicator-session-service crashed with signal 5 in 
+      g_type_create_instance() (LP: #611257)
+  * debian/control
+    - Bumped build depends for dbusmenu to >= 0.3.91
+    - Bumped build depends libindicator-dev >= 0.3.16
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 14 Jan 2011 13:20:16 -0600
+
+indicator-session (0.2.10-0ubuntu4) natty; urgency=low
+
+  * debian/control
+    - Bump build depends for libdbusmenu-* to >= 0.3.90
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 09 Dec 2010 11:38:49 -0500
+
+indicator-session (0.2.10-0ubuntu3) maverick; urgency=low
+
+  * Backport upstream revision 129 to fix a crasher (lp: #611257)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 29 Sep 2010 15:16:28 +0200
+
+indicator-session (0.2.10-0ubuntu2) maverick; urgency=low
+
+  * Rebuild for libindicator ABI change (LP: #637692)
+  * debian/control: depends on latest libindicator-dev 
+
+ -- Didier Roche <didrocks@ubuntu.com>  Wed, 22 Sep 2010 18:42:59 +0200
+
+indicator-session (0.2.10-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    * Fix to lock screen so that the menu item is always to lock
+      the screen. (LP: #599848)
+    * Fix capitalization of complete update message.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 12 Aug 2010 11:41:45 -0500
+
+indicator-session (0.2.10-0ubuntu1~ppa2) maverick; urgency=low
+
+  * Upstream Merge
+    * Ignoring an invalid error message (LP: #611257)
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 03 Sep 2010 13:56:01 -0500
+
+indicator-session (0.2.10-0ubuntu1~ppa1) maverick; urgency=low
+
+  * New upstream release.
+    * Fix to lock screen so that the menu item is always to lock
+      the screen. (LP: #599848)
+    * Fix capitalization of complete update message.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 12 Aug 2010 11:41:45 -0500
+
+indicator-session (0.2.9-0ubuntu1) maverick; urgency=low
+
+  * New upstream release:
+    - Change "Restart Required..." to "Restart To Complete Update..."
+      (lp: #586928)
+    - Ellipsized strings.
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 05 Aug 2010 12:45:37 +0200
+
+indicator-session (0.2.8-0ubuntu2) lucid; urgency=low
+
+  * Restore debian directory changes dropped by error
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Apr 2010 19:29:00 +0200
+
+indicator-session (0.2.8-0ubuntu1) lucid; urgency=low
+
+  * New upstream release.
+    * Making restart and shutdown items configurable (LP: #548810)
+    * Changing 'Sleep' to 'Suspend' (LP: #547102)
+    * Fixing translations helper text (LP: #547131)
+    * Passing correct object to callback (LP: #543393)
+    * Ignoring malformed message (LP: #548620)
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 09 Apr 2010 11:08:47 -0500
+
+indicator-session (0.2.7-0ubuntu3) lucid; urgency=low
+
+  * debian/control
+    - Changed depends on indicator-applet to recommends 
+  * debian/patches/suspend_string.patch
+    - Change the string back to "Suspend"
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 26 Mar 2010 11:39:35 -0400
+
+indicator-session (0.2.7-0ubuntu2) lucid; urgency=low
+
+  * debian/patches/restore_lock_screen.patch
+    - re-added patch that got dropped in the merge 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Mar 2010 17:12:14 -0400
+
+indicator-session (0.2.7-0ubuntu1) lucid; urgency=low
+
+  * debian/control
+    - Dropped Vcs-Bzr and Vcs-Browser
+
+  [Ted Gould]
+  * Upstream release 0.2.7
+    * Adding a switch for translators if the "Switch From"
+      translation doesn't make sense (LP: #545893)
+    * Scale avatar icons to menu size (LP: #542505)
+    * Fix strings to have all be "Shut Down" (LP: #545578)
+  * Remove debian/patches/restore_lock_screen.patch added by
+    downstream.
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Mar 2010 11:23:13 -0400
+
+indicator-session (0.2.6-0ubuntu2) lucid; urgency=low
+
+  * debian/control: 
+    - change the gdm Depends to a Suggests since it's not really needed
+  * debian/patches/restore_lock_screen.patch:
+    - don't change "lock screen" in "start screensaver" for users who don't
+      use lock on screensaver action by default, the behaviour change was
+      breaking freeze and letting some users without a way to lock their 
+      computer screen (lp: #542585)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 23 Mar 2010 18:50:35 +0100
+
+indicator-session (0.2.6-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.2.6
+    ∘ Updating sessions to make guest account marked when being
+      used (LP: #436030)
+    ∘ String "Switch From" is miscapitalized (LP: #540265)
+    ∘ Follow user switching lockdown key (LP: #504360)
+    ∘ Use user avatar images in session menu (LP: #436028)
+    ∘ Don't show suspend/hibernate if disabled in Policy Kit (LP: #432598)
+    ∘ Lock screen when switching users (LP: #536801)
+    ∘ Fix callback prototype (LP: #536990)
+    ∘ Revert back to "Shut Down" instead of "Switch Off" (LP: #540056)
+    ∘ Fix leaked GConf notifications
+    ∘ Add GConf key for showing the "Log Out" item
+    ∘ Adding the ability to specify a desktop file to have at the end
+      of the menu.
+    ∘ Setting up restart required notification by changing panel icon
+      and icon in menus.
+    ∘ Use the libindicator image helpers
+    ∘ Set proper translation domain for loadable indicator
+    ∘ Translation update
+  * debian/control: Require libindicator 0.3.5
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Mar 2010 14:22:41 -0500
+
+indicator-session (0.2.5-0ubuntu3) lucid; urgency=low
+
+  * Backported an upstream change to fix translations use 
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 15 Mar 2010 11:47:13 +0100
+
+indicator-session (0.2.5-0ubuntu2) lucid; urgency=low
+
+  * Backported an upstream change to fix a signal prototype issue (lp: #507776)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 12 Mar 2010 00:25:52 +0100
+
+indicator-session (0.2.5-0ubuntu1) lucid; urgency=low
+
+  * Upstream Release 0.2.5
+    * Restart required menu item when it's required for updates
+    * New logout dialogs.
+    * Fix naming to "Switch off" and "Sleep"
+    * Blocking the current user from the user list
+    * Change sorting to be based on real names and handle conflicts
+    * Removing some ConsoleKit errors (lp: #529830)
+    * Memory leak on PangoLayout allocation
+    * Don't set GTK decorations
+    * ConsoleKit fallback if gnome-session not available
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 04 Mar 2010 12:33:08 -0600
+
+indicator-session (0.2.4-0ubuntu2) lucid; urgency=low
+
+  * Backport upstream change to fix decoration rendering issues
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 02 Mar 2010 16:03:20 +0100
+
+indicator-session (0.2.4-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.2.4
+    * When we can't shutdown with gnome-session fallback to using
+      ConsoleKit.
+    * Detect when GPM isn't available and don't error out.
+    * Change suspend and hibernate detection property names for
+      adjustment to upower.
+
+  [Ken VanDine]
+  * debian/patches/fix-session-menu-without-gdm.patch
+    - dropped patch, merged upstream
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 25 Feb 2010 11:57:41 -0600
+
+indicator-session (0.2.3-0ubuntu2) lucid; urgency=low
+
+  * debian/patches/fix-session-menu-without-gdm.patch
+    - Don't fail with a g_error when we fail to get a list of user sessions 
+      from gdm (LP: #506683)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 19 Feb 2010 09:43:14 -0500
+
+indicator-session (0.2.3-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.2.3
+    * Switch menu ordering to match design spec
+    * Change switch menu item to "Switch from..."
+    * Move from Devkit-Power to upower
+    * Adding in user logged in icon and menu item
+  * Removed debian/patches/01_port_to_upower.patch as it is now merged
+    upstream.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Feb 2010 09:49:22 -0600
+
+indicator-session (0.2.2-0ubuntu2) lucid; urgency=low
+
+  * debian/control: Update devicekit-power dependency to upower.
+  * Add debian/patches/01_port_to_upower.patch: Straightforward port to
+    upower's D-Bus API. A more elaborate port to libupower-glib has been
+    proposed upstream as well, but it's not yet clear whether to use the
+    client library or the D-Bus API.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 17 Feb 2010 11:30:00 +0100
+
+indicator-session (0.2.2-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.2.2
+    * Check the user_switching lockdown key to disable user_switching
+    * Only create the screensaver proxy when needed.
+    * Removing unneeded GPM proxy
+    * Fixing and reenabling user switching
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 11 Feb 2010 10:53:06 -0600
+
+indicator-session (0.2.1-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.2.1
+    * Dbusmenu 0.2.2 support
+    * GNOME Screensaver fix (LP: #484603)
+  * debian/control: Upping dbusmenu dependency to 0.2.2
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 04 Feb 2010 17:34:10 -0800
+
+indicator-session (0.2.0-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.2.0
+    * Removing status support
+    * Merging the users service and the session service
+  * debian/control: Updating to depend on dbusmenu 0.2.0 or higher. 
+  * debian/control: Dropping build depends for libtelepathy-glib-dev
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 09:33:15 -0600
+
+indicator-session (0.2.0~dev-0ubuntu1~ppa2) karmic; urgency=low
+
+  * debian/rules
+    - removed the extra disable-scrollkeeper arg to configure (LP: #418772)
+  * debian/control
+    - removed the build dep for scrollkeeper
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 06 Nov 2009 10:24:06 -0500
+
+indicator-session (0.2.0~dev-0ubuntu1~ppa1) karmic; urgency=low
+
+  * Updating to the libindicate 0.3.0 API
+  * debian/control: Upping the libindicator-dev version to >= 0.3.0~dev
+  * debian/patches/01_locking_on_autologin.patch as it doesn't
+    apply.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 05 Nov 2009 09:26:56 -0600
+
+indicator-session (0.1.7+r58-0ubuntu1) lucid; urgency=low
+
+  * New snapshot for libindicator 0.3.0
+  * debian/control
+    - build depend on libtelepathy-glib-dev instead of libempathy-dev
+    - build depend on libindicator-dev >= 0.3.0
+  * removed 03_tp_glib.patch and 99_autoreconf.patch, applied upstream
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Dec 2009 10:42:21 -0500
+
+indicator-session (0.1.7-0ubuntu5) lucid; urgency=low
+
+  * debian/patches/03_tp_glib.patch
+    - Updated patch to properly work with TpAccountManager 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 08 Dec 2009 11:01:38 -0500
+
+indicator-session (0.1.7-0ubuntu4) lucid; urgency=low
+
+  * debian/patches/02_mc5-fixes.patch
+    - Renamed the patch for ordering
+  * debian/patches/03_tp_glib.patch
+    - Port from libempathy to telepathy-glib (LP: #461367)
+  * debian/patches/99_autoreconf.patch
+    - autoreconf for telepathy change
+  * debian/control
+    - build depend on libtelepathy-glib-dev instead of libempathy-dev
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 08 Dec 2009 08:58:06 -0500
+
 indicator-session (0.1.7-0ubuntu3) karmic; urgency=low
 
   * debian/patches/01_locking_on_autologin.patch:
@@ -5,6 +356,14 @@ indicator-session (0.1.7-0ubuntu3) karmic; urgency=low
       thank David Barth (lp: #438936)
 
  -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 14 Oct 2009 19:16:24 +0200
+
+indicator-session (0.1.7-0ubuntu3~ppa1) karmic; urgency=low
+
+  * Listen on DBus for MissionControl coming on and off the bus
+    as EmpathyAccountManager used to do that for us before.
+  * Remove debian/patches/mc5-fixes.patch
+
+ -- Ted Gould <ted@ubuntu.com>  Sat, 10 Oct 2009 08:44:16 -0400
 
 indicator-session (0.1.7-0ubuntu2) karmic; urgency=low
 
@@ -141,41 +500,6 @@ indicator-session (0.1.1-0ubuntu1) karmic; urgency=low
 
  -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 04 Sep 2009 11:46:25 +0200
 
-indicator-session (0.1-0ubuntu1) karmic; urgency=low
-
-  [ Ted Gould ]
-  * Upstream version 0.1 (LP: #420108)
-  * debian/control: Looking for libdbusmenu* >= 0.1.0
-  * debian/control: Shortening the short description and lengthening
-    the long one.  Fixes a bug (LP: #412024)
-  * debian/watch:
-    - fixed url
-
-  [ Martin Pitt ]
-  * Re-add dropped debian/compat.
-
-  Re-add fixes which got lost in branch renaming:
-  * debian/control: Fix Vcs-* links.
-  * debian/rules: debian/rules: Update *.a/*.la cleanup for -sus → -session
-    renaming.
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 21:30:27 +0200
-
-indicator-session (0.1~bzr17-0ubuntu1) karmic; urgency=low
-
-  * New snapshot (LP: #417035)
-  * Package rename from 'indicator-sus' to 'indicator-session'
-  * Merging in the branch that adds in the status icons to
-    the panel.
-  * debian/control:
-    - Switching to indicator-session and conflicting
-    - Changed Vcs-Bzr to point to ~ubuntu-desktop
-    - Changed the project homepage
-    and replacing indicator-sus
-  * debian/watch: Switching to indicator-session*
-
- -- Ken VanDine <ken.vandine@canonical.com>  Fri, 21 Aug 2009 12:28:13 -0400
-
 indicator-sus (0.1-0ubuntu2) UNRELEASE; urgency=low
 
   * Fixed Vcs-Bzr location, part of the  indicator-applet project
@@ -226,3 +550,19 @@ indicator-sus (0.1~ppa1) intrepid; urgency=low
   * Initial release
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 04 Dec 2008 23:51:41 -0800
+
+indicator-session (0.1~bzr17-0ubuntu1) karmic; urgency=low
+
+  * New snapshot (LP: #417035)
+  * Package rename from 'indicator-sus' to 'indicator-session'
+  * Merging in the branch that adds in the status icons to
+    the panel.
+  * debian/control:
+    - Switching to indicator-session and conflicting
+    - Changed Vcs-Bzr to point to ~ubuntu-desktop
+    - Changed the project homepage
+    and replacing indicator-sus
+  * debian/watch: Switching to indicator-session*
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 21 Aug 2009 12:28:13 -0400
+
