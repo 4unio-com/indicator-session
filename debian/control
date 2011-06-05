@@ -14,7 +14,7 @@ Build-Depends: debhelper (>= 5.0),
                libdbusmenu-gtk-dev (>= 0.3.91),
                libpolkit-gobject-1-dev,
                intltool
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 Homepage: https://launchpad.net/indicator-session
 Vcs-Bzr: http://bzr.debian.org/bzr/pkg-ayatana/indicator-session/debian
 Vcs-Browser: http://bzr.debian.org/loggerhead/pkg-ayatana/indicator-session/debian

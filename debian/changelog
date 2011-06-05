@@ -1,3 +1,24 @@
+indicator-session (0.2.17-1) unstable; urgency=low
+
+  * Merge new upstream release from Ubuntu.
+  * Standards-Version: 3.9.2
+
+ -- Evgeni Golov <evgeni@debian.org>  Sun, 05 Jun 2011 13:28:54 +0200
+
+indicator-session (0.2.17-0ubuntu1) natty; urgency=low
+
+  * New upstream release.
+    * Don't die if we can't send an image update (LP: #747818)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 14 Apr 2011 16:06:04 -0500
+
+indicator-session (0.2.16-0ubuntu1) natty; urgency=low
+
+  * New upstream release.
+    * Don't error and crash Unity (LP: #745323)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 07 Apr 2011 12:46:00 -0500
+
 indicator-session (0.2.15-1) unstable; urgency=low
 
   * Merge from Ubuntu.
