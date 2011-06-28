@@ -137,28 +137,36 @@ check_restart_required (void)
 static gboolean
 ck_check_allowed (LogoutDialogType type)
 {
-	DBusGConnection * system_bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, NULL);
-	g_return_val_if_fail(system_bus != NULL, TRUE);
-
-	DBusGProxy * ck_proxy = dbus_g_proxy_new_for_name (system_bus,
-	                                                   "org.freedesktop.ConsoleKit",
-	                                                   "/org/freedesktop/ConsoleKit/Manager",
-	                                                   "org.freedesktop.ConsoleKit.Manager");
-	g_return_val_if_fail(ck_proxy != NULL, TRUE);
-
+	DBusGConnection *system_bus;
 	gboolean retval = TRUE;
+	const gchar *method;
+	GVariant *reply;
+
 	switch (type) {
 	case LOGOUT_DIALOG_TYPE_RESTART:
-		org_freedesktop_ConsoleKit_Manager_can_restart(ck_proxy, &retval, NULL);
+		method = "CanRestart";
 		break;
 	case LOGOUT_DIALOG_TYPE_SHUTDOWN:
-		org_freedesktop_ConsoleKit_Manager_can_stop(ck_proxy, &retval, NULL);
+		method = "CanStop";
 		break;
 	default:
-		break;
+		return TRUE;
 	}
 
-	g_object_unref(ck_proxy);
+	system_bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
+	g_return_val_if_fail (system_bus != NULL, TRUE);
+	reply = g_dbus_connection_call_sync (system_bus,
+	                                     "org.freedesktop.ConsoleKit",
+	                                     "/org/freedesktop/ConsoleKit/Manager",
+	                                     "org.freedesktop.ConsoleKit.Manager",
+	                                     method_name, NULL, G_VARIANT_TYPE ("(b)"),
+	                                     flags, -1, NULL, NULL);
+	g_object_unref (system_bus);
+
+	if (reply) {
+		g_variant_get (reply, "(b)", &retval);
+		g_variant_unref (reply);
+	}
 
 	return retval;
 }
