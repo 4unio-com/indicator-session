@@ -66,7 +66,6 @@ static void  apt_watcher_manage_transactions (AptWatcher* self,
                                               gchar* transaction_id);
                                    
 
-
 G_DEFINE_TYPE (AptWatcher, apt_watcher, G_TYPE_OBJECT);
 
 static void

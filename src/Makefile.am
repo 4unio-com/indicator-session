@@ -100,6 +100,8 @@ indicator_session_service_SOURCES = \
 	apt-watcher.c \
 	apt-transaction.h \
 	apt-transaction.c \
+	ubuntu-system-service.h \
+	ubuntu-system-service.c \
 	udev-mgr.h \
 	udev-mgr.c
 indicator_session_service_CFLAGS = \
