@@ -498,8 +498,7 @@ receive_signal (GDBusProxy * proxy,
     }
   }
   else if (g_strcmp0(signal_name, "RebootRequired") == 0) {
-    // TODO waiting on design to give me a name.
-    self->devices.image = indicator_image_helper ("system-devices-alert-panel");        
+    self->devices.image = indicator_image_helper ("system-devices-panel-alert");
   }  
 }
 
