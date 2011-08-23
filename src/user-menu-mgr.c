@@ -49,6 +49,9 @@ static gint compare_users_by_username (const gchar *a,
 static void activate_online_accounts (DbusmenuMenuitem *mi,
                                       guint timestamp,
                                       gpointer user_data);
+static void activate_user_accounts (DbusmenuMenuitem *mi,
+                                    guint timestamp,
+                                    gpointer user_data);                               
 static void user_menu_mgr_rebuild_items (UserMenuMgr *self,
                                          gboolean greeter_mode);
 static gboolean check_new_session ();
@@ -239,6 +242,8 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
           g_debug ("about to set the users real name to %s for user %s",
                     user->real_name, user->user_name);
           session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
+          session_dbus_set_current_user_image (self->session_dbus_interface, 
+                                               g_strdup(dbusmenu_menuitem_property_get(mi, USER_ITEM_PROP_ICON)));          
         }
         
         dbusmenu_menuitem_child_append (self->root_item, mi);

@@ -91,11 +91,15 @@ static gboolean build_restart_item (DbusmenuMenuitem * newitem,
                                     gpointer user_data);
 static void indicator_session_update_users_label (IndicatorSession* self,
                                                   const gchar* name);
+static void indicator_session_update_users_panel_icon (IndicatorSession* self, 
+                                                       const gchar* name);
+                                                  
 static void service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data);
 static void receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name, GVariant * parameters, gpointer user_data);
 static void service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data);
 static void user_real_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data);
 static void user_menu_visibility_get_cb (GObject* obj, GAsyncResult* res, gpointer user_data);
+static void current_user_image_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data);
 
 static void indicator_session_class_init (IndicatorSessionClass *klass);
 static void indicator_session_init       (IndicatorSession *self);
@@ -144,23 +148,16 @@ indicator_session_init (IndicatorSession *self)
   GdkPixbuf* pixbuf  = NULL; 
   GError* error = NULL;
   pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-                                     "avatar-default",
+                                     USER_ITEM_ICON_DEFAULT,
                                      17,
                                      GTK_ICON_LOOKUP_FORCE_SIZE,
                                      &error);
   
-  // I think the avatar image is available always but just in case have a fallback
-  if (error != NULL) {
-    g_warning ("Could not load the default avatar image for some reason");
-    self->users.image = indicator_image_helper (USER_ITEM_ICON_DEFAULT);
-  }
-  else{
-    avatar_icon = gtk_image_new ();
-    gtk_image_set_from_pixbuf (GTK_IMAGE (avatar_icon), pixbuf);
-    self->users.image = GTK_IMAGE (avatar_icon);
-    g_object_unref (pixbuf);
-    g_error_free (error);
-  }
+  avatar_icon = gtk_image_new ();
+  gtk_image_set_from_pixbuf (GTK_IMAGE (avatar_icon), pixbuf);
+  self->users.image = GTK_IMAGE (avatar_icon);
+  g_object_unref (pixbuf);
+  g_error_free (error);
                                                       
   self->users.label = GTK_LABEL (gtk_label_new (NULL));
 
@@ -169,10 +166,10 @@ indicator_session_init (IndicatorSession *self)
                                                       INDICATOR_SESSION_DBUS_OBJECT));
   self->devices.image = indicator_image_helper (ICON_DEFAULT);
   
-  gtk_widget_show (GTK_WIDGET(self->devices.menu));
-  gtk_widget_show (GTK_WIDGET(self->devices.image));
-  gtk_widget_show (GTK_WIDGET(self->users.image));
-  gtk_widget_show (GTK_WIDGET(self->users.menu));
+  gtk_widget_show (GTK_WIDGET (self->devices.menu));
+  gtk_widget_show (GTK_WIDGET (self->devices.image));
+  gtk_widget_show (GTK_WIDGET (self->users.image));
+  gtk_widget_show (GTK_WIDGET (self->users.menu));
   
   g_object_ref_sink (self->users.menu);
   g_object_ref_sink (self->users.image);
@@ -302,6 +299,14 @@ service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointe
                          NULL,
                          user_real_name_get_cb,
                          user_data);      
+      g_dbus_proxy_call (self->service_proxy,
+                         "GetCurrentUserImage",
+                         NULL,
+                         G_DBUS_CALL_FLAGS_NONE,
+                         -1,
+                         NULL,
+                         current_user_image_get_cb,
+                         user_data);                               
       return;
     }
     
@@ -422,6 +427,27 @@ user_real_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 	return;
 }
 
+static void
+current_user_image_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
+{
+	IndicatorSession * self = INDICATOR_SESSION(user_data);
+	GError * error = NULL;
+	GVariant * result;
+
+	result = g_dbus_proxy_call_finish(self->service_proxy, res, &error);
+
+	if (error != NULL) {
+    g_warning ("unable to complete current user image get");
+    g_error_free (error);
+		return;
+	}
+  
+  const gchar* image_path = NULL;
+  g_variant_get (result, "(s)", &image_path);
+  indicator_session_update_users_panel_icon (self, image_path);
+	return;
+}
+
 static void 
 user_menu_visibility_get_cb (GObject* obj, GAsyncResult* res, gpointer user_data)
 {
@@ -468,10 +494,15 @@ receive_signal (GDBusProxy * proxy,
 {
 	IndicatorSession * self = INDICATOR_SESSION(user_data);
 
-	if (g_strcmp0(signal_name, "UserRealNameUpdated") == 0) {
+	if (g_strcmp0(signal_name, "UserRealNameUpdated") == 0) {    
     const gchar* username = NULL;
     g_variant_get (parameters, "(s)", &username);
     indicator_session_update_users_label (self, username);	
+  }
+	else if (g_strcmp0(signal_name, "CurrentUserImage") == 0) {
+    const gchar* path = NULL;
+    g_variant_get (parameters, "(s)", &path);
+    indicator_session_update_users_panel_icon (self, path);    
   }
   else if (g_strcmp0(signal_name, "UserMenuIsVisible") == 0) {
     gboolean update;
@@ -678,6 +709,31 @@ build_menu_switch (DbusmenuMenuitem * newitem,
                           dbusmenu_menuitem_property_get_variant(newitem, MENU_SWITCH_USER), client);
   	
   return TRUE;
+}
+
+static void
+indicator_session_update_users_panel_icon (IndicatorSession* self, 
+                                           const gchar* name)
+{
+  GdkPixbuf* pixbuf  = NULL; 
+  GError* error = NULL;
+  pixbuf = gdk_pixbuf_new_from_file_at_size (name, 17, 17, NULL);
+  g_debug ("indicator_session_update_users_panel_icon %s", name);
+  if (pixbuf == NULL || error != NULL) {
+    g_warning ("Could not load the user image (%s) for some reason",
+                name);
+  }
+  else{
+    gtk_image_set_from_pixbuf (GTK_IMAGE(self->users.image), pixbuf);
+  }
+  if (pixbuf != NULL){
+    g_object_unref (pixbuf);
+    pixbuf = NULL;
+  }
+  if (error != NULL){
+    g_error_free (error);
+    error = NULL;
+  }  
 }
 
 static void

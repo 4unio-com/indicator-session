@@ -5,6 +5,9 @@
     <method name="GetUserRealName">
       <arg name="name" direction="out" type="s"/>
     </method>
+    <method name="GetCurrentUserImage">
+      <arg name="path" direction="out" type="s"/>
+    </method>
     <method name="GetUserMenuVisibility">
       <arg name="update" direction="out" type="b"/>
     </method>
@@ -13,6 +16,9 @@
     </method>
     <signal name="UserRealNameUpdated">
       <arg name="name" type="s"/>
+    </signal>
+    <signal name="CurrentUserImage">
+      <arg name="path" type="s"/>
     </signal>
     <signal name="UserMenuIsVisible">
       <arg name="update" type="b"/>

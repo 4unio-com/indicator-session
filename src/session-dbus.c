@@ -38,6 +38,7 @@ static void bus_method_call (GDBusConnection * connection, const gchar * sender,
 typedef struct _SessionDbusPrivate SessionDbusPrivate;
 struct _SessionDbusPrivate {
 	gchar * name;
+  gchar * user_image;
   gboolean user_menu_is_visible;
 	GDBusConnection * bus;
 	GCancellable * bus_cancel;
@@ -99,7 +100,7 @@ static void
 session_dbus_init (SessionDbus *self)
 {
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(self);
-
+  priv->user_image = NULL;
 	priv->name = NULL;
 	priv->bus = NULL;
 	priv->bus_cancel = NULL;
@@ -170,6 +171,9 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
 
 	if (g_strcmp0(method, "GetUserRealName") == 0) {
 		retval = get_users_real_name (service);
+	}
+	else if (g_strcmp0(method, "GetCurrentUserImage") == 0) {
+		retval = g_variant_new ("(s)", priv->user_image);
 	}
   else if (g_strcmp0 (method, "GetUserMenuVisibility") == 0){
     retval =  g_variant_new ("(b)", priv->user_menu_is_visible);
@@ -289,6 +293,30 @@ session_dbus_set_user_menu_visibility (SessionDbus* session,
 
 		if (error != NULL) {
 			g_warning("Unable to send UserMenuIsVisible signal: %s", error->message);
+			g_error_free(error);
+		}
+	}  
+}
+
+void 
+session_dbus_set_current_user_image (SessionDbus* session, gchar* image)
+{
+	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(session);
+	GError * error = NULL;
+    
+	priv->user_image = image;
+
+	if (priv->bus != NULL && priv->user_image != NULL) {
+		g_dbus_connection_emit_signal (priv->bus,
+                                   NULL,
+                                   INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
+                                   INDICATOR_SESSION_SERVICE_DBUS_IFACE,
+                                   "CurrentUserImage",
+                                   g_variant_new ("(s)", priv->user_image),
+                                   &error);
+
+		if (error != NULL) {
+			g_warning("Unable to send Current User Image signal: %s", error->message);
 			g_error_free(error);
 		}
 	}  
