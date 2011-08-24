@@ -62,7 +62,7 @@ struct _IndicatorSessionClass {
 
 struct _IndicatorSession {
 	IndicatorObject parent;
-	IndicatorServiceManager * service;
+	IndicatorServiceManager *service;
   IndicatorObjectEntry users;
   IndicatorObjectEntry devices;
   gboolean show_users_entry;
@@ -136,32 +136,10 @@ indicator_session_init (IndicatorSession *self)
                    INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE,
                    G_CALLBACK(service_connection_cb), self);
 
-  GtkWidget* avatar_icon = NULL;
   // users
   self->users.menu =  GTK_MENU (dbusmenu_gtkmenu_new (INDICATOR_USERS_DBUS_NAME,
                                                       INDICATOR_USERS_DBUS_OBJECT));
-  // Set the image to the default avator image
-  GdkPixbuf* pixbuf  = NULL; 
-  GError* error = NULL;
-  pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-                                     "avatar-default",
-                                     17,
-                                     GTK_ICON_LOOKUP_FORCE_SIZE,
-                                     &error);
-  
-  // I think the avatar image is available always but just in case have a fallback
-  if (error != NULL) {
-    g_warning ("Could not load the default avatar image for some reason");
-    self->users.image = indicator_image_helper (USER_ITEM_ICON_DEFAULT);
-  }
-  else{
-    avatar_icon = gtk_image_new ();
-    gtk_image_set_from_pixbuf (GTK_IMAGE (avatar_icon), pixbuf);
-    self->users.image = GTK_IMAGE (avatar_icon);
-    g_object_unref (pixbuf);
-    g_error_free (error);
-  }
-                                                      
+                                                        
   self->users.label = GTK_LABEL (gtk_label_new (NULL));
 
   // devices
