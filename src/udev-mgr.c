@@ -251,7 +251,7 @@ udev_mgr_handle_webcam (UdevMgr* self,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       format_device_name (self,
                                                           g_strdup(manufacturer),
-                                                          "Webcam"));
+                                                          g_strdup("Webcam")));
     }
     
     g_hash_table_insert (self->webcams_present,
@@ -326,7 +326,7 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       format_device_name (self,
                                                           g_strdup(manufacturer),
-                                                          "Scanner"));
+                                                          g_strdup("Scanner")));
     }
     
     gchar* random_scanner_name = 	g_strdup_printf("%p--scanner", self);
@@ -391,7 +391,7 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
                                           DBUSMENU_MENUITEM_PROP_LABEL,
                                           format_device_name (self,
                                                               g_strdup(manufacturer),
-                                                              "Scanner"));
+                                                              g_strdup("Scanner")));
         }
         g_hash_table_insert (self->scanners_present,
                              g_strdup(vendor),
@@ -458,7 +458,7 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
                                           DBUSMENU_MENUITEM_PROP_LABEL,
                                           format_device_name (self,
                                                               g_strdup(manufacturer),
-                                                              "Scanner"));
+                                                              g_strdup("Scanner")));
         }
                                         
         g_hash_table_insert (self->scanners_present,
@@ -530,7 +530,7 @@ static gchar* format_device_name (UdevMgr* self,
 
   gchar* lowered = g_ascii_strdown (brand, -1);
   lowered[0] = g_ascii_toupper (lowered[0]);
-  gchar* label = g_strdup_printf(_("%s %s"), lowered, type);
+  gchar* label = g_strdup_printf("%s %s", lowered, type);
   g_free (lowered);  
-  return label;
+  return _(label);
 }
