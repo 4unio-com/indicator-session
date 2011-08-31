@@ -155,8 +155,11 @@ keybinding_changed (GSettings   *settings,
 	if (g_strcmp0 (key, KEY_LOCK_SCREEN) == 0) {
 		g_debug("Keybinding changed to: %s", g_settings_get_string(settings, key));
 		if (lock_menuitem != NULL) {
-			dbusmenu_menuitem_property_set_shortcut_string (lock_menuitem,
-                                                      g_settings_get_string(settings, key));
+      gchar* lock_setting = g_settings_get_string(settings, key);
+      if (lock_setting != NULL){
+			  dbusmenu_menuitem_property_set_shortcut_string (lock_menuitem,
+                                                        lock_setting);
+      }
 		}
 	}
 	return;
