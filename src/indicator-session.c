@@ -713,7 +713,11 @@ indicator_session_update_users_label (IndicatorSession* self,
   gboolean use_name = g_settings_get_boolean (settings,
                                               "show-real-name-on-panel");    
   g_object_unref (settings);
-  gtk_label_set_text (self->users.label, g_strdup(name));
+  
+  if (g_utf8_validate (name, -1, NULL) == TRUE){
+    gtk_label_set_text (self->users.label, g_strdup(name));
+  }
+  
   if (use_name){ 
     gtk_widget_show(GTK_WIDGET(self->users.label));
   }
