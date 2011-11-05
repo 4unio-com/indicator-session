@@ -1,3 +1,254 @@
+indicator-session (0.3.7.1-1) experimental; urgency=low
+
+  * Merge from Ubuntu.
+    + Doesn't FTBFS with -Werror.
+      Closes: #625356
+  * Update debian/copyright.
+  * Add lintian override for desktop-command-not-in-package,
+    we need an own xdg-screensaver .desktop file.
+
+ -- Evgeni Golov <evgeni@debian.org>  Sat, 05 Nov 2011 19:02:56 +0100
+
+indicator-session (0.3.7.1-0ubuntu1) precise; urgency=low
+
+  * New upstream release.
+    - indicator-session shows name as "[Invalid UTF-8]" if there are 
+      more than 6 user accounts (LP: #874194)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 28 Oct 2011 11:55:38 -0400
+
+indicator-session (0.3.7-0ubuntu1) oneiric-proposed; urgency=low
+
+  * New upstream release.
+    * Fix some variant ref issues causing crashes (LP: #863930)
+    * Handle cases of returned dbus messages from ConsoleKit (LP: #864085)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 13 Oct 2011 13:19:13 -0500
+
+indicator-session (0.3.6-0ubuntu2) oneiric; urgency=low
+
+  * data/indicator-session.convert
+    - Fixed improperly mapped gconf to gsettings keys (LP: #858798)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 03 Oct 2011 10:26:54 -0400
+
+indicator-session (0.3.6-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    * Fix convert file key naming (LP: #847807)
+    * Use environment variable to get seat path (LP: #856455)
+    * Fix abort when using ConsoleKit fallback (LP: #740382)
+    * Update session icon instead of creating a new one (LP: #854292)
+    * Update to latest Launchpad translations
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 27 Sep 2011 17:06:47 -0500
+
+indicator-session (0.3.5.1-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - don't start apt on logging
+    - [UIFe] should say "Restart to Complete Updates…" (LP: #850013)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 15 Sep 2011 10:33:56 +0200
+
+indicator-session (0.3.5.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release:
+    - fix the updates menu items randomly working (lp: #842946)
+    - "Guest Session should not show if guest session was disabled in 
+       the display manager" (lp: #835084)
+    - segfault fix (lp: #840660)
+    - don't display temporary guest user generated username (lp: #844272)
+    - respect "show-real-name-on-panel" to hide the username (lp: #812728)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Sep 2011 11:18:26 +0200
+
+indicator-session (0.3.4.3-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - new gsettings key "com.canonical.indicator.session user-show-menu"
+    - "[UIFe]Greeter power menu has cog icon but no settings" 
+      (lp: #838546)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 06 Sep 2011 22:09:41 +0200
+
+indicator-session (0.3.4.2-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - states 'software up-to-date' although there're updates 
+      available" (LP: #831650)
+  * -debian/patches/revert_icon_change.patch
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 02 Sep 2011 12:22:03 -0400
+
+indicator-session (0.3.4.1-0ubuntu1) oneiric; urgency=low
+
+  [Ken VanDine]
+  * New upstream release.
+    - in a Guest session user menu is not visible (LP: #834948)
+    - User name shown as [Invalid UTF-8] in live session (LP: #837246)
+    - "Reboot Required" menu opens Update Manager, doesn't reboot (LP: #837658)
+    - indicator-session-service crashed with SIGSEGV in 
+      g_str_hash() (LP: #824243)
+    - indicator-session-service crashed with SIGSEGV in 
+      g_variant_unref() (LP: #833965)
+  * +debian/patches/revert_icon_change.patch
+    - revert the icon change in greeter mode until a UIF exception is 
+      approved
+  * +debian/source/format
+
+  [Ted Gould]
+  * debian/control: Adding a depend on gnome-settings-daemon to ensure that
+    the required schemas are available.  (LP: #833965)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 01 Sep 2011 13:53:50 -0400
+
+indicator-session (0.3.3.2-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - Don't set LC_ALL to C
+  * debian/rules
+    - dh_translations doesn't handle multibuilds, so manually add the domain
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 26 Aug 2011 09:49:37 -0400
+
+indicator-session (0.3.3.1-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - Fixed string displayed for users name on single user systems 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Aug 2011 15:25:40 -0400
+
+indicator-session (0.3.3-0ubuntu2) oneiric; urgency=low
+
+  * src/udev-mgr.c
+    - Cherry picked fix for (LP: #833795)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Aug 2011 12:56:17 -0400
+
+indicator-session (0.3.3-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - User menu should still show even if there is only 1 user (LP: #831758)
+    - Bluetooth item in menu not needed (LP: #825111)
+    - Newly created users are not added to the menu until next 
+      login (LP: #552048)
+    - Users list in shutdown menu is not updated on user 
+      deletion (LP: #557608)
+    - should use gsettings rather than gconf (LP: #656323)
+  * debian/control
+    - Bump dbusmenu build dep to >= 0.4.92
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Aug 2011 08:58:56 -0400
+
+indicator-session (0.3.2-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - Top-right bar shows "nvalid UTF-8]" (LP: #811852)
+    - Don't display 'updates available' when there aren't any (LP: #819495)
+    - guest item in user menu (LP: #827909)
+    - user menu shows all users with active sessions (LP: #827932)
+    - Use ellipsis consistently in the indicator-session strings (LP: #621339)
+    - ftbfs with gcc-4.6 -Werror (LP: #793105)
+    - lightdm asks for password when resuming from suspend even when no one 
+      is logged in (LP: #812804)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 18 Aug 2011 14:30:06 -0400
+
+indicator-session (0.3.1-0ubuntu2) oneiric; urgency=low
+
+  * debian/rules: run intltool-update to update the translations template
+    (lp: #820705)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 11 Aug 2011 17:09:08 +0200
+
+indicator-session (0.3.1-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - restart is missing from SessionMenu (LP: #815077)
+    - Don't allow starting programs via the greeter indicators (LP: #811853)
+    - Printer menu item should launch system-config-printer (LP: #818602)
+    - gudev integration
+    - apt restart required awareness
+  * debian/control
+    - Added build depends on libgudev-1.0-dev
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 10 Aug 2011 16:23:33 -0400
+
+indicator-session (0.3.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - fixed bug where the user menu wouldn't open in unity (LP: #812728)
+    - Include apt, settings and device menus
+  * debian/rules
+    - Updated gtk configure args
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 22 Jul 2011 13:41:08 -0400
+
+indicator-session (0.2.93-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+  * debian/control 
+    - Added Replaces indicator-me
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 14 Jul 2011 14:29:15 -0400
+
+indicator-session (0.2.92-0ubuntu2) oneiric; urgency=low
+
+  * src/session-service.c: drop g_debug leftover which broke the build
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 08 Jul 2011 11:52:43 +0200
+
+indicator-session (0.2.92-0ubuntu1) oneiric; urgency=low
+
+  [ Ted Gould ]
+  * New upstream release. (0.2.91)
+    * Integrates with LightDM now
+    * Moved to libindicator 0.4
+  * New upstream release. (0.2.92)
+    * Fixed dist'ing the XML files
+  * debian/control: Move suggests from gdm to lightdm 
+
+  [ Ken VanDine ]
+  * debian/control
+    - bumped build depends for libindicator to >= 0.3.90
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 07 Jul 2011 14:59:44 -0400
+
+indicator-session (0.2.90-0ubuntu3) oneiric; urgency=low
+
+  * Rebuild for libdbusmenu-gtk3-4
+  * debian/control
+    - Dropped build depends on indicator-session-gtk2
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 28 Jun 2011 09:06:33 -0400
+
+indicator-session (0.2.90-0ubuntu2) oneiric; urgency=low
+
+  * debian/control
+    - Properly recommend indicator-session-gtk2
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 23 Jun 2011 10:05:25 -0400
+
+indicator-session (0.2.90-0ubuntu1) oneiric; urgency=low
+
+  [ Ted Gould ]
+  * New upstream release.
+    * GTK3 support
+
+  [ Ken VanDine ]
+  * debian/control
+    - Bumped standards version to 3.9.2
+    - Add new binary for indicator-session-gtk2 
+    - Make indicator-session recommend indicator-session-gtk2 (until unity 
+      can load gtk3 indicators)
+    - indicator-session-gtk2 replaces indicator-session << 0.2.90
+    - Added build depends for libdbusmenu-gtk3-dev and libindicator3-dev
+  * debian/rules
+    - build for both gtk2 and gtk3
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 22 Jun 2011 12:18:18 -0400
+
 indicator-session (0.2.17-1) unstable; urgency=low
 
   * Merge new upstream release from Ubuntu.

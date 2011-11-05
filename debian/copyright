@@ -1,4 +1,4 @@
-Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=173
+Format: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=173
 Upstream-Name: indicator-session
 Upstream-Contact: Ted Gould <ted@canonical.com>
 Source: https://launchpad.net/indicator-session

@@ -53,16 +53,16 @@ static const gchar * button_strings[LOGOUT_DIALOG_TYPE_CNT] = {
    they are also going to get a password dialog to do the action. */
 static const gchar * button_auth_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	NC_("button auth", "Log Out"),
-	/* LOGOUT_DIALOG_RESTART, */	NC_("button auth", "Restart..."),
-	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button auth", "Shut Down...")
+	/* LOGOUT_DIALOG_RESTART, */	NC_("button auth", "Restart…"),
+	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button auth", "Shut Down…")
 };
 
 /* TRANSLATORS: This button appears on the logout dialog when
    there are updates that require restart.  It will do a restart
    in place of a log out. */
 static const gchar * restart_updates = N_("Restart Instead");
-static const gchar * restart_auth = N_("Restart Instead...");
-static const gchar * body_logout_update = N_("Some software updates won't apply until the computer next restarts.");
+static const gchar * restart_auth = N_("Restart Instead…");
+static const gchar * body_logout_update = N_("Some software updates won’t apply until the computer next restarts.");
 
 static const gchar * icon_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	"system-log-out",
@@ -183,6 +183,8 @@ logout_dialog_new (LogoutDialogType type)
 	                                      "text", _(body_strings[type]),
 	                                      NULL));
 
+	gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
+
 	gboolean allowed = FALSE;
 	if (type == LOGOUT_DIALOG_TYPE_LOG_OUT) {
 		allowed = ck_check_allowed(LOGOUT_DIALOG_TYPE_RESTART);
@@ -223,6 +225,12 @@ logout_dialog_new (LogoutDialogType type)
 		                       button_text, GTK_RESPONSE_OK,
 		                       NULL);
 	}
+  
+  if (type == LOGOUT_DIALOG_TYPE_SHUTDOWN){
+  	const gchar * restart_text;
+		restart_text = g_dpgettext2 (NULL, "button", button_strings[LOGOUT_DIALOG_TYPE_RESTART]);
+		gtk_dialog_add_button (GTK_DIALOG(dialog), restart_text, GTK_RESPONSE_HELP);    
+  }
 
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 

@@ -20,16 +20,25 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef __DBUS_SHARED_NAMES_H__
-#define __DBUS_SHARED_NAMES_H__ 1
+#define __DBUS_SHARED_NAMES_H__ 
 
-#define INDICATOR_STATUS_DBUS_NAME  "com.canonical.indicator.status"
-#define INDICATOR_STATUS_DBUS_OBJECT "/com/canonical/indicator/status/menu"
-#define INDICATOR_STATUS_SERVICE_DBUS_OBJECT "/com/canonical/indicator/status/service"
-#define INDICATOR_STATUS_SERVICE_DBUS_INTERFACE "com.canonical.indicator.status.service"
+typedef enum {
+  UP_TO_DATE,
+  CHECKING_FOR_UPDATES,
+  UPDATES_AVAILABLE,
+  UPGRADE_IN_PROGRESS, 
+  FINISHED, 
+  RESTART_NEEDED,
+  DONT_KNOW
+}AptState;
 
-#define INDICATOR_USERS_DBUS_NAME  "com.canonical.indicator.users"
+typedef enum {
+  SIMULATION,
+  REAL
+}TransactionType;
+
+#define INDICATOR_USERS_DBUS_NAME  INDICATOR_SESSION_DBUS_NAME
 #define INDICATOR_USERS_DBUS_OBJECT "/com/canonical/indicator/users/menu"
 #define INDICATOR_USERS_SERVICE_DBUS_OBJECT "/org/gnome/DisplayManager/UserManager"
 #define INDICATOR_USERS_SERVICE_DBUS_INTERFACE "org.gnome.DisplayManager.UserManager"
@@ -44,14 +53,17 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define USER_ITEM_TYPE            "x-canonical-user-item"
 #define USER_ITEM_PROP_NAME       "user-item-name"
 #define USER_ITEM_PROP_LOGGED_IN  "user-item-logged-in"
+#define USER_ITEM_PROP_IS_CURRENT_USER "user-item-is-current-user"
 #define USER_ITEM_PROP_ICON       "user-item-icon-path"
-#define USER_ITEM_ICON_DEFAULT    "default-icon"
+#define USER_ITEM_ICON_DEFAULT    "avatar-default"
 
 #define RESTART_ITEM_TYPE         "x-canonical-restart-item"
 #define RESTART_ITEM_LABEL        "restart-label"
 #define RESTART_ITEM_ICON         "restart-icon"
 
-#define ICON_DEFAULT              "system-shutdown-panel"
-#define ICON_RESTART              "system-shutdown-panel-restart"
+#define ICON_DEFAULT              "system-devices-panel"
+#define ICON_RESTART              "system-devices-panel-alert"
+#define GREETER_ICON_DEFAULT      "system-shutdown-panel"
+#define GREETER_ICON_RESTART      "system-shutdown-panel-restart"
 
 #endif /* __DBUS_SHARED_NAMES_H__ */
