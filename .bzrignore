@@ -47,6 +47,8 @@ src/status-provider-telepathy-marshal.c
 src/status-provider-telepathy-marshal.h
 src/status-provider-mc5-marshal.c
 src/status-provider-mc5-marshal.h
+src/webcredentials.c
+src/webcredentials.h
 data/indicator-session.schemas
 src/accounts-service-client.h
 src/accounts-service-user-client.h

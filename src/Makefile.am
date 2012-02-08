@@ -88,6 +88,12 @@ gen-%.xml.h: %.xml
 	@echo "Building $@ from $<"
 	@echo "extern const char * _$(subst -,_,$(subst .,_,$(basename $(notdir $<))));" > $@
 
+webcredentials.c webcredentials.h: $(srcdir)/com.canonical.indicators.webcredentials.xml
+	gdbus-codegen \
+		--generate-c-code webcredentials \
+		--interface-prefix com.canonical.indicators. \
+		$(srcdir)/com.canonical.indicators.webcredentials.xml
+
 #################
 # Session Stuff
 #################
@@ -109,7 +115,11 @@ indicator_session_service_SOURCES = \
 	device-menu-mgr.c \
 	udev-mgr.h \
 	udev-mgr.c \
-	sane-rules.h
+	sane-rules.h \
+	webcredentials-mgr.c \
+	webcredentials-mgr.h \
+	webcredentials.c \
+	webcredentials.h
 
 if BUILD_APT
 indicator_session_service_SOURCES += \
@@ -168,12 +178,15 @@ BUILT_SOURCES = \
 	gen-session-dbus.xml.h \
 	upower-client.h \
 	accounts-service-client.h \
-	accounts-service-user-client.h
+	accounts-service-user-client.h \
+	webcredentials.c \
+	webcredentials.h
 
 EXTRA_DIST = \
 	org.freedesktop.ConsoleKit.Manager.xml \
 	org.freedesktop.ConsoleKit.Seat.xml \
 	org.freedesktop.ConsoleKit.Session.xml \
+	com.canonical.indicators.webcredentials.xml \
 	display-manager.xml \
 	session-dbus.xml \
 	upower.xml \
