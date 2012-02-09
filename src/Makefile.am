@@ -169,6 +169,10 @@ endif
 # Other Stuff
 ###############
 
+dbus_interfacesdir = $(datadir)/dbus-1/interfaces
+dbus_interfaces_DATA = \
+       com.canonical.indicators.webcredentials.xml
+
 BUILT_SOURCES = \
 	consolekit-manager-client.h \
 	consolekit-seat-client.h \
