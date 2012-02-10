@@ -27,9 +27,11 @@ struct _WebcredentialsMgr
   GDBusConnection *connection;
   DbusmenuMenuitem *menu_item;
   GHashTable *failed_accounts;
+  guint bus_name_id;
 };
 
 #define WEBCREDENTIALS_OBJECT_PATH "/com/canonical/indicators/webcredentials"
+#define WEBCREDENTIALS_BUS_NAME "com.canonical.indicators.webcredentials"
 
 G_DEFINE_TYPE (WebcredentialsMgr, webcredentials_mgr,
                TYPE_WEBCREDENTIALS_SKELETON);
@@ -155,6 +157,12 @@ webcredentials_mgr_init (WebcredentialsMgr *self)
     g_warning ("Couldn't register webcredentials service: %s", error->message);
     g_clear_error (&error);
   }
+
+  self->bus_name_id =
+    g_bus_own_name_on_connection (self->connection,
+                                  WEBCREDENTIALS_BUS_NAME,
+                                  G_BUS_NAME_OWNER_FLAGS_REPLACE,
+                                  NULL, NULL, NULL, NULL);
 }
 
 static void
@@ -165,6 +173,11 @@ webcredentials_mgr_dispose (GObject *object)
   if (self->menu_item != NULL) {
     g_object_unref (self->menu_item);
     self->menu_item = NULL;
+  }
+
+  if (self->bus_name_id != 0) {
+    g_bus_unown_name (self->bus_name_id);
+    self->bus_name_id = 0;
   }
 
   if (self->connection != NULL) {
