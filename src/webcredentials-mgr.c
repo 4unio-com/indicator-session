@@ -21,6 +21,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "webcredentials-mgr.h"
 
+#include <libdbusmenu-glib/client.h>
+
 struct _WebcredentialsMgr
 {
   WebcredentialsSkeleton parent_instance;
@@ -126,12 +128,35 @@ webcredentials_mgr_report_failure (WebcredentialsMgr *self,
 }
 
 static void
+on_menu_item_activated (DbusmenuMenuitem *menu_item,
+                        guint timestamp,
+                        WebcredentialsMgr *self)
+{
+  GError *error = NULL;
+
+  if (!g_spawn_command_line_async("gnome-control-center credentials", &error))
+  {
+    g_warning("Unable to show control centre: %s", error->message);
+    g_error_free(error);
+  }
+}
+
+static void
 webcredentials_mgr_init (WebcredentialsMgr *self)
 {
   GError *error = NULL;
 
   self->menu_item = dbusmenu_menuitem_new ();
-  /* TODO: setup the menu item */
+  dbusmenu_menuitem_property_set (self->menu_item,
+                                  DBUSMENU_MENUITEM_PROP_TYPE,
+                                  DBUSMENU_CLIENT_TYPES_DEFAULT);
+  dbusmenu_menuitem_property_set (self->menu_item,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("Web Accounts…"));
+  g_signal_connect (self->menu_item,
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK (on_menu_item_activated),
+                    self);
 
   self->failed_accounts = g_hash_table_new (g_direct_hash,
                                             g_direct_equal);
