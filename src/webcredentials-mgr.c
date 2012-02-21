@@ -22,6 +22,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "webcredentials-mgr.h"
 
 #include <libdbusmenu-glib/client.h>
+#include <libnotify/notification.h>
+#include <libnotify/notify.h>
 
 struct _WebcredentialsMgr
 {
@@ -37,6 +39,53 @@ struct _WebcredentialsMgr
 
 G_DEFINE_TYPE (WebcredentialsMgr, webcredentials_mgr,
                TYPE_WEBCREDENTIALS_SKELETON);
+
+static void
+show_notification (WebcredentialsMgr *self, GVariant *parameters)
+{
+  GVariantIter iter;
+  GVariant *item;
+  gchar *display_name = NULL;
+  NotifyNotification *notification;
+  gchar *summary;
+  gboolean free_summary = FALSE;
+  GError *error = NULL;
+
+  g_variant_iter_init (&iter, parameters);
+  while ((item = g_variant_iter_next_value (&iter))) {
+    const gchar *key = NULL;
+    GVariant *value = NULL;
+
+    g_variant_get (item, "{sv}", &key, &value);
+    if (g_strcmp0 (key, "DisplayName") == 0) {
+      display_name = g_variant_dup_string (value, NULL);
+    }
+    g_variant_unref (value);
+    g_variant_unref (item);
+  }
+
+  if (display_name != NULL) {
+    summary = g_strdup_printf(_("Applications can no longer access your %s Web Account"),
+                              display_name);
+    free_summary = TRUE;
+  } else {
+    summary = _("Applications can no longer access some of your Web Accounts");
+  }
+
+  notification = notify_notification_new (summary,
+                                          _("Choose <b>Web Accounts</b> from the user "
+                                            "menu to reinstate access to this account."),
+                                          NULL);
+  if (free_summary)
+    g_free (summary);
+  g_free (display_name);
+
+  if (!notify_notification_show (notification, &error)) {
+    g_warning ("Couldn't show notification: %s", error->message);
+    g_clear_error (&error);
+  }
+  g_object_unref (notification);
+}
 
 static void
 update_failed_accounts_property (WebcredentialsMgr *self)
@@ -120,7 +169,9 @@ webcredentials_mgr_report_failure (WebcredentialsMgr *self,
                        GINT_TO_POINTER(TRUE));
   update_failed_accounts_property (self);
 
-  /* TODO: emit the notification and set the error status */
+  show_notification (self, arg_notification);
+
+  /* TODO: set the error status */
 
   webcredentials_complete_report_failure ((Webcredentials *)self,
                                           invocation);
@@ -145,6 +196,8 @@ static void
 webcredentials_mgr_init (WebcredentialsMgr *self)
 {
   GError *error = NULL;
+
+  notify_init("webcredentials-indicator");
 
   self->menu_item = dbusmenu_menuitem_new ();
   dbusmenu_menuitem_property_set (self->menu_item,
