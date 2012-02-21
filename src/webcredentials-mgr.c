@@ -120,7 +120,9 @@ webcredentials_mgr_clear_error_status (WebcredentialsMgr *self,
 {
   g_return_val_if_fail (WEBCREDENTIALS_IS_MGR (self), FALSE);
 
-  /* TODO */
+  dbusmenu_menuitem_property_set (self->menu_item,
+                                  DBUSMENU_MENUITEM_PROP_DISPOSITION,
+                                  DBUSMENU_MENUITEM_DISPOSITION_NORMAL);
 
   webcredentials_complete_clear_error_status ((Webcredentials *)self,
                                               invocation);
@@ -171,7 +173,9 @@ webcredentials_mgr_report_failure (WebcredentialsMgr *self,
 
   show_notification (self, arg_notification);
 
-  /* TODO: set the error status */
+  dbusmenu_menuitem_property_set (self->menu_item,
+                                  DBUSMENU_MENUITEM_PROP_DISPOSITION,
+                                  DBUSMENU_MENUITEM_DISPOSITION_ALERT);
 
   webcredentials_complete_report_failure ((Webcredentials *)self,
                                           invocation);
