@@ -32,6 +32,7 @@ struct _WebcredentialsMgr
   DbusmenuMenuitem *menu_item;
   GHashTable *failed_accounts;
   guint bus_name_id;
+  gboolean notification_shown;
 };
 
 #define WEBCREDENTIALS_OBJECT_PATH "/com/canonical/indicators/webcredentials"
@@ -50,6 +51,11 @@ show_notification (WebcredentialsMgr *self, GVariant *parameters)
   gchar *summary;
   gboolean free_summary = FALSE;
   GError *error = NULL;
+
+  if (self->notification_shown)
+    return;
+
+  self->notification_shown = TRUE;
 
   g_variant_iter_init (&iter, parameters);
   while ((item = g_variant_iter_next_value (&iter))) {
@@ -123,6 +129,8 @@ webcredentials_mgr_clear_error_status (WebcredentialsMgr *self,
   dbusmenu_menuitem_property_set (self->menu_item,
                                   DBUSMENU_MENUITEM_PROP_DISPOSITION,
                                   DBUSMENU_MENUITEM_DISPOSITION_NORMAL);
+
+  self->notification_shown = FALSE;
 
   webcredentials_complete_clear_error_status ((Webcredentials *)self,
                                               invocation);
@@ -214,6 +222,8 @@ webcredentials_mgr_init (WebcredentialsMgr *self)
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK (on_menu_item_activated),
                     self);
+
+  self->notification_shown = FALSE;
 
   self->failed_accounts = g_hash_table_new (g_direct_hash,
                                             g_direct_equal);
