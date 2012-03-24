@@ -1,0 +1,10 @@
+[Desktop Entry]
+_Name=Suspend
+TryExec=@bindir@/dbus-send
+Exec=@bindir@/dbus-send --system --type=method_call --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend
+Icon=system-suspend
+Terminal=false
+Type=Application
+OnlyShowIn=Unity;
+Categories=System;
+Version=1.0

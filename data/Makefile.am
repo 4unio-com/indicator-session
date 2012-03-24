@@ -39,7 +39,8 @@ logout_helper_desktop_in_in_files = \
 	indicator-session-lock-screen.desktop.in.in \
 	indicator-session-logout.desktop.in.in \
 	indicator-session-restart.desktop.in.in \
-	indicator-session-shutdown.desktop.in.in
+	indicator-session-shutdown.desktop.in.in \
+	indicator-session-suspend.desktop.in.in
 
 logout_helperdir = $(datadir)/applications
 logout_helper_desktop_files = \
