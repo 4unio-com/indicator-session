@@ -228,12 +228,18 @@ main (int argc, char * argv[])
 
 		if (response == GTK_RESPONSE_OK) {
 			g_debug("Dialog return response: 'okay'");
+		} else if (response == GTK_RESPONSE_YES) {
+			g_debug("Dialog return response: 'yes'");
 		} else if (response == GTK_RESPONSE_HELP) {
 			g_debug("Dialog return response: 'help'");
 		} else {
 			g_debug("Dialog return response: %d", response);
 		}
 
+		if (response == GTK_RESPONSE_YES) {
+			type = LOGOUT_DIALOG_TYPE_LOG_OUT;
+			response = GTK_RESPONSE_OK;
+		}
 		if (response == GTK_RESPONSE_HELP) {
 			type = LOGOUT_DIALOG_TYPE_RESTART;
 			response = GTK_RESPONSE_OK;
