@@ -44,13 +44,11 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define CMD_INFO            "gnome-control-center info"
 #define CMD_SYSTEM_SETTINGS "gnome-control-center"
 #ifdef HAVE_GTKLOGOUTHELPER
- #define HAVE_RESTART_CMD TRUE
  #define CMD_RESTART  LIBEXECDIR"/gtk-logout-helper --restart"
  #define CMD_LOGOUT   LIBEXECDIR"/gtk-logout-helper --logout"
  #define CMD_SHUTDOWN LIBEXECDIR"/gtk-logout-helper --shutdown"
 #else
- #define HAVE_RESTART_CMD FALSE /* hmm, no gnome-session-quit --restart? */
- #define CMD_RESTART  ""
+ #define CMD_RESTART  "gnome-session-quit --reboot"
  #define CMD_LOGOUT   "gnome-session-quit --logout"
  #define CMD_SHUTDOWN "gnome-session-quit --power-off"
 #endif
@@ -468,8 +466,7 @@ update_session_menuitems (SessionMenuMgr * mgr)
    && mgr->allow_hibernate;
   mi_set_visible (mgr->hibernate_mi, v);
 
-  v = HAVE_RESTART_CMD
-   && !g_settings_get_boolean (s, "suppress-restart-menuitem");
+  v = !g_settings_get_boolean (s, "suppress-restart-menuitem");
   mi_set_visible (mgr->restart_mi, v);
 
   v = !g_settings_get_boolean (s, "suppress-shutdown-menuitem");
