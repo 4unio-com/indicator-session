@@ -64,7 +64,6 @@ struct _IndicatorSession
   GDBusProxy * service_proxy;
   GSettings * settings;
   DbusmenuClient * menu_client;
-  GtkIconTheme * icon_theme;
 };
 
 GType indicator_session_get_type (void);
@@ -79,7 +78,6 @@ static gboolean new_user_item (DbusmenuMenuitem * newitem,
                                DbusmenuClient * client,
                                gpointer user_data);
 static void on_menu_layout_updated (DbusmenuClient * client, IndicatorSession * session);
-static void indicator_session_update_icon_callback (GtkWidget * widget, gpointer callback_data);
 static void indicator_session_update_icon_and_a11y (IndicatorSession * self);
 static void indicator_session_update_users_label (IndicatorSession* self,
                                                   const gchar* name);
@@ -129,13 +127,6 @@ indicator_session_init (IndicatorSession *self)
   self->entry.image = GTK_IMAGE (gtk_image_new());
   self->entry.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                     INDICATOR_SESSION_DBUS_OBJECT));
-  /* We need to check if the current icon theme has the hard coded icons.
-   * If not, we'll fall back to a standard icon */
-  self->icon_theme = gtk_icon_theme_get_default();
-  g_signal_connect(G_OBJECT(self->icon_theme),
-                   "changed",
-                   G_CALLBACK(indicator_session_update_icon_callback), self);
-
   indicator_session_update_icon_and_a11y (self);
   g_settings_bind (self->settings, "show-real-name-on-panel",
                    self->entry.label, "visible",
@@ -408,13 +399,11 @@ indicator_session_update_icon_from_disposition (IndicatorSession * indicator,
   else
     icon = ICON_ALERT;
 
-  if (gtk_icon_theme_has_icon (indicator->icon_theme, icon) == FALSE)
-    icon = "gtk-missing-image";
-
-  g_debug (G_STRLOC" setting icon to \"%s\"", icon);
-  gtk_image_set_from_icon_name (GTK_IMAGE(indicator->entry.image),
-                                icon,
-                                GTK_ICON_SIZE_BUTTON);
+  GIcon * gicon = g_themed_icon_new_with_default_fallbacks (icon);
+  gtk_image_set_from_gicon (GTK_IMAGE(indicator->entry.image),
+                            gicon,
+                            GTK_ICON_SIZE_BUTTON);
+  g_object_unref(gicon);
 }
   
 static int
@@ -445,12 +434,6 @@ calculate_disposition (IndicatorSession * indicator)
     }
 
   return ret;
-}
-
-static void
-indicator_session_update_icon_callback (GtkWidget * widget, gpointer callback_data)
-{
-  indicator_session_update_icon_and_a11y ((IndicatorSession *)callback_data);
 }
 
 static void
