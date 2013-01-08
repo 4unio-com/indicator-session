@@ -1,0 +1,11 @@
+#!/bin/sh
+
+DBUS_SYSTEM_BUS_ADDRESS=`
+	dbus-daemon \
+		--nofork \
+		--print-address \
+       	 	--config-file=debian/tests/dbus.conf
+`
+export DBUS_SYSTEM_BUS_ADDRESS
+
+tests/test-service

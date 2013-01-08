@@ -30,7 +30,12 @@ indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
   * run tests not under fakeroot for dbus tests (which don't seem to be able to
     run easily under dbus-test-runner)
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 30 Nov 2012 11:11:49 +0100
+  [ Mathieu Trudel-Lapierre ]
+  * debian/control: add XS-Testsuite: autopkgtest.
+  * debian/tests: add the necessary config to run test-service from within
+    autopkgtest with a proper DBUS system bus.
+
+ -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Fri, 14 Dec 2012 14:50:03 -0500
 
 indicator-session (12.10.4-0ubuntu1) quantal; urgency=low
 
