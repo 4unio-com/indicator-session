@@ -208,7 +208,7 @@ is_greeter_mode (void)
 LogoutDialog *
 logout_dialog_new (LogoutDialogType type)
 {
-	guint n_sessions = 2;//ck_get_n_sessions ();
+	guint n_sessions = ck_get_n_sessions ();
 
 	GtkWidget * image = gtk_image_new_from_icon_name(n_sessions > 1 ? GTK_STOCK_DIALOG_WARNING : icon_strings[type], GTK_ICON_SIZE_DIALOG);
 	gtk_widget_show(image);
