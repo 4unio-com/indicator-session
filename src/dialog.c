@@ -64,7 +64,7 @@ static const gchar * restart_updates = N_("Restart Instead");
 static const gchar * restart_auth = N_("Restart Instead…");
 static const gchar * body_logout_update = N_("Some software updates won’t apply until the computer next restarts.");
 
-/* TRANSLATORS: This button appears on the logout dialog when
+/* TRANSLATORS: This button appears on the restart/shutdown dialog when
    there are other users logged in. It will do a log out
    in place of a restart / shutdown. */
 static const gchar * other_session = N_("Log Out Instead");
