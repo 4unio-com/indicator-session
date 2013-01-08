@@ -61,17 +61,17 @@ class ClientTest : public ::testing::Test
       main_loop = g_main_loop_new (NULL, FALSE);
       // pull up a test dbus that's pointed at our test .service file
       test_dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
-      g_debug (G_STRLOC" service dir path is \"%s\"", INDICATOR_SERVICE_DIR);
+      g_warning (G_STRLOC" service dir path is \"%s\"", INDICATOR_SERVICE_DIR);
       g_test_dbus_add_service_dir (test_dbus, INDICATOR_SERVICE_DIR);
 
       // allow the service to exist w/o a sync indicator
       g_setenv ("INDICATOR_ALLOW_NO_WATCHERS", "1", TRUE);
 
       g_test_dbus_up (test_dbus);
-      g_debug (G_STRLOC" this test bus' address is \"%s\"", g_test_dbus_get_bus_address(test_dbus));
+      g_warning (G_STRLOC" this test bus' address is \"%s\"", g_test_dbus_get_bus_address(test_dbus));
       session_bus = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, NULL);
-      g_debug (G_STRLOC" the dbus connection %p unique name is \"%s\"", session_bus, g_dbus_connection_get_unique_name(session_bus));
-      g_debug (G_STRLOC" the dbus connection %p refcount is %d", session_bus, G_OBJECT(session_bus)->ref_count);
+      g_warning (G_STRLOC" the dbus connection %p unique name is \"%s\"", session_bus, g_dbus_connection_get_unique_name(session_bus));
+      g_warning (G_STRLOC" the dbus connection %p refcount is %d", session_bus, G_OBJECT(session_bus)->ref_count);
     }
 
     // undo SetUp
@@ -119,6 +119,7 @@ TEST_F (ClientTest, TestCanStartService)
                                         NULL,
                                         &error);
 
+  g_warning("message: %s", error ? error->message : "");
   EXPECT_TRUE (error == NULL);
   ASSERT_TRUE (result != NULL);
 

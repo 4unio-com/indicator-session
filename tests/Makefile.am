@@ -37,7 +37,7 @@ test_service_LDADD = \
 	libgtest.a
 test_service_CPPFLAGS = \
 	-DSCHEMA_DIR="\"$(top_builddir)/tests/\"" \
-	-DINDICATOR_SERVICE_DIR="\"$(abs_builddir)\"" \
+	-DINDICATOR_SERVICE_DIR="\"$(abs_top_srcdir)/tests/\"" \
 	-DINDICATOR_SERVICE_PATH="\"$(top_builddir)/src/indicator-session-service\"" \
 	$(TEST_SERVICE_CFLAGS) \
 	$(AM_CPPFLAGS)
