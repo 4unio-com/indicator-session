@@ -68,8 +68,12 @@ static const gchar * body_logout_update = N_("Some software updates won’t appl
    there are other users logged in. It will do a log out
    in place of a restart / shutdown. */
 static const gchar * other_session = N_("Log Out Instead");
-static const gchar * restart_other_session = N_("You need to close all sessions before restarting.");
-static const gchar * shutdown_other_session = N_("You need to close all sessions before shutting down.");
+static const gchar * restart_other_session = N_("Other users are logged in. Restarting the computer will log them out without warning.");
+static const gchar * restart_greeter_other_session = N_("Other users are logged in. You must log out these sessions before restarting.");
+static const gchar * shutdown_other_session = N_("Other users are logged in. Shutting down the computer will log them out without warning.");
+static const gchar * shutdown_greeter_other_session = N_("Other users are logged in. You must log out these sessions before shutting down.");
+static const gchar * restart_anyway = N_("Restart Anyway");
+static const gchar * shutdown_anyway = N_("Shut Down Anyway");
 
 static const gchar * icon_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	"system-log-out",
@@ -198,13 +202,15 @@ ck_get_n_sessions (void)
 static inline gboolean
 is_greeter_mode (void)
 {
-  return !g_strcmp0 (g_getenv ("INDICATOR_GREETER_MODE"), "1");
+	return !g_strcmp0 (g_getenv ("INDICATOR_GREETER_MODE"), "1");
 }
 
 LogoutDialog *
 logout_dialog_new (LogoutDialogType type)
 {
-	GtkWidget * image = gtk_image_new_from_icon_name(icon_strings[type], GTK_ICON_SIZE_DIALOG);
+	guint n_sessions = 2;//ck_get_n_sessions ();
+
+	GtkWidget * image = gtk_image_new_from_icon_name(n_sessions > 1 ? GTK_STOCK_DIALOG_WARNING : icon_strings[type], GTK_ICON_SIZE_DIALOG);
 	gtk_widget_show(image);
 
 	LogoutDialog * dialog = LOGOUT_DIALOG(g_object_new(LOGOUT_DIALOG_TYPE,
@@ -242,22 +248,28 @@ logout_dialog_new (LogoutDialogType type)
 		button_text = g_dpgettext2 (NULL, "button auth", button_auth_strings[type]);
 	}
 
-	guint n_sessions = ck_get_n_sessions ();
 	if ((type == LOGOUT_DIALOG_TYPE_RESTART || type == LOGOUT_DIALOG_TYPE_SHUTDOWN) && n_sessions > 1) {
-		if (type == LOGOUT_DIALOG_TYPE_RESTART) {
-			g_object_set(dialog, "text", _(restart_other_session), NULL);
-		} else {
-			g_object_set(dialog, "text", _(shutdown_other_session), NULL);
-		}
-
 		if (!is_greeter_mode ()) {
+			if (type == LOGOUT_DIALOG_TYPE_RESTART) {
+				g_object_set(dialog, "text", _(restart_other_session), NULL);
+        	    button_text = _(restart_anyway);
+			} else {
+				g_object_set(dialog, "text", _(shutdown_other_session), NULL);
+	            button_text = _(shutdown_anyway);
+			}
 			gtk_dialog_add_buttons(GTK_DIALOG(dialog),
+			                       _(other_session), GTK_RESPONSE_HELP,
 			                       _("Cancel"), GTK_RESPONSE_CANCEL,
-			                       _(other_session), GTK_RESPONSE_YES,
+                                   button_text, GTK_RESPONSE_OK,
 			                       NULL);
 		} else {
+			if (type == LOGOUT_DIALOG_TYPE_RESTART) {
+				g_object_set(dialog, "text", _(restart_greeter_other_session), NULL);
+			} else {
+				g_object_set(dialog, "text", _(shutdown_greeter_other_session), NULL);
+			}
 			gtk_dialog_add_buttons(GTK_DIALOG(dialog),
-			                       _("Ok"), GTK_RESPONSE_CANCEL,
+			                       GTK_STOCK_OK, GTK_RESPONSE_CANCEL,
 			                       NULL);
 		}
 	} else if (restart_required) {

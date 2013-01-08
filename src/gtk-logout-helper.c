@@ -255,7 +255,10 @@ main (int argc, char * argv[])
 			response = GTK_RESPONSE_OK;
 		}
 		if (response == GTK_RESPONSE_HELP) {
-			type = LOGOUT_DIALOG_TYPE_RESTART;
+			if (type == LOGOUT_DIALOG_TYPE_LOG_OUT)
+				type = LOGOUT_DIALOG_TYPE_RESTART;
+			else
+				type = LOGOUT_DIALOG_TYPE_LOG_OUT;
 			response = GTK_RESPONSE_OK;
 		}
 
