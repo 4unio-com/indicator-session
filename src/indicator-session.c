@@ -399,22 +399,24 @@ static void
 indicator_session_update_icon_from_disposition (IndicatorSession * indicator,
                                                 int                disposition)
 {
-  const gchar * icon;
+  GIcon * gicon;
+  const char * icons[] = {  ICON_DEFAULT,           /* ubuntu-mono-*     */
+			    "system",               /* gnome & humanity  */
+			    "emblem-system",        /* HighContrast      */
+			    "system-shutdown",      /* others            */
+			    "gtk-missing-image",
+			    NULL,
+                         };
 
-  if (disposition == DISPOSITION_NORMAL)
-    icon = ICON_DEFAULT;
-  else if (disposition == DISPOSITION_INFO)
-    icon = ICON_INFO;
-  else
-    icon = ICON_ALERT;
+  if (disposition == DISPOSITION_INFO)
+    icons[0] = ICON_INFO;
+  else if (disposition != DISPOSITION_NORMAL)
+    icons[0] = ICON_ALERT;
 
-  if (gtk_icon_theme_has_icon (indicator->icon_theme, icon) == FALSE)
-    icon = "gtk-missing-image";
-
-  g_debug (G_STRLOC" setting icon to \"%s\"", icon);
-  gtk_image_set_from_icon_name (GTK_IMAGE(indicator->entry.image),
-                                icon,
-                                GTK_ICON_SIZE_BUTTON);
+  gicon = g_themed_icon_new_from_names ((char **) icons, -1);
+  gtk_image_set_from_gicon (GTK_IMAGE(indicator->entry.image),
+                            gicon,
+                            GTK_ICON_SIZE_BUTTON);
 }
   
 static int
