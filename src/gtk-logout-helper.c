@@ -124,7 +124,7 @@ call_gnome_session (const gchar *method, GVariant *parameters, GError **error)
 }
 
 static void
-session_action (LogoutDialogType action)
+session_action (LogoutDialogType action, gboolean force)
 {
 	GError * error = NULL;
 	GVariant *result = NULL;
@@ -133,11 +133,21 @@ session_action (LogoutDialogType action)
 		g_debug("Asking Session manager to 'Logout'");
 		result = call_gnome_session ("Logout", g_variant_new ("(u)", 1), &error);
 	} else if (action == LOGOUT_DIALOG_TYPE_SHUTDOWN) {
-		g_debug("Asking Session manager to 'RequestShutdown'");
-		result = call_gnome_session ("RequestShutdown", g_variant_new ("()"), &error);
+		if (force) {
+			consolekit_fallback(action);
+			return;
+		} else {
+			g_debug("Asking Session manager to 'RequestShutdown'");
+			result = call_gnome_session ("RequestShutdown", g_variant_new ("()"), &error);
+		}
 	} else if (action == LOGOUT_DIALOG_TYPE_RESTART) {
-		g_debug("Asking Session manager to 'RequestReboot'");
-		result = call_gnome_session ("RequestReboot", g_variant_new ("()"), &error);
+		if (force) {
+			consolekit_fallback(action);
+			return;
+		} else {
+			g_debug("Asking Session manager to 'RequestReboot'");
+			result = call_gnome_session ("RequestReboot", g_variant_new ("()"), &error);
+		}
 	} else {
 		g_warning ("Unknown session action");
 	}
@@ -236,12 +246,15 @@ main (int argc, char * argv[])
 		dialog = GTK_WIDGET(logout_dialog_new(type));
 	}
 
+	gboolean force = FALSE;
 	if (dialog != NULL) {
 		GtkResponseType response = gtk_dialog_run(GTK_DIALOG(dialog));
 		gtk_widget_hide(dialog);
 
 		if (response == GTK_RESPONSE_OK) {
 			g_debug("Dialog return response: 'okay'");
+		} else if (response == GTK_RESPONSE_YES) {
+			g_debug("Dialog return response: 'yes'");
 		} else if (response == GTK_RESPONSE_HELP) {
 			g_debug("Dialog return response: 'help'");
 		} else {
@@ -256,13 +269,20 @@ main (int argc, char * argv[])
 			response = GTK_RESPONSE_OK;
 		}
 
+		/* If we know we're going to need PolicyKit authorization then call ConsoleKit directly
+		 * rather than using Gnome session - it will just log us out instead and not prompt */
+		if (response == GTK_RESPONSE_YES) {
+			response = GTK_RESPONSE_OK;
+			force = TRUE;
+		}
+      
 		if (response != GTK_RESPONSE_OK) {
 			g_debug("Final response was not okay, quiting");
 			return 0;
 		}
 	}
 
-	session_action(type);
+	session_action(type, force);
 	g_debug("Finished action, quiting");
 
 	return 0;

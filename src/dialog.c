@@ -260,7 +260,7 @@ logout_dialog_new (LogoutDialogType type)
 			gtk_dialog_add_buttons(GTK_DIALOG(dialog),
 			                       _(other_session), GTK_RESPONSE_HELP,
 			                       _("Cancel"), GTK_RESPONSE_CANCEL,
-                                   button_text, GTK_RESPONSE_OK,
+                                   button_text, GTK_RESPONSE_YES,
 			                       NULL);
 		} else {
 			if (type == LOGOUT_DIALOG_TYPE_RESTART) {
