@@ -841,8 +841,6 @@ is_user_switching_allowed (SessionMenuMgr * mgr)
       return FALSE;
     }
 
-  /* maybe the seat doesn't support activation */
-
   return TRUE;
 }
 
