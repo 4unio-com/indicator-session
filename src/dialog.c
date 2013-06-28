@@ -64,6 +64,17 @@ static const gchar * restart_updates = N_("Restart Instead");
 static const gchar * restart_auth = N_("Restart Instead…");
 static const gchar * body_logout_update = N_("Some software updates won’t apply until the computer next restarts.");
 
+/* TRANSLATORS: This button appears on the restart/shutdown dialog when
+   there are other users logged in. It will do a log out
+   in place of a restart / shutdown. */
+static const gchar * other_session = N_("Log Out Instead");
+static const gchar * restart_other_session = N_("Other users are logged in. Restarting the computer will log them out without warning.");
+static const gchar * restart_greeter_other_session = N_("Other users are logged in. You must log out these sessions before restarting.");
+static const gchar * shutdown_other_session = N_("Other users are logged in. Shutting down the computer will log them out without warning.");
+static const gchar * shutdown_greeter_other_session = N_("Other users are logged in. You must log out these sessions before shutting down.");
+static const gchar * restart_anyway = N_("Restart Anyway");
+static const gchar * shutdown_anyway = N_("Shut Down Anyway");
+
 static const gchar * icon_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	"system-log-out",
 	/* LOGOUT_DIALOG_RESTART, */	"system-restart",
@@ -164,10 +175,57 @@ logind_check_allowed (LogoutDialogType type)
 	return g_strcmp0 (allowed, "yes") == 0;
 }
 
+/* Checks with console kit how many sessions are open */
+static gulong
+get_n_sessions (void)
+{
+	Login1Manager *manager_proxy;
+	GVariant *sessions = NULL;
+	GVariantIter *iter;
+	gulong n_sessions = 0;
+	GError *error = NULL;
+
+	manager_proxy = login1_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+	                                                       G_DBUS_PROXY_FLAGS_NONE,
+	                                                       "org.freedesktop.login1",
+	                                                       "/org/freedesktop/login1",
+	                                                       NULL,
+	                                                       &error);
+	if (error) {
+		g_warning ("Could not get manager proxy.");
+		g_clear_error (&error);
+		goto out;
+	}
+
+	login1_manager_call_list_sessions_sync (manager_proxy, &sessions, NULL, &error);
+
+	if (error) {
+		g_warning ("Could not get session list.");
+		g_clear_error (&error);
+		goto out;
+	}
+
+	g_variant_get (sessions, "a(susso)", &iter);
+	n_sessions = g_variant_iter_n_children (iter);
+
+out:
+	g_debug ("found %d sessions", n_sessions);
+
+	return n_sessions;
+}
+
+static inline gboolean
+is_greeter_mode (void)
+{
+	return !g_strcmp0 (g_getenv ("INDICATOR_GREETER_MODE"), "1");
+}
+
 LogoutDialog *
 logout_dialog_new (LogoutDialogType type)
 {
-	GtkWidget * image = gtk_image_new_from_icon_name(icon_strings[type], GTK_ICON_SIZE_DIALOG);
+	gulong n_sessions = get_n_sessions ();
+
+	GtkWidget * image = gtk_image_new_from_icon_name(n_sessions > 1 ? GTK_STOCK_DIALOG_WARNING : icon_strings[type], GTK_ICON_SIZE_DIALOG);
 	gtk_widget_show(image);
 
 	LogoutDialog * dialog = LOGOUT_DIALOG(g_object_new(LOGOUT_DIALOG_TYPE,
@@ -205,7 +263,31 @@ logout_dialog_new (LogoutDialogType type)
 		button_text = g_dpgettext2 (NULL, "button auth", button_auth_strings[type]);
 	}
 
-	if (restart_required) {
+	if ((type == LOGOUT_DIALOG_TYPE_RESTART || type == LOGOUT_DIALOG_TYPE_SHUTDOWN) && n_sessions > 1) {
+		if (!is_greeter_mode ()) {
+			if (type == LOGOUT_DIALOG_TYPE_RESTART) {
+				g_object_set(dialog, "text", _(restart_other_session), NULL);
+        	    button_text = _(restart_anyway);
+			} else {
+				g_object_set(dialog, "text", _(shutdown_other_session), NULL);
+	            button_text = _(shutdown_anyway);
+			}
+			gtk_dialog_add_buttons(GTK_DIALOG(dialog),
+			                       _(other_session), GTK_RESPONSE_HELP,
+			                       _("Cancel"), GTK_RESPONSE_CANCEL,
+                                   button_text, GTK_RESPONSE_YES,
+			                       NULL);
+		} else {
+			if (type == LOGOUT_DIALOG_TYPE_RESTART) {
+				g_object_set(dialog, "text", _(restart_greeter_other_session), NULL);
+			} else {
+				g_object_set(dialog, "text", _(shutdown_greeter_other_session), NULL);
+			}
+			gtk_dialog_add_buttons(GTK_DIALOG(dialog),
+			                       GTK_STOCK_OK, GTK_RESPONSE_CANCEL,
+			                       NULL);
+		}
+	} else if (restart_required) {
 		const gchar * restart_req;
 		if (allowed) {
 			restart_req = restart_updates;
