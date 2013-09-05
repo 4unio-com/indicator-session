@@ -157,7 +157,7 @@ indicator_session_user_free (IndicatorSessionUser * user)
   g_free (user->real_name);
   g_free (user->user_name);
   g_free (user->icon_file);
-  g_free (user);
+  g_slice_free (IndicatorSessionUser, user);
 }
 
 /***

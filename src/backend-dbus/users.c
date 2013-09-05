@@ -583,7 +583,7 @@ my_get_user (IndicatorSessionUsers * users, guint uid)
     {
       g_assert (uid == accounts_user_get_uid (au));
 
-      ret = g_new0 (IndicatorSessionUser, 1);
+      ret = g_slice_new0 (IndicatorSessionUser);
       ret->uid = uid;
       ret->user_name = g_strdup (accounts_user_get_user_name (au));
       ret->real_name = g_strdup (accounts_user_get_real_name (au));

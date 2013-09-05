@@ -67,7 +67,7 @@ my_get_user (IndicatorSessionUsers * self, guint uid)
 
   if ((src = g_hash_table_lookup (p->users, GUINT_TO_POINTER(uid))))
     {
-      ret = g_new0 (IndicatorSessionUser, 1);
+      ret = g_slice_new0 (IndicatorSessionUser);
       ret->is_current_user = src->is_current_user;
       ret->is_logged_in = src->is_logged_in;
       ret->uid = src->uid;
