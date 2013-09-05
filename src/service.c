@@ -883,6 +883,7 @@ on_bus_acquired (GDBusConnection * connection,
   GError * err = NULL;
   IndicatorSessionService * self = INDICATOR_SESSION_SERVICE(gself);
   priv_t * p = self->priv;
+  GString * path = g_string_new (NULL);
 
   g_debug ("bus acquired: %s", name);
 
@@ -905,14 +906,14 @@ on_bus_acquired (GDBusConnection * connection,
   /* export the menus */
   for (i=0; i<N_PROFILES; ++i)
     {
-      char * path = g_strdup_printf ("%s/%s", BUS_PATH, menu_names[i]);
       struct ProfileMenuInfo * menu = &p->menus[i];
+      g_string_printf (path, "%s/%s", BUS_PATH, menu_names[i]);
 
       if (menu->menu == NULL)
         create_menu (self, i);
 
       if ((id = g_dbus_connection_export_menu_model (connection,
-                                                     path,
+                                                     path->str,
                                                      G_MENU_MODEL (menu->menu),
                                                      &err)))
         {
@@ -923,9 +924,9 @@ on_bus_acquired (GDBusConnection * connection,
           g_warning ("cannot export %s menu: %s", menu_names[i], err->message);
           g_clear_error (&err);
         }
-
-      g_free (path);
     }
+
+  g_string_free (path, TRUE);
 }
 
 static void
