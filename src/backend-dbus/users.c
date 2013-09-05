@@ -66,7 +66,7 @@ struct UserRecord *
 user_record_new (AccountsUser * user, gulong signal_id)
 {
   struct UserRecord * rec;
-  rec = g_new (struct UserRecord, 1);
+  rec = g_slice_new (struct UserRecord);
   rec->user = g_object_ref (user);
   rec->signal_id = signal_id;
   return rec;
@@ -77,7 +77,7 @@ user_record_free (struct UserRecord * rec)
 {
   g_signal_handler_disconnect (rec->user, rec->signal_id);
   g_object_unref (G_OBJECT (rec->user));
-  g_free (rec);
+  g_slice_free (struct UserRecord, rec);
 }
 
 /***
