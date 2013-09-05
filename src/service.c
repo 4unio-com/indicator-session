@@ -195,7 +195,7 @@ action_state_for_header (IndicatorSessionService * self)
 
   /* build the state */
   g_variant_builder_init (&b, G_VARIANT_TYPE("a{sv}"));
-  g_variant_builder_add (&b, "{sv}", "accessible-desc", g_variant_new_string (a11y));
+  g_variant_builder_add (&b, "{sv}", "accessible-desc", g_variant_new_take_string (a11y));
   g_variant_builder_add (&b, "{sv}", "icon", g_icon_serialize (icon));
   if (label && *label)
     g_variant_builder_add (&b, "{sv}", "label", g_variant_new_string (label));
@@ -203,7 +203,6 @@ action_state_for_header (IndicatorSessionService * self)
   state = g_variant_builder_end (&b);
 
   /* cleanup */
-  g_free (a11y);
   g_object_unref (G_OBJECT (icon));
 
   return state;
