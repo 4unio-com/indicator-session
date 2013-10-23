@@ -1,3 +1,14 @@
+indicator-session (12.10.5+13.10.20131023.1-0ubuntu1) saucy; urgency=low
+
+  [ Lars Uebernickel ]
+  * Work around glib's type initialization deadlock.
+    https://bugzilla.gnome.org/show_bug.cgi?id=674885. (LP: #1239710)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 416
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 23 Oct 2013 05:57:52 +0000
+
 indicator-session (12.10.5+13.10.20131004-0ubuntu1) saucy; urgency=low
 
   [ Charles Kerr ]
