@@ -254,3 +254,4 @@ dbus-user.c
 dbus-user.h
 tests/test-service
 indicator-session.conf
+indicator-session.service

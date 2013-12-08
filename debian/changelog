@@ -1,3 +1,11 @@
+indicator-session (12.10.5+14.04.20131125-0ubuntu2) UNRELEASED; urgency=low
+
+  * Make indicator-session DBus activated for ubiquity/lightdm (LP: #1258863):
+    - Drop XDG autostart file, not needed
+    - Reintroduce DBus activation file
+
+ -- Dmitrijs Ledkovs <xnox@ubuntu.com>  Sun, 08 Dec 2013 20:24:02 +0000
+
 indicator-session (12.10.5+14.04.20131125-0ubuntu1) trusty; urgency=low
 
   [ Charles Kerr ]

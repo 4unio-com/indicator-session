@@ -38,25 +38,24 @@ install (FILES "${UPSTART_JOB_FILE}"
 
 
 ##
-##  XDG Autostart Config File
+##  DBus Service File
 ##
 
 # where to install
-set (XDG_AUTOSTART_DIR "/etc/xdg/autostart")
-message (STATUS "${XDG_AUTOSTART_DIR} is the XDG Autostart install dir")
+set (DBUS_SERVICE_DIR "${CMAKE_INSTALL_FULL_DATADIR}/dbus-1/services")
+message (STATUS "${DBUS_SERVICE_DIR} is the DBus Service File install dir")
 
-set (XDG_AUTOSTART_NAME "${CMAKE_PROJECT_NAME}.desktop")
-set (XDG_AUTOSTART_FILE "${CMAKE_CURRENT_BINARY_DIR}/${XDG_AUTOSTART_NAME}")
-set (XDG_AUTOSTART_FILE_IN "${CMAKE_CURRENT_SOURCE_DIR}/${XDG_AUTOSTART_NAME}.in")
+set (SERVICE_NAME "${CMAKE_PROJECT_NAME}.service")
+set (SERVICE_FILE "${CMAKE_CURRENT_BINARY_DIR}/${SERVICE_NAME}")
+set (SERVICE_FILE_IN "${CMAKE_CURRENT_SOURCE_DIR}/${SERVICE_NAME}.in")
 
 # build it
 set (pkglibexecdir "${CMAKE_INSTALL_FULL_PKGLIBEXECDIR}")
-configure_file ("${XDG_AUTOSTART_FILE_IN}" "${XDG_AUTOSTART_FILE}")
+configure_file ("${SERVICE_FILE_IN}" "${SERVICE_FILE}")
 
 # install it
-install (FILES "${XDG_AUTOSTART_FILE}"
-         DESTINATION "${XDG_AUTOSTART_DIR}")
-
+install (FILES "${SERVICE_FILE}"
+         DESTINATION "${DBUS_SERVICE_DIR}")
 
 ##
 ##  Unity Indicator File
