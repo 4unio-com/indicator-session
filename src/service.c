@@ -593,14 +593,23 @@ create_logout_section (IndicatorSessionService * self)
 }
 
 static GMenuModel *
-create_session_section (IndicatorSessionService * self)
+create_session_section (IndicatorSessionService * self, int profile)
 {
   GMenu * menu;
   const priv_t * const p = self->priv;
   GSettings * const s = p->indicator_settings;
   const gboolean ellipsis = use_ellipsis (self);
+  IndicatorSessionUser * u;
 
   menu = g_menu_new ();
+
+  if ( profile == PROFILE_GREETER && (u = indicator_session_users_get_active_user (self->priv->backend_users)))
+    {
+      const char * label = ellipsis ? _("Switch Account…") : _("Switch Account");
+      g_menu_append (menu, label, "indicator.switch-to-greeter");
+
+      indicator_session_user_free (u);
+    }
 
   if (indicator_session_actions_can_suspend (p->backend_actions))
     g_menu_append (menu, _("Suspend"), "indicator.suspend");
@@ -642,11 +651,11 @@ create_menu (IndicatorSessionService * self, int profile)
       sections[n++] = create_settings_section (self);
       sections[n++] = create_switch_section (self);
       sections[n++] = create_logout_section (self);
-      sections[n++] = create_session_section (self);
+      sections[n++] = create_session_section (self, profile);
     }
   else if (profile == PROFILE_GREETER)
     {
-      sections[n++] = create_session_section (self);
+      sections[n++] = create_session_section (self, profile);
     }
 
   /* add sections to the submenu */
@@ -891,8 +900,8 @@ rebuild_now (IndicatorSessionService * self, int sections)
 
   if (sections & SECTION_SESSION)
     {
-      rebuild_section (desktop->submenu, 4, create_session_section(self));
-      rebuild_section (greeter->submenu, 0, create_session_section(self));
+      rebuild_section (desktop->submenu, 4, create_session_section(self, PROFILE_DESKTOP));
+      rebuild_section (greeter->submenu, 0, create_session_section(self, PROFILE_GREETER));
     }
 }
 

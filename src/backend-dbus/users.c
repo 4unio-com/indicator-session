@@ -596,6 +596,16 @@ my_get_user (IndicatorSessionUsers * users, guint uid)
   return ret;
 }
 
+/* build a new struct populated with info on the active user */
+static IndicatorSessionUser *
+my_get_active_user (IndicatorSessionUsers * users)
+{
+  IndicatorSessionUsersDbus * self = INDICATOR_SESSION_USERS_DBUS (users);
+  priv_t * p = self->priv;
+
+  return my_get_user(users, p->active_uid);
+}
+
 /***
 ****  GObject virtual functions
 ***/
@@ -654,6 +664,7 @@ indicator_session_users_dbus_class_init (IndicatorSessionUsersDbusClass * klass)
   users_class->is_live_session = my_is_live_session;
   users_class->get_uids = my_get_uids;
   users_class->get_user = my_get_user;
+  users_class->get_active_user = my_get_active_user;
   users_class->activate_user = my_activate_user;
 
   g_type_class_add_private (klass, sizeof (IndicatorSessionUsersDbusPriv));

@@ -132,6 +132,15 @@ indicator_session_users_get_user (IndicatorSessionUsers * self,
   return INDICATOR_SESSION_USERS_GET_CLASS (self)->get_user (self, uid);
 }
 
+IndicatorSessionUser *
+indicator_session_users_get_active_user (IndicatorSessionUsers * self,
+                                        guint                   uid)
+{
+  g_return_val_if_fail (INDICATOR_IS_SESSION_USERS (self), NULL);
+
+  return INDICATOR_SESSION_USERS_GET_CLASS (self)->get_active_user (self);
+}
+
 void
 indicator_session_users_activate_user (IndicatorSessionUsers * self, 
                                        guint                   uid)

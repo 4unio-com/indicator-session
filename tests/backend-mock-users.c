@@ -80,6 +80,12 @@ my_get_user (IndicatorSessionUsers * self, guint uid)
   return ret;
 }
 
+static IndicatorSessionUser *
+my_get_active_user (IndicatorSessionUsers * self, guint uid)
+{
+  return NULL;
+}
+
 /***
 ****  GObject virtual functions
 ***/
@@ -119,6 +125,7 @@ indicator_session_users_mock_class_init (IndicatorSessionUsersMockClass * klass)
   users_class->is_live_session = my_is_live_session;
   users_class->get_uids = my_get_uids;
   users_class->get_user = my_get_user;
+  users_class->get_active_user = my_get_active_user;
   users_class->activate_user = my_activate_user;
 
   g_type_class_add_private (klass, sizeof (IndicatorSessionUsersMockPriv));

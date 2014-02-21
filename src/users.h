@@ -91,6 +91,8 @@ struct _IndicatorSessionUsersClass
   IndicatorSessionUser * (* get_user)        (IndicatorSessionUsers * self,
                                               guint                   uid);
 
+  IndicatorSessionUser * (* get_active_user) (IndicatorSessionUsers * self);
+
   void                   ( * activate_user)  (IndicatorSessionUsers * self,
                                               guint                   uid);
 };
