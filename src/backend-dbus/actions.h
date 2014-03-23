@@ -27,6 +27,7 @@
 #include "dbus-login1-manager.h"
 #include "dbus-login1-seat.h"
 #include "dbus-display-manager.h"
+#include "dbus-upstart.h"
 
 
 G_BEGIN_DECLS
@@ -63,7 +64,8 @@ IndicatorSessionActions * indicator_session_actions_dbus_new (void);
 void indicator_session_actions_dbus_set_proxies (IndicatorSessionActionsDbus * self,
                                                  Login1Manager               * login1_manager,
                                                  Login1Seat                  * login1_seat,
-                                                 DisplayManagerSeat          * dm_seat);
+                                                 DisplayManagerSeat          * dm_seat,
+                                                 Upstart0_6                  * upstart);
                                                  
 
 G_END_DECLS

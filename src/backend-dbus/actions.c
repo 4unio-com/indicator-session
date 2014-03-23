@@ -1,3 +1,4 @@
+#include <stdio.h>
 /*
  * Copyright 2013 Canonical Ltd.
  *
@@ -22,6 +23,7 @@
 
 #include "dbus-end-session-dialog.h"
 #include "dbus-login1-manager.h"
+#include "dbus-upstart.h"
 #include "dbus-webcredentials.h"
 #include "gnome-screen-saver.h"
 #include "gnome-session-manager.h"
@@ -48,6 +50,8 @@ struct _IndicatorSessionActionsDbusPriv
   Login1Seat * login1_seat;
   DisplayManagerSeat * dm_seat;
   GCancellable * dm_seat_cancellable;
+  Upstart0_6 * upstart;
+  GCancellable * upstart_cancellable;
   Webcredentials * webcredentials;
   EndSessionDialog * end_session_dialog;
   char * zenity;
@@ -96,6 +100,7 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
 {
   prompt_status_t prompt = PROMPT_NONE;
   const priv_t * p = self->priv;
+  char const* mir_socket;
 
   if (!g_settings_get_boolean (p->indicator_settings, "suppress-logout-restart-shutdown"))
     {
@@ -108,6 +113,11 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
             prompt = PROMPT_WITH_UNITY;
           g_free (name);
         }
+
+      /* gonna assume if MIR_SOCKET is set, prompting via X11 is gonna grief */
+      mir_socket = g_getenv("MIR_SOCKET");
+      if ((prompt == PROMPT_NONE) && mir_socket)
+          return prompt;
 
       /* can we use zenity? */
       if ((prompt == PROMPT_NONE) && p && p->zenity)
@@ -278,6 +288,26 @@ set_login1_manager (IndicatorSessionActionsDbus * self,
                                          p->login1_manager_cancellable,
                                          on_can_hibernate_ready,
                                          self);
+    }
+}
+
+static void
+set_upstart (IndicatorSessionActionsDbus * self,
+             Upstart0_6                  * upstart)
+{
+  priv_t * p = self->priv;
+
+  if (p->upstart != NULL)
+    {
+      g_cancellable_cancel (p->upstart_cancellable);
+      g_clear_object (&p->upstart_cancellable);
+      g_clear_object (&p->upstart);
+    }
+
+  if (upstart != NULL)
+    {
+      p->upstart_cancellable = g_cancellable_new ();
+      p->upstart = g_object_ref (upstart);
     }
 }
 
@@ -457,14 +487,12 @@ static void
 logout_now (IndicatorSessionActionsDbus * self)
 {
   priv_t * p = self->priv;
+  GError * err;
 
-  g_return_if_fail (p->session_manager != NULL);
-
-  gnome_session_manager_call_logout (p->session_manager,
-                                     1, /* don't prompt */
-                                     p->cancellable,
-                                     NULL,
-                                     NULL);
+  upstart0_6_call_end_session_sync (p->upstart,
+                                    p->upstart_cancellable,
+                                    &err);
+  log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
 }
 
 static void
@@ -853,6 +881,7 @@ my_dispose (GObject * o)
   set_dm_seat (self, NULL);
   set_login1_manager (self, NULL);
   set_login1_seat (self, NULL);
+  set_upstart (self, NULL);
 
   G_OBJECT_CLASS (indicator_session_actions_dbus_parent_class)->dispose (o);
 }
@@ -993,11 +1022,13 @@ void
 indicator_session_actions_dbus_set_proxies (IndicatorSessionActionsDbus * self,
                                             Login1Manager               * login1_manager,
                                             Login1Seat                  * login1_seat,
-                                            DisplayManagerSeat          * dm_seat)
+                                            DisplayManagerSeat          * dm_seat,
+                                            Upstart0_6                  * upstart)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_ACTIONS_DBUS(self));
 
   set_login1_manager (self, login1_manager);
   set_login1_seat (self, login1_seat);
   set_dm_seat (self, dm_seat);
+  set_upstart (self, upstart);
 }

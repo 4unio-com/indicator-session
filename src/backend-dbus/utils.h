@@ -27,12 +27,14 @@
 #include "dbus-display-manager.h"
 #include "dbus-login1-manager.h"
 #include "dbus-login1-seat.h"
+#include "dbus-upstart.h"
 
 typedef void (*indicator_session_util_session_proxies_func)(
                    Login1Manager      * login1_manager,
                    Login1Seat         * login1_seat,
                    DisplayManagerSeat * display_manager_seat,
                    Accounts           * account_manager,
+                   Upstart0_6         * upstart,
                    GCancellable       * cancellable,
                    gpointer             user_data);
 

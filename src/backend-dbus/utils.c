@@ -29,6 +29,7 @@ struct session_proxy_data
   Login1Seat * login1_seat;
   DisplayManagerSeat * dm_seat;
   Accounts * account_manager;
+  Upstart0_6 * upstart;
 
   GCancellable * cancellable;
   int pending;
@@ -62,6 +63,7 @@ on_proxy_ready_impl (struct session_proxy_data * data,
                       data->login1_seat,
                       data->dm_seat,
                       data->account_manager,
+                      data->upstart,
                       data->cancellable,
                       data->user_data);
 
@@ -69,6 +71,7 @@ on_proxy_ready_impl (struct session_proxy_data * data,
       g_clear_object (&data->login1_seat);
       g_clear_object (&data->dm_seat);
       g_clear_object (&data->account_manager);
+      g_clear_object (&data->upstart);
       g_clear_object (&data->cancellable);
       g_free (data);
     }
@@ -115,6 +118,17 @@ on_accounts_proxy_ready (GObject      * o G_GNUC_UNUSED,
   gsize offset = G_STRUCT_OFFSET (struct session_proxy_data, account_manager);
   GError * err = NULL;
   gpointer proxy = accounts_proxy_new_for_bus_finish (res, &err);
+  on_proxy_ready_impl (gdata, offset, err, proxy);
+}
+
+static void
+on_upstart_proxy_ready (GObject      * o G_GNUC_UNUSED,
+                        GAsyncResult * res,
+                        gpointer       gdata)
+{
+  gsize offset = G_STRUCT_OFFSET (struct session_proxy_data, upstart);
+  GError * err = NULL;
+  gpointer proxy = upstart0_6_proxy_new_for_bus_finish (res, &err);
   on_proxy_ready_impl (gdata, offset, err, proxy);
 }
 
@@ -179,4 +193,13 @@ indicator_session_util_get_session_proxies (
                                data->cancellable,
                                on_display_manager_seat_proxy_ready, data);
     }
+
+  /* Session Manager */
+  data->pending++;
+  upstart0_6_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+                                G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
+                                "com.ubuntu.Upstart",
+                                "/com/ubuntu/Upstart",
+                                data->cancellable,
+                                on_upstart_proxy_ready, data);
 }

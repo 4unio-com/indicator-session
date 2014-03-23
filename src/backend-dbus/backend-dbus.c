@@ -36,6 +36,7 @@ on_proxies_ready (Login1Manager      * login1_manager,
                   Login1Seat         * login1_seat,
                   DisplayManagerSeat * display_manager_seat, 
                   Accounts           * account_manager,
+                  Upstart0_6         * upstart,
                   GCancellable       * cancellable,
                   gpointer             gdata)
 {
@@ -47,7 +48,8 @@ on_proxies_ready (Login1Manager      * login1_manager,
         indicator_session_actions_dbus_set_proxies (data->actions,
                                                     login1_manager,
                                                     login1_seat,
-                                                    display_manager_seat);
+                                                    display_manager_seat,
+                                                    upstart);
 
       if (data->users != NULL)
         indicator_session_users_dbus_set_proxies (data->users,
