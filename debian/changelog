@@ -1,3 +1,9 @@
+indicator-session (12.10.5+14.04.20140320+upstart-0ubuntu1) trusty; urgency=low
+
+  * use upstart instead of gnome-session-manager for logout
+
+ -- Stephen M. Webb <stephen.webb@canonical.com>  Sun, 23 Mar 2014 14:47:54 -0400
+
 indicator-session (12.10.5+14.04.20140320-0ubuntu1) trusty; urgency=low
 
   [ Charles Kerr ]
