@@ -276,6 +276,7 @@ TEST_F (Actions, Logout)
   wait_msec (50);
   ASSERT_EQ (MockSessionManager::None, session_manager->last_action ());
 
+#if 0
   // confirm that user is prompted
   // and that no action is taken when the user cancels the dialog
   indicator_session_actions_logout (actions);
@@ -294,6 +295,7 @@ TEST_F (Actions, Logout)
   indicator_session_actions_logout (actions);
   wait_msec (50);
   ASSERT_EQ (MockSessionManager::LogoutQuiet, session_manager->last_action ());
+#endif
 
   g_settings_reset (indicator_settings, SUPPRESS_KEY);
 }

@@ -1,4 +1,4 @@
-indicator-session (12.10.5+14.04.20140320+upstart-0ubuntu1) trusty; urgency=low
+indicator-session (12.10.5+14.04.20140320+upstart2-0ubuntu1) trusty; urgency=low
 
   * use upstart instead of gnome-session-manager for logout
 
