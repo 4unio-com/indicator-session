@@ -99,6 +99,10 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
 
   if (!g_settings_get_boolean (p->indicator_settings, "suppress-logout-restart-shutdown"))
     {
+      /* can we use zenity? */
+      if ((prompt == PROMPT_NONE) && p && p->zenity)
+        prompt = PROMPT_WITH_ZENITY;
+
       /* can we use the Unity prompt? */
       if ((prompt == PROMPT_NONE) && p && p->end_session_dialog)
         {
@@ -108,10 +112,6 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
             prompt = PROMPT_WITH_UNITY;
           g_free (name);
         }
-
-      /* can we use zenity? */
-      if ((prompt == PROMPT_NONE) && p && p->zenity)
-        prompt = PROMPT_WITH_ZENITY;
     }
 
   return prompt;
