@@ -19,6 +19,7 @@
 
 #include <glib/gi18n.h>
 #include <gio/gio.h>
+#include <stdio.h>
 
 #include "backend.h"
 #include "recoverable-problem.h"
@@ -333,10 +334,20 @@ static GMenuModel *
 create_admin_section (void)
 {
   GMenu * menu;
+  FILE  * fp;
 
   menu = g_menu_new ();
   g_menu_append (menu, _("About This Computer"), "indicator.about");
-  g_menu_append (menu, _("Ubuntu Help"), "indicator.help");
+
+  fp = fopen("/etc/ubuntukylin-release","r");
+  if( fp == NULL)
+    g_menu_append (menu, _("Ubuntu Help"), "indicator.help");
+  else
+  {
+    g_menu_append (menu, _("Ubuntu Kylin Help"), "indicator.help");
+    fclose(fp);
+  }
+ 
   return G_MENU_MODEL (menu);
 }
 
