@@ -333,12 +333,11 @@ static GMenuModel *
 create_admin_section (void)
 {
   GMenu * menu;
-  FILE  * fp;
+  gchar * fname = "//etc//ubuntukylin-release";
 
   menu = g_menu_new ();
   g_menu_append (menu, _("About This Computer"), "indicator.about");
   
-  gchar * fname = "//etc//ubuntukylin-release";
   if(!g_file_test(fname,G_FILE_TEST_EXISTS))
     g_menu_append (menu, _("Ubuntu Help"), "indicator.help");
   else
