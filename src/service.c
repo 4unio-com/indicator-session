@@ -19,7 +19,6 @@
 
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include <stdio.h>
 
 #include "backend.h"
 #include "recoverable-problem.h"
@@ -338,16 +337,12 @@ create_admin_section (void)
 
   menu = g_menu_new ();
   g_menu_append (menu, _("About This Computer"), "indicator.about");
-
-  fp = fopen("/etc/ubuntukylin-release","r");
-  if( fp == NULL)
+  
+  gchar * fname = "//etc//ubuntukylin-release";
+  if(!g_file_test(fname,G_FILE_TEST_EXISTS))
     g_menu_append (menu, _("Ubuntu Help"), "indicator.help");
   else
-  {
     g_menu_append (menu, _("Ubuntu Kylin Help"), "indicator.help");
-    fclose(fp);
-  }
- 
   return G_MENU_MODEL (menu);
 }
 
