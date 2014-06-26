@@ -333,15 +333,32 @@ static GMenuModel *
 create_admin_section (void)
 {
   GMenu * menu;
-  gchar * fname = "//etc//ubuntukylin-release";
-
+  GIOChannel* g_os_release;
+  gchar* temp_str;
+  gchar* os_release_name;
+  gchar* help_label;
+  gchar** str_array_split;
+  if ((g_os_release = g_io_channel_new_file ("//etc//os-release","r",NULL)) != NULL)
+    {
+      while (g_io_channel_read_line(g_os_release,&temp_str,NULL,NULL,NULL) != G_IO_STATUS_EOF)
+        {
+          g_strstrip(temp_str);
+          if (g_str_has_prefix(temp_str,"NAME="))
+            {
+              str_array_split = g_strsplit(temp_str,"\"",3);
+	      os_release_name=str_array_split[1];
+              break;
+            }
+        }
+    }
+  else
+    os_release_name = "Ubuntu";
+  help_label = g_strjoin(" ",os_release_name,"help",NULL);
   menu = g_menu_new ();
   g_menu_append (menu, _("About This Computer"), "indicator.about");
-  
-  if(!g_file_test(fname,G_FILE_TEST_EXISTS))
-    g_menu_append (menu, _("Ubuntu Help"), "indicator.help");
-  else
-    g_menu_append (menu, _("Ubuntu Kylin Help"), "indicator.help");
+  g_menu_append (menu, _(help_label), "indicator.help");
+  g_free(temp_str);
+  g_strfreev(str_array_split);
   return G_MENU_MODEL (menu);
 }
 
