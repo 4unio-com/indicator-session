@@ -353,7 +353,7 @@ create_admin_section (void)
     }
   else
     os_release_name = "Ubuntu";
-  help_label = g_strjoin(" ",os_release_name,"help",NULL);
+  help_label = g_strjoin(" ",os_release_name,"Help",NULL);
   menu = g_menu_new ();
   g_menu_append (menu, _("About This Computer"), "indicator.about");
   g_menu_append (menu, _(help_label), "indicator.help");
