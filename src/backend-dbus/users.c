@@ -201,7 +201,7 @@ static void
 track_user (IndicatorSessionUsersDbus * self,
             AccountsUser              * user)
 {
-  const guint32 uid = accounts_user_get_uid (user);
+  const guint32 uid = (guint32) accounts_user_get_uid (user);
   priv_t * p = self->priv;
   gulong id;
   const gboolean already_had_user = is_tracked_uid (self, uid);
