@@ -512,18 +512,18 @@ report_unusable_user (IndicatorSessionService * self, const IndicatorSessionUser
     uid_str = g_strdup_printf("%u", u->uid);
 
     additional = g_ptr_array_new (); /* null-terminated key/value pair strs */
-    g_ptr_array_add (additional, "uid");
-    g_ptr_array_add (additional, uid_str);
-    g_ptr_array_add (additional, "icon_file");
-    g_ptr_array_add (additional, u->icon_file ? u->icon_file : "(null)");
-    g_ptr_array_add (additional, "is_current_user");
-    g_ptr_array_add (additional, u->is_current_user ? "true" : "false");
-    g_ptr_array_add (additional, "is_logged_in");
-    g_ptr_array_add (additional, u->is_logged_in ? "true" : "false");
-    g_ptr_array_add (additional, "real_name");
-    g_ptr_array_add (additional, u->real_name ? u->real_name : "(null)");
-    g_ptr_array_add (additional, "user_name");
-    g_ptr_array_add (additional, u->user_name ? u->user_name : "(null)");
+    g_ptr_array_add (additional, (gpointer)"uid");
+    g_ptr_array_add (additional, (gpointer)uid_str);
+    g_ptr_array_add (additional, (gpointer)"icon_file");
+    g_ptr_array_add (additional, (gpointer)(u->icon_file ? u->icon_file : "(null)"));
+    g_ptr_array_add (additional, (gpointer)"is_current_user");
+    g_ptr_array_add (additional, (gpointer)(u->is_current_user ? "true" : "false"));
+    g_ptr_array_add (additional, (gpointer)"is_logged_in");
+    g_ptr_array_add (additional, (gpointer)(u->is_logged_in ? "true" : "false"));
+    g_ptr_array_add (additional, (gpointer)"real_name");
+    g_ptr_array_add (additional, (gpointer)(u->real_name ? u->real_name : "(null)"));
+    g_ptr_array_add (additional, (gpointer)"user_name");
+    g_ptr_array_add (additional, (gpointer)(u->user_name ? u->user_name : "(null)"));
     g_ptr_array_add (additional, NULL); /* null termination */
     report_recoverable_problem(error_name, (GPid)0, FALSE, (gchar**)additional->pdata);
 
