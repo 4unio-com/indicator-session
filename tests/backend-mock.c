@@ -22,6 +22,8 @@
 #include "backend-mock-guest.h"
 #include "backend-mock-users.h"
 
+#include "backend.h"
+
 GSettings               * mock_settings = NULL;
 IndicatorSessionActions * mock_actions  = NULL;
 IndicatorSessionUsers   * mock_users    = NULL;
