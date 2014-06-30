@@ -5,7 +5,7 @@ add_library (gtest STATIC
 set_target_properties (gtest PROPERTIES INCLUDE_DIRECTORIES
                        ${GTEST_INCLUDE_DIR})
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -g ${CC_WARNING_ARGS}")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # build desktopmock
 add_library (desktopmock STATIC
@@ -58,5 +58,6 @@ add_test (test-users test-users)
 set_tests_properties (test-users PROPERTIES COMPILE_FLAGS "${SERVICE_CFLAGS}")
 target_link_libraries (test-users desktopmock backenddbus libindicatorsessionservice gtest ${SERVICE_LDFLAGS} ${GTEST_LIBS} ${GCOV_LIBS})
 
-
+set_property (TARGET test-users test-guest test-actions desktopmock
+              APPEND_STRING PROPERTY COMPILE_FLAGS " -g ${CC_WARNING_ARGS} -Wno-global-constructors -Wno-padded -Wno-weak-vtables")
 

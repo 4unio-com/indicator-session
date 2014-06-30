@@ -45,7 +45,7 @@ set_target_properties (backendmock PROPERTIES COMPILE_FLAGS " ${CC_WARNING_ARGS}
 add_executable (test-service
                 test-service.cc
                 gschemas.compiled)
-set_target_properties (test-service PROPERTIES COMPILE_FLAGS " ${CC_WARNING_ARGS} -std=c++0x -g")
+set_target_properties (test-service PROPERTIES COMPILE_FLAGS " ${CC_WARNING_ARGS} -Wno-global-constructors -Wno-weak-vtables -std=c++11 -g")
 add_test (test-service test-service)
 add_dependencies (test-service libindicatorsessionservice backendmock)
 target_link_libraries (test-service libindicatorsessionservice backendmock gtest ${SERVICE_LIBRARIES} ${GTEST_LIBS})

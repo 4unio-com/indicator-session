@@ -37,9 +37,11 @@ include_directories (SYSTEM ${SERVICE_INCLUDE_DIRS})
 ##
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Weverything")
+  set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Wno-c++98-compat") # we never want this...
   set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Wno-documentation") # using gtk-doc, not doxygen
   set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Wno-disabled-macro-expansion") # G_DEFINE_TYPE
   set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Wno-bad-function-cast") # g_clear_object()
+  set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Wno-assign-enum") # GParamFlags bitfields
 else()
   set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Wall -Wextra -Wpedantic")
 endif()
