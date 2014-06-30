@@ -30,9 +30,22 @@ include (FindPkgConfig)
 pkg_check_modules (SERVICE REQUIRED
                    glib-2.0>=2.36
                    gio-unix-2.0>=2.36)
-include_directories (${SERVICE_INCLUDE_DIRS})
+include_directories (SYSTEM ${SERVICE_INCLUDE_DIRS})
 
-set (CC_WARNING_ARGS " -Wall -pedantic -Wextra -Wno-missing-field-initializers")
+##
+##  Set compiler warning flags
+##
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Weverything")
+  set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Wno-documentation") # using gtk-doc, not doxygen
+  set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Wno-disabled-macro-expansion") # G_DEFINE_TYPE
+  set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Wno-bad-function-cast") # g_clear_object()
+else()
+  set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Wall -Wextra -Wpedantic")
+endif()
+set (CC_WARNING_ARGS "${CC_WARNING_ARGS} -Wextra -Wno-missing-field-initializers") # for GActionEntry
+
+
 
 set (ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
 add_custom_target (dist
