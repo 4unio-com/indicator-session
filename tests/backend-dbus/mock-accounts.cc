@@ -60,7 +60,7 @@ MockAccounts :: remove_user (MockUser * user)
 MockUser *
 MockAccounts :: find_by_uid (guint64 uid)
 {
-  const uid_to_user_t::iterator it (my_uid_to_user.find(uid));
+  const uid_to_user_t::iterator it (my_uid_to_user.find((guint)uid));
 
   if (it != my_uid_to_user.end())
     return it->second;

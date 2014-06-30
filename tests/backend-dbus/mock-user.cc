@@ -45,7 +45,7 @@ MockUser :: set_realname (const char * realname)
 guint
 MockUser :: uid () const
 {
-  return accounts_user_get_uid (my_skeleton);
+  return (guint) accounts_user_get_uid (my_skeleton);
 }
 
 guint64
