@@ -588,13 +588,13 @@ create_switch_section (IndicatorSessionService * self, int profile)
 
   if (indicator_session_guest_is_allowed (p->backend_guest))
     {
-      GMenuItem *item;
+      GMenuItem *mi;
 
-      item = g_menu_item_new (_("Guest Session"), "indicator.switch-to-guest");
-      g_menu_item_set_attribute (item, "x-canonical-type", "s", "indicator.guest-menu-item");
-      g_menu_append_item (menu, item);
+      mi = g_menu_item_new (_("Guest Session"), "indicator.switch-to-guest");
+      g_menu_item_set_attribute (mi, "x-canonical-type", "s", "indicator.guest-menu-item");
+      g_menu_append_item (menu, mi);
 
-      g_object_unref (item);
+      g_object_unref (mi);
     }
 
   /* if we need to show the user list, build an array of all the users we know
