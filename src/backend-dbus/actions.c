@@ -631,7 +631,7 @@ on_end_session_dialog_closed (IndicatorSessionActionsDbus * self)
 static void
 on_open_end_session_dialog_ready (GObject      * o,
                                   GAsyncResult * res,
-                                  gpointer       gself G_GNUC_UNUSED)
+                                  gpointer       gself)
 {
   GError * err = NULL;
   end_session_dialog_call_open_finish (END_SESSION_DIALOG(o), res, &err);
