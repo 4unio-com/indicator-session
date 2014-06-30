@@ -70,11 +70,11 @@ report_recoverable_problem (const gchar * signature, GPid report_pid, gboolean w
 	GPid pid = 0;
 	gchar * pid_str = NULL;
 	gchar ** argv = NULL;
-	gchar * argv_nopid[2] = {
+	const gchar * argv_nopid[2] = {
 		"/usr/share/apport/recoverable_problem",
 		NULL
 	};
-	gchar * argv_pid[4] = {
+	const gchar * argv_pid[4] = {
 		"/usr/share/apport/recoverable_problem",
 		"-p",
 		NULL, /* put pid_str when allocated here */
