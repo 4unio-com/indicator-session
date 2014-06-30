@@ -649,7 +649,7 @@ on_open_end_session_dialog_ready (GObject      * o,
 }
 
 static void
-show_unity_end_session_dialog (IndicatorSessionActionsDbus * self, int type)
+show_unity_end_session_dialog (IndicatorSessionActionsDbus * self, guint type)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
   gpointer o = p->end_session_dialog;
