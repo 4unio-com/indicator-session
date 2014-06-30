@@ -777,7 +777,7 @@ TEST_F (ServiceTest, User)
   g_object_set (service, "max-users", 7, NULL);
   g_object_get (service, "max-users", &max_users, NULL);
   ASSERT_EQ (7, max_users);
-  for (int i=3; i<12; ++i)
+  for (guint i=3; i<12; ++i)
     {
       IndicatorSessionUser * u = g_new0 (IndicatorSessionUser, 1);
       u->is_current_user = false;
