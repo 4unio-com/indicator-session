@@ -28,8 +28,6 @@
 #define BUS_PATH "/com/canonical/indicator/session"
 
 #define ICON_DEFAULT "system-devices-panel"
-#define ICON_INFO    "system-devices-panel-information"
-#define ICON_ALERT   "system-devices-panel-alert"
 
 G_DEFINE_TYPE (IndicatorSessionService,
                indicator_session_service,
