@@ -62,7 +62,7 @@ struct UserRecord
   gulong signal_id;
 };
 
-struct UserRecord *
+static struct UserRecord *
 user_record_new (AccountsUser * user, gulong signal_id)
 {
   struct UserRecord * rec;
