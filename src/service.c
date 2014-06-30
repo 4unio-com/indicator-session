@@ -609,7 +609,7 @@ create_switch_section (IndicatorSessionService * self, int profile)
   if (users->len > p->max_users)
     {
       g_ptr_array_sort (users, compare_users_by_usefulness);
-      g_ptr_array_set_size (users, p->max_users);
+      g_ptr_array_set_size (users, (gint)p->max_users);
     }
 
   /* sort the users by name */
