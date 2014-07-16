@@ -334,31 +334,38 @@ create_admin_section (void)
 {
   GMenu * menu;
   GIOChannel* g_os_release;
-  gchar* temp_str;
   gchar* os_release_name;
-  gchar* help_label;
-  gchar** str_array_split;
-  if ((g_os_release = g_io_channel_new_file ("//etc//os-release","r",NULL)) != NULL)
+  gchar* temp_str = NULL;
+  gchar* help_label = NULL;
+  gchar** str_array_split = NULL;
+
+  if ((g_os_release = g_io_channel_new_file ("//etc//os-release","r", NULL)) != NULL)
     {
-      while (g_io_channel_read_line(g_os_release,&temp_str,NULL,NULL,NULL) != G_IO_STATUS_EOF)
+      while (g_io_channel_read_line (g_os_release, &temp_str, NULL, NULL, NULL) != G_IO_STATUS_EOF)
         {
-          g_strstrip(temp_str);
-          if (g_str_has_prefix(temp_str,"NAME="))
+          g_strstrip (temp_str);
+          if (g_str_has_prefix (temp_str,"NAME="))
             {
-              str_array_split = g_strsplit(temp_str,"\"",3);
-	      os_release_name=str_array_split[1];
+              str_array_split = g_strsplit (temp_str,"\"",3);
+	      os_release_name = str_array_split[1];
+              g_free (temp_str);
               break;
             }
+          else
+            os_release_name = _("Ubuntu");
+          g_free (temp_str);
         }
     }
   else
-    os_release_name = "Ubuntu";
-  help_label = g_strjoin(" ",os_release_name,"Help",NULL);
+    os_release_name = _("Ubuntu");
+  help_label = g_strjoin (" ",os_release_name,_("Help"),NULL);
   menu = g_menu_new ();
   g_menu_append (menu, _("About This Computer"), "indicator.about");
   g_menu_append (menu, _(help_label), "indicator.help");
-  g_free(temp_str);
-  g_strfreev(str_array_split);
+
+  g_free (help_label);
+  g_strfreev (str_array_split);
+  g_io_channel_shutdown (g_os_release, TRUE, NULL);
   return G_MENU_MODEL (menu);
 }
 
