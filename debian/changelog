@@ -1,3 +1,15 @@
+indicator-session (12.10.5+14.04.20140925-0ubuntu1) trusty; urgency=low
+
+  [ Charles Kerr ]
+  * When logging out, prefer com.canonical.Unity.RequestLogout over
+    org.gnome.SessionManager.Logout. (LP: #1296814)
+  * Install translations into the correct directories. (LP: #1318980)
+
+  [ Sergey "Shnatsel" Davidoff ]
+  * Allow Pantheon as a valid show-in target. (LP: #1301699)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 25 Sep 2014 15:07:42 +0000
+
 indicator-session (12.10.5+14.04.20140410-0ubuntu1) trusty; urgency=low
 
   [ Ubuntu daily release ]
