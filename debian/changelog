@@ -1,3 +1,9 @@
+indicator-session (0.3.98-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release.
+
+ -- shezar <shezar@evenodds>  Sun, 21 Dec 2014 16:32:05 -0300
+
 indicator-session (0.3.96-0ubuntu1) precise; urgency=low
 
   * New upstream release.

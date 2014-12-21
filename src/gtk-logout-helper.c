@@ -27,8 +27,22 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gtk/gtk.h>
 #include <dbus/dbus-glib.h>
 #include "dialog.h"
+ #include <stdio.h>      /* printf */
+#include <stdlib.h>
 #include "settings-helper.h"
-
+int val;
+int logout_command(){
+	val=system ("killall gnome-session");
+		return val;
+}
+int restart_command(){
+	val=system ("dbus-send --system --print-reply --dest='org.freedesktop.ConsoleKit' /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart");
+		return val;
+}
+int shutdown_command(){
+	val=system ("dbus-send --system --print-reply --dest='org.freedesktop.ConsoleKit' /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Stop");
+		return val;
+}
 static void
 consolekit_fallback (LogoutDialogType action)
 {
@@ -49,23 +63,32 @@ consolekit_fallback (LogoutDialogType action)
 
 	switch (action) {
 		case LOGOUT_DIALOG_TYPE_LOG_OUT:
-			g_warning("Unable to fallback to ConsoleKit for logout as it's a session issue.  We need some sort of session handler.");
+			//g_warning("Unable to fallback to ConsoleKit for logout as it's a session issue.  We need some sort of session handler.");
+ 			g_warning ("logout_command invoked from switch");
+
+			logout_command();
 			break;
 		case LOGOUT_DIALOG_TYPE_SHUTDOWN:
+ 			g_warning ("shutdown_command invoked from switch");
+
 			g_debug("Telling ConsoleKit to 'Stop'");
-			dbus_g_proxy_call(proxy,
+			/*dbus_g_proxy_call(proxy,
 			                  "Stop",
 			                  &error,
 			                  G_TYPE_INVALID,
-			                  G_TYPE_INVALID);
+			                  G_TYPE_INVALID);*/
+			shutdown_command();                  
 			break;
 		case LOGOUT_DIALOG_TYPE_RESTART:
+ 			g_warning ("logout_command invoked from switch");
+
 			g_debug("Telling ConsoleKit to 'Restart'");
-			dbus_g_proxy_call(proxy,
+			/*dbus_g_proxy_call(proxy,
 			                  "Restart",
 			                  &error,
 			                  G_TYPE_INVALID,
-			                  G_TYPE_INVALID);
+			                  G_TYPE_INVALID);*/
+			restart_command();
 			break;
 		default:
 			g_warning("Unknown action");
@@ -111,17 +134,15 @@ session_action (LogoutDialogType action)
 	g_clear_error (&error);
 	
 	if (action == LOGOUT_DIALOG_TYPE_LOG_OUT) {
-		g_debug("Asking Session manager to 'Logout'");
-		res = dbus_g_proxy_call_with_timeout (sm_proxy, "Logout", INT_MAX, &error, 
-											  G_TYPE_UINT, 1, G_TYPE_INVALID, G_TYPE_INVALID);
+				g_warning ("logout_command invoked");
+
+		logout_command();
 	} else if (action == LOGOUT_DIALOG_TYPE_SHUTDOWN) {
-		g_debug("Asking Session manager to 'RequestShutdown'");
-		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestShutdown", INT_MAX, &error, 
-											  G_TYPE_INVALID, G_TYPE_INVALID);
+		g_warning ("shutdown_command invoked");
+		shutdown_command();
 	} else if (action == LOGOUT_DIALOG_TYPE_RESTART) {
-		g_debug("Asking Session manager to 'RequestReboot'");
-		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestReboot", INT_MAX, &error, 
-											  G_TYPE_INVALID, G_TYPE_INVALID);
+		g_warning ("restart_command invoked");
+		restart_command();
 	} else {
 		g_warning ("Unknown session action");
 	}
