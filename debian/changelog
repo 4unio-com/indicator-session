@@ -1,3 +1,10 @@
+indicator-session (12.10.5+14.04.20150404-0ubuntu1) trusty; urgency=medium
+
+  [ Dmitry Shachnev ]
+  * Make Cancel button in Zenity backend work again. (LP: #1363630)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Sat, 04 Apr 2015 09:29:37 +0000
+
 indicator-session (12.10.5+14.04.20140925-0ubuntu1) trusty; urgency=low
 
   [ Charles Kerr ]
