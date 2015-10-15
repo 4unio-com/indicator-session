@@ -788,9 +788,7 @@ my_power_off (IndicatorSessionActions * actions)
   switch (get_prompt_status (self))
     {
       case PROMPT_WITH_UNITY:
-        /* NB: TYPE_REBOOT instead of TYPE_SHUTDOWN because
-           the latter adds lock & logout options in Unity... */
-        show_unity_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
+        show_unity_end_session_dialog (self, END_SESSION_TYPE_SHUTDOWN);
         break;
 
       case PROMPT_WITH_ZENITY:
