@@ -1,3 +1,9 @@
+indicator-session (12.10.5+14.04.20151021-0ubuntu1) trusty; urgency=medium
+
+  * Disable shutdown if screen is locked (lp: #1460626)
+
+ -- Andrea  Azzarone <andrea.azzarone@canonical.com>  Wed, 21 Oct 2015 17:22:37 +0200
+
 indicator-session (12.10.5+14.04.20151008-0ubuntu1) trusty; urgency=medium
 
   * Backport fix for segfault in get_user_label() (lp: #1501244) (LP:
