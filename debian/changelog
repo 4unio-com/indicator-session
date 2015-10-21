@@ -1,3 +1,10 @@
+indicator-session (12.10.5+14.04.20151021.1-0ubuntu1) trusty; urgency=medium
+
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Marco Trevisan (Treviño) <mail@3v1n0.net>  Wed, 21 Oct 2015 15:53:04 +0000
+
 indicator-session (12.10.5+14.04.20151021-0ubuntu1) trusty; urgency=medium
 
   * Disable shutdown if screen is locked (lp: #1460626)
