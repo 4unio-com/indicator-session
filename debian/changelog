@@ -1,3 +1,10 @@
+indicator-session (12.10.5+16.10.20160701-0ubuntu1) yakkety; urgency=medium
+
+  [ Martin Wimpress ]
+  * list extra recommends alternatives to gnome components
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 01 Jul 2016 08:30:13 +0000
+
 indicator-session (12.10.5+16.04.20160412-0ubuntu1) xenial; urgency=medium
 
   * Ensure we request the UI to verify restart availability on unity
