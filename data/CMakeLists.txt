@@ -92,24 +92,4 @@ set (UNITY_INDICATOR_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${UNITY_INDICATOR_NAME}")
 install (FILES "${UNITY_INDICATOR_FILE}"
          DESTINATION "${UNITY_INDICATOR_DIR}")
 
-
-##
-##  Icons
-##
-
-# where to install
-set (ICON_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/icons/hicolor")
-message (STATUS "${ICON_DIR} is the Icon install dir")
-
-install (DIRECTORY icons
-         icons/16x16
-         icons/22x22
-         icons/24x24
-         icons/32x32
-         icons/scalable
-         DESTINATION "${ICON_DIR}"
-         FILES_MATCHING PATTERN "*.png" PATTERN "*.svg")
-
-install(CODE "execute_process (COMMAND gtk-update-icon-cache -t -f ${ICON_DIR})"
-        CODE "message (STATUS \"Updating icon cache\")")
-
+add_subdirectory (icons)
