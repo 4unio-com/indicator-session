@@ -1,3 +1,11 @@
+indicator-session (12.10.5+16.10.20161018-0ubuntu1) yakkety; urgency=medium
+
+  [ Ted Gould ]
+  * Catching up to changes in Yakkety
+  * Adding a systemd user session unit
+
+ -- iain@orangesquash.org.uk <iain@orangesquash.org.uk>  Tue, 18 Oct 2016 07:18:52 +0000
+
 indicator-session (12.10.5+16.04.20160412-0ubuntu3) yakkety; urgency=medium
 
   * MATE proxies the name spaces required for session management. Add
