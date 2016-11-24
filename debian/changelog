@@ -1,3 +1,11 @@
+indicator-session (12.10.5+17.04.20161124-0ubuntu1) zesty; urgency=medium
+
+  [ Michael Terry ]
+  * Work inside a snap by prefixing hard coded paths with $SNAP. (LP:
+    #1629009)
+
+ -- Albert Astals Cid <albert.astals@canonical.com>  Thu, 24 Nov 2016 12:11:25 +0000
+
 indicator-session (12.10.5+17.04.20161114-0ubuntu1) zesty; urgency=medium
 
   [ Charles Kerr ]
