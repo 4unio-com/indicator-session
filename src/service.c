@@ -693,7 +693,7 @@ create_switch_section (IndicatorSessionService * self, int profile)
     }
   else
     {
-      const char * lock_switch_action = "indicator.switch-to-screensaver";
+      const char * lock_switch_action = "indicator.switch-to-greeter";
       const char * switch_action = "indicator.switch-to-greeter";
 
       if (g_hash_table_size (p->users) > 1 &&
