@@ -1,8 +1,13 @@
-indicator-session (17.3.20-0ubuntu1) UNRELEASED; urgency=medium
+indicator-session (17.3.20+17.04.20170403-0ubuntu1) zesty; urgency=medium
 
+  [ Pete ]
   * Add phone indicator profiles.
 
- -- Pete <pete.woods@canonical.com>  Mon, 20 Mar 2017 12:51:39 +0000
+  [ Charles Kerr ]
+  * Handle "challenge" responses from login1 CanSuspend and CanHibernate
+    calls (LP: #1674389)
+
+ -- Pete Woods <pete.woods@canonical.com>  Mon, 03 Apr 2017 15:38:27 +0000
 
 indicator-session (12.10.5+17.04.20170314-0ubuntu1) zesty; urgency=medium
 
