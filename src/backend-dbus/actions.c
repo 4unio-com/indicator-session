@@ -228,7 +228,7 @@ on_can_suspend_ready (GObject * o, GAsyncResult * res, gpointer gself)
     {
       priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv;
 
-      const gboolean b = !g_strcmp0 (str, "yes");
+      const gboolean b = !g_strcmp0 (str, "yes") || !g_strcmp0 (str, "challenge");
 
       if (p->can_suspend != b)
         {
@@ -255,7 +255,7 @@ on_can_hibernate_ready (GObject * o, GAsyncResult * res, gpointer gself)
     {
       priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv;
 
-      const gboolean b = !g_strcmp0 (str, "yes");
+      const gboolean b = !g_strcmp0 (str, "yes") || !g_strcmp0 (str, "challenge");
 
       if (p->can_hibernate != b)
         {
@@ -454,7 +454,7 @@ my_suspend (IndicatorSessionActions * self)
   g_return_if_fail (p->login1_manager != NULL);
 
   login1_manager_call_suspend (p->login1_manager,
-                               FALSE,
+                               TRUE,
                                p->login1_manager_cancellable,
                                NULL,
                                NULL);
@@ -468,7 +468,7 @@ my_hibernate (IndicatorSessionActions * self)
   g_return_if_fail (p->login1_manager != NULL);
 
   login1_manager_call_hibernate (p->login1_manager,
-                                 FALSE,
+                                 TRUE,
                                  p->login1_manager_cancellable,
                                  NULL,
                                  NULL);
